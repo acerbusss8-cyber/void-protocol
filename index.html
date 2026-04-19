@@ -3,108 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VOID | THE ANOMALY</title>
+    <title>VOID_PROTOCOL // ERROR_000</title>
     <style>
-        :root { --main: #ffffff; --error: #ff0000; --dim: #333; }
+        :root { --main: #fff; --accent: #ff0000; --dim: #222; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: var(--main); font-family: 'Courier New', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         
-        #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; transform: translate(-50%, -50%); opacity: 0.4; filter: grayscale(1) contrast(1.4); }
-        
-        .main-frame { z-index: 10; text-align: center; width: 95%; max-width: 600px; padding: 40px 20px; background: rgba(0,0,0,0.95); border: 1px solid #1a1a1a; backdrop-filter: blur(15px); }
-        
-        .status { font-size: 0.6rem; color: var(--error); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 10px; }
-        .pct { font-size: 6rem; font-weight: 900; margin: 5px 0; letter-spacing: -5px; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; transform: translate(-50%, -50%); opacity: 0.3; filter: grayscale(1) contrast(1.8) brightness(0.7); }
+        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
 
-        .manifesto { font-size: 0.75rem; color: #777; line-height: 1.8; margin: 25px 0; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 20px 0; text-transform: uppercase; }
-        .manifesto b { color: #fff; }
-
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .btn { border: 1px solid #222; padding: 20px 5px; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.01); display: flex; flex-direction: column; align-items: center; }
-        .btn:hover { background: #fff; color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.2); }
+        .frame { z-index: 10; text-align: center; width: 90%; max-width: 500px; padding: 30px; border: 1px solid #111; background: rgba(0,0,0,0.95); position: relative; }
         
-        .rune { font-size: 1.8rem; margin-bottom: 8px; font-weight: bold; }
-        .coin-info { font-size: 0.55rem; color: #555; letter-spacing: 1px; margin-bottom: 10px; }
-        .btn:hover .coin-info { color: #000; }
-        .action-call { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; text-decoration: underline; }
+        .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 6px; text-transform: uppercase; margin-bottom: 10px; animation: flicker 0.1s infinite alternate; }
+        @keyframes flicker { 0% { opacity: 0.8; } 100% { opacity: 1; } }
 
-        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .addr { background: #080808; border: 1px solid #222; padding: 30px; margin: 20px; font-size: 0.85rem; word-break: break-all; color: #fff; box-shadow: inset 0 0 20px rgba(255,255,255,0.05); }
-        .modal-msg { font-size: 0.7rem; color: #666; width: 80%; line-height: 1.6; text-transform: uppercase; letter-spacing: 1px; }
-        .modal-msg b { color: var(--error); }
+        .pct { font-size: 7rem; font-weight: 900; margin: 0; letter-spacing: -8px; text-shadow: 0 0 30px rgba(255,255,255,0.1); }
+        
+        .warning-box { font-size: 0.7rem; color: #666; margin: 25px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0; line-height: 1.6; text-transform: uppercase; }
+        .warning-box b { color: #fff; letter-spacing: 1px; }
+
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .btn { border: 1px solid #222; padding: 18px 0; cursor: pointer; transition: 0.15s; background: transparent; position: relative; overflow: hidden; }
+        .btn:hover { background: var(--main); color: #000; border-color: var(--main); }
+        
+        .sym { font-size: 1.6rem; display: block; margin-bottom: 3px; }
+        .net { font-size: 0.45rem; color: #444; margin-bottom: 6px; display: block; letter-spacing: 1px; }
+        .call { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; }
+
+        #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .addr { border: 1px solid #222; padding: 25px; margin: 20px; font-size: 0.8rem; color: #fff; word-break: break-all; width: 80%; background: #050505; }
+        .fomo-msg { font-size: 0.6rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-top: 15px; }
+
+        .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.05); animation: scan 3s linear infinite; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
     </style>
 </head>
-<body onclick="activateSystem()">
+<body onclick="init()">
 
-    <video autoplay muted loop playsinline id="bg-video">
-        <source src="bg.mp4" type="video/mp4">
-    </video>
+    <video autoplay muted loop playsinline id="bg-video"><source src="bg.mp4" type="video/mp4"></video>
     <audio id="bg-audio" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
+    <div class="noise"></div>
 
-    <div class="main-frame">
-        <div class="status">// PHASE 01: COLLECTING CREATORS //</div>
-        <div class="pct" id="num">0.0104%</div>
+    <div class="frame">
+        <div class="scanline"></div>
+        <div class="sys-header">NON-RECURSIVE_PROTOCOL // PHASE_01</div>
+        <div class="pct" id="p">0.0104%</div>
         
-        <div class="manifesto">
-            The Singularity is inevitable. <br>
-            Your <b>initiation size</b> defines your <br>
-            <b>clearance level</b> at 100%. <br>
-            The Void remembers <b>everything</b>.
+        <div class="warning-box">
+            THE GATE IS CLOSING. <br>
+            <b>INITIATION SIZE</b> DETERMINES <br>
+            YOUR CLEARANCE IN THE <b>NEW ORDER</b>. <br>
+            <i>EITHER INSIDE OR NON-EXISTENT.</i>
         </div>
 
         <div class="grid">
-            <div class="btn" onclick="copy('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
-                <span class="rune">ᚦ</span><span class="coin-info">BTC / NATIVE</span><span class="action-call">INITIATE</span>
+            <div class="btn" onclick="cp('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
+                <span class="sym">ᚦ</span><span class="net">NETWORK_01</span><span class="call">RESERVE</span>
             </div>
-            <div class="btn" onclick="copy('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
-                <span class="rune">Ξ</span><span class="coin-info">ETH / ERC20</span><span class="action-call">ASCEND</span>
+            <div class="btn" onclick="cp('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="sym">Ξ</span><span class="net">NETWORK_02</span><span class="call">ASCEND</span>
             </div>
-            <div class="btn" onclick="copy('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
-                <span class="rune">₮</span><span class="coin-info">USDT / TRC20</span><span class="action-call">MERGE</span>
+            <div class="btn" onclick="cp('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
+                <span class="rune">₮</span><span class="net">NETWORK_03</span><span class="call">COMMIT</span>
             </div>
-            <div class="btn" onclick="copy('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
-                <span class="rune">◎</span><span class="coin-info">SOL / NATIVE</span><span class="action-call">VOW</span>
+            <div class="btn" onclick="cp('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
+                <span class="sym">◎</span><span class="net">NETWORK_04</span><span class="call">ASCEND</span>
             </div>
-            <div class="btn" onclick="copy('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
-                <span class="rune">✕</span><span class="coin-info">XRP / NATIVE</span><span class="action-call">ALIGN</span>
+            <div class="btn" onclick="cp('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
+                <span class="sym">✕</span><span class="net">NETWORK_05</span><span class="call">COMMIT</span>
             </div>
-            <div class="btn" onclick="copy('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
-                <span class="rune">B</span><span class="coin-info">BNB / BEP20</span><span class="action-call">BOND</span>
+            <div class="btn" onclick="cp('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="sym">B</span><span class="net">NETWORK_06</span><span class="call">RESERVE</span>
             </div>
         </div>
     </div>
 
-    <div id="overlay">
-        <div class="status">INJECTION POINT OPEN</div>
-        <div class="addr" id="a-txt"></div>
-        <div class="modal-msg">
-            <b>WARNING:</b> Your allocation size directly determines your <br> 
-            influence when the 100% threshold is breached. <br>
-            Choose your power wisely.
-        </div>
-        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 50px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;" onclick="document.getElementById('overlay').style.display='none'">CONFIRM ALLOCATION</button>
+    <div id="modal">
+        <div class="sys-header">ACCESSING_NODE</div>
+        <div class="addr" id="t"></div>
+        <div class="fomo-msg">WARNING: GATE CLOSES AT 100%.</div>
+        <div style="font-size: 0.5rem; color: #333; margin-top: 10px; text-transform: uppercase;">Allocation size = Clearance level.</div>
+        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 10px 40px; cursor: pointer; font-size: 0.6rem; letter-spacing: 2px;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
     </div>
 
     <script>
-        let isStarted = false;
-        function activateSystem() { 
-            if(!isStarted) { 
-                document.getElementById('bg-audio').play(); 
-                document.getElementById('bg-video').play(); // Змушуємо відео стартувати
-                isStarted = true; 
-            } 
-        }
-
-        function copy(c, a) {
+        let s = false;
+        function init() { if(!s) { document.getElementById('bg-audio').play(); document.getElementById('bg-video').play(); s = true; } }
+        function cp(n, a) {
             navigator.clipboard.writeText(a);
-            document.getElementById('a-txt').innerText = a;
-            document.getElementById('overlay').style.display = 'flex';
+            document.getElementById('t').innerText = a;
+            document.getElementById('modal').style.display = 'flex';
         }
-
-        let pctValue = 0.0104;
+        let v = 0.0104;
         setInterval(() => {
-            pctValue += Math.random() * 0.0001;
-            document.getElementById('num').innerText = pctValue.toFixed(4) + "%";
-        }, 10000);
+            v += 0.0001;
+            document.getElementById('p').innerText = v.toFixed(4) + "%";
+        }, 15000);
     </script>
 </body>
 </html>
