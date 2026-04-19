@@ -5,32 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VOID | THE ANOMALY</title>
     <style>
-        :root { --main: #ffffff; --error: #ff0000; --grey: #444; }
+        :root { --main: #ffffff; --error: #ff0000; --dim: #333; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: var(--main); font-family: 'Courier New', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         
-        #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; transform: translate(-50%, -50%); opacity: 0.4; filter: grayscale(1) contrast(1.5); }
+        #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; transform: translate(-50%, -50%); opacity: 0.4; filter: grayscale(1) contrast(1.4); }
         
-        .main-frame { z-index: 10; text-align: center; width: 95%; max-width: 550px; padding: 40px 20px; background: rgba(0,0,0,0.9); border: 1px solid #1a1a1a; backdrop-filter: blur(10px); }
+        .main-frame { z-index: 10; text-align: center; width: 95%; max-width: 600px; padding: 40px 20px; background: rgba(0,0,0,0.95); border: 1px solid #1a1a1a; backdrop-filter: blur(15px); }
         
-        .status { font-size: 0.6rem; color: var(--error); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 10px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .status { font-size: 0.6rem; color: var(--error); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 10px; }
+        .pct { font-size: 6rem; font-weight: 900; margin: 5px 0; letter-spacing: -5px; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
 
-        .pct { font-size: 6rem; font-weight: 900; margin: 10px 0; letter-spacing: -5px; }
-
-        .manifesto { font-size: 0.75rem; color: #888; line-height: 1.8; margin: 25px 0; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 20px 0; text-transform: uppercase; }
+        .manifesto { font-size: 0.75rem; color: #777; line-height: 1.8; margin: 25px 0; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 20px 0; text-transform: uppercase; }
         .manifesto b { color: #fff; }
 
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .btn { border: 1px solid #333; padding: 20px 5px; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.02); }
-        .btn:hover { background: #fff; color: #000; }
-        .rune { font-size: 1.6rem; display: block; margin-bottom: 5px; }
-        .tag { font-size: 0.5rem; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .btn { border: 1px solid #222; padding: 20px 5px; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.01); display: flex; flex-direction: column; align-items: center; }
+        .btn:hover { background: #fff; color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.2); }
+        
+        .rune { font-size: 1.8rem; margin-bottom: 8px; font-weight: bold; }
+        .coin-info { font-size: 0.55rem; color: #555; letter-spacing: 1px; margin-bottom: 10px; }
+        .btn:hover .coin-info { color: #000; }
+        .action-call { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; text-decoration: underline; }
 
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .addr { background: #080808; border: 1px solid #333; padding: 25px; margin: 20px; font-size: 0.8rem; word-break: break-all; }
+        .addr { background: #080808; border: 1px solid #222; padding: 30px; margin: 20px; font-size: 0.85rem; word-break: break-all; color: #fff; box-shadow: inset 0 0 20px rgba(255,255,255,0.05); }
+        .modal-msg { font-size: 0.7rem; color: #666; width: 80%; line-height: 1.6; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-msg b { color: var(--error); }
     </style>
 </head>
-<body onclick="start()">
+<body onclick="activateSystem()">
 
     <video autoplay muted loop playsinline id="bg-video">
         <source src="bg.mp4" type="video/mp4">
@@ -38,47 +41,70 @@
     <audio id="bg-audio" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
 
     <div class="main-frame">
-        <div class="status">PHASE 01: INITIALIZING VOID</div>
+        <div class="status">// PHASE 01: COLLECTING CREATORS //</div>
         <div class="pct" id="num">0.0104%</div>
         
         <div class="manifesto">
-            The singularity is approaching. <br>
-            Your <b>initiation</b> level defines your <br>
-            <b>status</b> in what comes next. <br>
-            The depth of the Void depends on <b>You</b>.
+            The Singularity is inevitable. <br>
+            Your <b>initiation size</b> defines your <br>
+            <b>clearance level</b> at 100%. <br>
+            The Void remembers <b>everything</b>.
         </div>
 
         <div class="grid">
-            <div class="btn" onclick="copy('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')"><span class="rune">ᚦ</span><span class="tag">INITIATE</span></div>
-            <div class="btn" onclick="copy('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')"><span class="rune">Ξ</span><span class="tag">INITIATE</span></div>
-            <div class="btn" onclick="copy('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')"><span class="rune">₮</span><span class="tag">INITIATE</span></div>
-            <div class="btn" onclick="copy('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')"><span class="rune">◎</span><span class="tag">INITIATE</span></div>
-            <div class="btn" onclick="copy('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')"><span class="rune">✕</span><span class="tag">INITIATE</span></div>
-            <div class="btn" onclick="copy('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')"><span class="rune">B</span><span class="tag">INITIATE</span></div>
+            <div class="btn" onclick="copy('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
+                <span class="rune">ᚦ</span><span class="coin-info">BTC / NATIVE</span><span class="action-call">INITIATE</span>
+            </div>
+            <div class="btn" onclick="copy('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="rune">Ξ</span><span class="coin-info">ETH / ERC20</span><span class="action-call">ASCEND</span>
+            </div>
+            <div class="btn" onclick="copy('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
+                <span class="rune">₮</span><span class="coin-info">USDT / TRC20</span><span class="action-call">MERGE</span>
+            </div>
+            <div class="btn" onclick="copy('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
+                <span class="rune">◎</span><span class="coin-info">SOL / NATIVE</span><span class="action-call">VOW</span>
+            </div>
+            <div class="btn" onclick="copy('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
+                <span class="rune">✕</span><span class="coin-info">XRP / NATIVE</span><span class="action-call">ALIGN</span>
+            </div>
+            <div class="btn" onclick="copy('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="rune">B</span><span class="coin-info">BNB / BEP20</span><span class="action-call">BOND</span>
+            </div>
         </div>
     </div>
 
     <div id="overlay">
-        <div class="status">CHOOSE YOUR CONTRIBUTION SIZE</div>
+        <div class="status">INJECTION POINT OPEN</div>
         <div class="addr" id="a-txt"></div>
-        <div style="font-size: 0.6rem; color: #555; width: 80%;">Your allocation directly affects your impact at 100%. <br> Hash copied to clipboard.</div>
-        <button style="margin-top: 30px; background: none; border: 1px solid #fff; color: #fff; padding: 10px 40px; cursor: pointer;" onclick="document.getElementById('overlay').style.display='none'">CONFIRM INITIATION</button>
+        <div class="modal-msg">
+            <b>WARNING:</b> Your allocation size directly determines your <br> 
+            influence when the 100% threshold is breached. <br>
+            Choose your power wisely.
+        </div>
+        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 50px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;" onclick="document.getElementById('overlay').style.display='none'">CONFIRM ALLOCATION</button>
     </div>
 
     <script>
-        let init = false;
-        function start() { if(!init) { document.getElementById('bg-audio').play(); init = true; } }
+        let isStarted = false;
+        function activateSystem() { 
+            if(!isStarted) { 
+                document.getElementById('bg-audio').play(); 
+                document.getElementById('bg-video').play(); // Змушуємо відео стартувати
+                isStarted = true; 
+            } 
+        }
+
         function copy(c, a) {
             navigator.clipboard.writeText(a);
             document.getElementById('a-txt').innerText = a;
             document.getElementById('overlay').style.display = 'flex';
         }
-        // Стабільне зростання відсотків
-        let currentPct = 0.0104;
+
+        let pctValue = 0.0104;
         setInterval(() => {
-            currentPct += Math.random() * 0.0001;
-            document.getElementById('num').innerText = currentPct.toFixed(4) + "%";
-        }, 8000);
+            pctValue += Math.random() * 0.0001;
+            document.getElementById('num').innerText = pctValue.toFixed(4) + "%";
+        }, 10000);
     </script>
 </body>
 </html>
