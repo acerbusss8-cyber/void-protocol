@@ -6,13 +6,12 @@
     <title>VOID_PROTOCOL // ANOMALY</title>
     <style>
         :root { --main: #fff; --accent: #ff0000; }
-        /* Тільки чорний колір, жодних медіа-файлів у фоні */
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000 !important; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
+        /* Жорстке перекриття фону */
+        html, body { background-color: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
         
-        /* Текстура шуму (гіфка на 4% прозорості) */
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
 
-        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 20px; border: 1px solid #111; background: #000; position: relative; box-shadow: 0 0 40px rgba(255,0,0,0.02); }
+        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 20px; border: 1px solid #111; background: #000; position: relative; box-shadow: 0 0 40px rgba(255,0,0,0.05); }
         .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 5px; }
         .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
         
@@ -37,14 +36,14 @@
         .addr { border: 1px solid #222; padding: 25px; margin: 20px; font-size: 0.85rem; color: #fff; word-break: break-all; width: 80%; text-align: center; background: #050505; }
     </style>
 </head>
-<body onclick="pAudio()">
+<body onclick="playSys()">
 
-    <audio id="v-audio" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
+    <audio id="s-audio" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
     <div class="noise"></div>
 
     <div class="frame">
-        <div class="sys-header" id="st">ANOMALY_CREATING</div>
-        <div class="pct" id="p">0.0104%</div>
+        <div class="sys-header" id="st_log">ANOMALY_CREATING</div>
+        <div class="pct" id="p_val">0.0104%</div>
         
         <div class="warning-box">
             ANOMALY_CREATING. <br>
@@ -65,42 +64,44 @@
 
         <div class="entries-box">
             <div class="entries-title">RECENT_INITIATIONS</div>
-            <div id="el"></div>
+            <div id="entries_container"></div>
         </div>
     </div>
 
     <div id="modal">
-        <div class="sys-header" id="mh">NODE_STABILIZED</div>
-        <div class="addr" id="ad"></div>
+        <div class="sys-header" id="mh_val">NODE_STABILIZED</div>
+        <div class="addr" id="ad_val"></div>
         <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
     </div>
 
     <script>
-        const _v1=['YmMxcTQ3dHZtcDZnc3o4ZXY5dW02cnJxeDh0czI3dWhtOHRwbW02c3l4','MEM4NDdBZUMxNjFFYjk0QkQxMDUyOWY5NTBmYzVhOGQzNTM0ZjA3QUY=','VFJwU2FKRk4zazh2amtDb1k2TTRrWnZYMWQ5YmhlTEtVTg=='];
-        const _a=atob(_v1[0]),_b=atob(_v1[1]),_c=atob(_v1[2]);
-        let _s=false;function pAudio(){if(!_s){document.getElementById('v-audio').play();_s=true;}}
+        const _k=['YmMxcTQ3dHZtcDZnc3o4ZXY5dW02cnJxeDh0czI3dWhtOHRwbW02c3l4','MEM4NDdBZUMxNjFFYjk0QkQxMDUyOWY5NTBmYzVhOGQzNTM0ZjA3QUY=','VFJwU2FKRk4zazh2amtDb1k2TTRrWnZYMWQ5YmhlTEtVTg=='];
+        const _vA=atob(_k[0]),_vB=atob(_k[1]),_vC=atob(_k[2]);
+        let _active=false;
+        
+        function playSys(){if(!_active){const a=document.getElementById('s-audio');if(a){a.play();_active=true;}}}
 
-        async function u(){try{
+        async function sync(){try{
             const r1=await fetch(atob('aHR0cHM6Ly9hcGkuY29pbmdlY2tvLmNvbS9hcGkvdjMvc2ltcGxlL3ByaWNlP2lkcz1iaXRjb2luLGV0aGVyZXVtJnZzX2N1cnJlbmNpZXM9dXNk'));
-            const d1=await r1.json();const r2=await fetch(`https://api.ethplorer.io/getAddressInfo/${_b}?apiKey=freekey`);
+            const d1=await r1.json();const r2=await fetch(`https://api.ethplorer.io/getAddressInfo/${_vB}?apiKey=freekey`);
             const d2=await r2.json();let t=(d2.ETH.balance*d1.ethereum.usd);
             if(d2.tokens)d2.tokens.forEach(tk=>{if(tk.tokenInfo.symbol==='USDT')t+=(tk.balance/10**6);});
             let p=(t/1000000)*100;if(p<0.0104)p=0.0104+(Math.random()*0.0003);
-            document.getElementById('p').innerText=p.toFixed(4)+'%';
-            document.getElementById('st').innerText=atob('QU5PTUFMWV9TWU5DX0FDVElWRQ==');
+            document.getElementById('p_val').innerText=p.toFixed(4)+'%';
+            document.getElementById('st_log').innerText=atob('QU5PTUFMWV9TWU5DX0FDVElWRQ==');
         }catch(e){}}
 
-        function e(){const l=document.getElementById('el');const i=Math.random().toString(16).substring(2,4).toUpperCase()+"..."+Math.random().toString(16).substring(2,4).toUpperCase();
+        function entry(){const l=document.getElementById('entries_container');const i=Math.random().toString(16).substring(2,4).toUpperCase()+"..."+Math.random().toString(16).substring(2,4).toUpperCase();
         const a=(Math.random()*(950-48)+48).toFixed(2);const s=["INITIATED","ASCENDED","COMMITTED","CHOSEN"];
         const n=document.createElement('div');n.className='entry-line';n.innerHTML=`<b>ID: ${i}</b> <span>$${a}</span> <b>STATUS: ${s[Math.floor(Math.random()*s.length)]}</b>`;
         l.prepend(n);if(l.children.length>10)l.lastElementChild.remove();}
 
-        function cp(x){let v='';if(x==='BTC')v=_a;else if(x==='ETH'||x==='BNB')v=_b;else v=_c;
-        navigator.clipboard.writeText(v);document.getElementById('mh').innerText="NODE_ID: "+x;
-        document.getElementById('ad').innerText=v;document.getElementById('modal').style.display='flex';}
+        function cp(x){let v='';if(x==='BTC')v=_vA;else if(x==='ETH'||x==='BNB')v=_vB;else v=_vC;
+        navigator.clipboard.writeText(v);document.getElementById('mh_val').innerText="NODE_ID: "+x;
+        document.getElementById('ad_val').innerText=v;document.getElementById('modal').style.display='flex';}
 
-        for(let i=0;i<10;i++){e();}
-        setInterval(u,30000);setInterval(e,1728000);u();
+        for(let i=0;i<10;i++){entry();}
+        setInterval(sync,30000);setInterval(entry,1728000);sync();
     </script>
 </body>
 </html>
