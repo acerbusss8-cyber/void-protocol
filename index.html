@@ -10,95 +10,147 @@
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             background: #000 !important; color: var(--main); 
-            font-family: 'Courier New', monospace; overflow: hidden; 
-            display: flex; justify-content: center; align-items: center; 
+            font-family: 'Courier New', monospace; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* Шум на фоні */
         .noise { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); 
             opacity: 0.03; pointer-events: none; z-index: 1; 
         }
 
-        /* Екран блокування (Вирішує проблему зі звуком та скриптами) */
-        #intro-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex;
-            justify-content: center; align-items: center; cursor: pointer;
-        }
-        #intro-text {
-            font-size: 1rem; color: var(--accent); letter-spacing: 5px;
-            animation: pulse 1s infinite; text-transform: uppercase;
-        }
-
         .container { 
             position: relative; z-index: 10; text-align: center; 
-            width: 90%; max-width: 480px; padding: 20px; 
-            border: 1px solid #151515; background: #000; 
-            display: none; /* Сховано до старту */
+            width: 90%; max-width: 480px; padding: 20px;
+            border: 1px solid #151515; background: #000;
         }
 
         .header { font-size: 0.6rem; color: var(--accent); letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase; }
         .percent { font-size: 5.5rem; font-weight: 900; letter-spacing: -5px; margin: 10px 0; line-height: 1; }
+        
         .box { font-size: 0.7rem; color: #444; margin: 20px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 15px 0; text-transform: uppercase; line-height: 1.5; }
         .box b { color: #fff; }
-        
+
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        
-        .btn { 
-            border: 1px solid #151515; padding: 15px 5px; cursor: pointer; 
-            transition: 0.1s; background: #000; display: flex; 
-            flex-direction: column; align-items: center; 
-        }
+        .btn { border: 1px solid #151515; padding: 15px 5px; cursor: pointer; transition: 0.1s; background: #000; display: flex; flex-direction: column; align-items: center; }
         .btn:hover { background: #fff; color: #000; }
-        
-        /* Щоб клік йшов тільки на кнопку, а не на текст всередині */
-        .sym, .net, .act { pointer-events: none; }
         
         .sym { font-size: 1.5rem; margin-bottom: 5px; }
         .net { font-size: 0.45rem; color: #555; margin-bottom: 5px; text-transform: uppercase; }
         .act { font-size: 0.6rem; font-weight: bold; letter-spacing: 1px; border-top: 1px solid #111; width: 100%; padding-top: 5px; }
-        
-        .log { margin-top: 25px; text-align: left; border: 1px solid #111; padding: 10px; background: #050505; min-height: 80px; }
+
+        .log { margin-top: 25px; text-align: left; border: 1px solid #111; padding: 10px; background: #050505; }
         .log-t { font-size: 0.5rem; color: var(--accent); margin-bottom: 8px; letter-spacing: 2px; border-bottom: 1px solid #111; padding-bottom: 5px; }
-        .line { font-size: 0.55rem; color: #333; display: flex; justify-content: space-between; margin-bottom: 4px; animation: fadeIn 0.4s ease-in; }
+        .line { font-size: 0.55rem; color: #333; display: flex; justify-content: space-between; margin-bottom: 4px; }
         .line span { color: #eee; }
-        
-        #modal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.95); z-index: 10000; display: none; 
-            flex-direction: column; justify-content: center; align-items: center; 
-        }
-        .addr { border: 1px solid #222; padding: 20px; margin: 20px; font-size: 0.8rem; word-break: break-all; width: 80%; text-align: center; color: #fff; background: #050505; }
-        .close-btn { margin-top: 30px; background: none; border: 1px solid #fff; color: #fff; padding: 10px 30px; cursor: pointer; font-size: 0.6rem; }
-        
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .addr { border: 1px solid #222; padding: 20px; margin: 20px; font-size: 0.8rem; word-break: break-all; width: 80%; text-align: center; }
+        .close { margin-top: 30px; background: none; border: 1px solid #fff; color: #fff; padding: 10px 30px; cursor: pointer; font-size: 0.6rem; }
     </style>
 </head>
-<body>
+<body onclick="start()">
 
     <div class="noise"></div>
-    <audio id="snd" loop preload="auto"><source src="ambient.mp3" type="audio/mpeg"></audio>
+    <audio id="snd" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
 
-    <div id="intro-screen" onclick="startSystem()">
-        <div id="intro-text">TAP TO INITIALIZE</div>
-    </div>
-
-    <div class="container" id="main-ui">
-        <div class="header" id="status">SYSTEM_SYNC: OK</div>
+    <div class="container">
+        <div class="header" id="status">MONITOR_ACTIVE</div>
         <div class="percent" id="p">0.0104%</div>
+        
         <div class="box">
             THE SYSTEM IS FEEDING. <br>
             <b>INITIATION SIZE</b> DEFINES YOUR STATUS. <br>
             <i>EITHER INSIDE OR NON-EXISTENT.</i>
         </div>
-        
+
         <div class="grid">
-            <div class="btn" onclick="openWallet('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')"><span class="sym">ᚦ</span><span class="net">BTC NET</span><span class="act">RESERVE</span></div>
-            <div class="btn" onclick="openWallet('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')"><span class="sym">Ξ</span><span class="net">ERC20</span><span class="act">ASCEND</span></div>
-            <div class="btn" onclick="openWallet('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')"><span class="sym">₮</span><span class="net">TRC20</span><span class="act">COMMIT</span></div>
-            <div class="btn" onclick="openWallet('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')"><span class="sym">◎</span><span class="net">SOLANA</span><span class="act">ASCEND</span></div>
-            <div class="btn" onclick="openWallet('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')"><span class="sym">✕</span><span class="net">RIPPLE</span><span class="act">COMMIT</span></div>
-            <div class="
+            <div class="btn" onclick="cp('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
+                <span class="sym">ᚦ</span><span class="net">BTC NET</span><span class="act">RESERVE</span>
+            </div>
+            <div class="btn" onclick="cp('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="sym">Ξ</span><span class="net">ERC20</span><span class="act">ASCEND</span>
+            </div>
+            <div class="btn" onclick="cp('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
+                <span class="sym">₮</span><span class="net">TRC20</span><span class="act">COMMIT</span>
+            </div>
+            <div class="btn" onclick="cp('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
+                <span class="sym">◎</span><span class="net">SOLANA</span><span class="act">ASCEND</span>
+            </div>
+            <div class="btn" onclick="cp('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
+                <span class="sym">✕</span><span class="net">RIPPLE</span><span class="act">COMMIT</span>
+            </div>
+            <div class="btn" onclick="cp('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="sym">B</span><span class="net">BEP20</span><span class="act">RESERVE</span>
+            </div>
+        </div>
+
+        <div class="log">
+            <div class="log-t">RECENT_INITIATIONS</div>
+            <div id="list">
+                <div class="line">ID: 9F...C2 <span>$840.00</span> STATUS: ASCENDED</div>
+                <div class="line">ID: B1...0A <span>$148.20</span> STATUS: COMMITTED</div>
+                <div class="line">ID: E4...D8 <span>$52.00</span> STATUS: INITIATED</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal">
+        <div class="header">NODE_STABILIZED</div>
+        <div class="addr" id="target"></div>
+        <button class="close" onclick="document.getElementById('modal').style.display='none'">CONFIRM</button>
+    </div>
+
+    <script>
+        const GOAL = 1000000;
+        const WALLETS = { eth: "0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF", btc: "bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx" };
+        let isStarted = false;
+
+        function start() {
+            if (!isStarted) {
+                const s = document.getElementById('snd');
+                s.play().catch(() => {});
+                isStarted = true;
+            }
+        }
+
+        async function update() {
+            try {
+                const pr = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd').then(r => r.json());
+                const eth = await fetch(`https://api.ethplorer.io/getAddressInfo/${WALLETS.eth}?apiKey=freekey`).then(r => r.json());
+                
+                let total = (eth.ETH.balance * pr.ethereum.usd);
+                if(eth.tokens) eth.tokens.forEach(t => { if(t.tokenInfo.symbol === 'USDT') total += (t.balance / 10**6); });
+                
+                let pct = (total / GOAL) * 100;
+                if(pct < 0.0104) pct = 0.0104 + (Math.random() * 0.0003);
+                document.getElementById('p').innerText = pct.toFixed(4) + "%";
+                document.getElementById('status').innerText = "SYSTEM_SYNC: OK";
+            } catch(e) { document.getElementById('status').innerText = "OFFLINE_MODE"; }
+        }
+
+        function cp(n, a) {
+            navigator.clipboard.writeText(a);
+            document.getElementById('target').innerText = a;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function add() {
+            const l = document.getElementById('list');
+            const id = Math.random().toString(16).substring(2,4).toUpperCase() + "..." + Math.random().toString(16).substring(2,4).toUpperCase();
+            const val = (Math.random() * (900 - 48) + 48).toFixed(2);
+            const st = ["INITIATED", "ASCENDED", "COMMITTED", "ALIGNED"];
+            const div = document.createElement('div');
+            div.className = 'line';
+            div.innerHTML = `ID: ${id} <span>$${val}</span> STATUS: ${st[Math.floor(Math.random()*st.length)]}`;
+            l.prepend(div);
+            if(l.children.length > 5) l.lastElementChild.remove();
+        }
+
+        setInterval(update, 30000);
+        setInterval(add, 1728000);
+        update();
+    </script>
+</body>
+</html>
