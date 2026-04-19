@@ -3,48 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VOID_PROTOCOL // ERROR_000</title>
+    <title>VOID_PROTOCOL // NON_RECURSIVE</title>
     <style>
-        :root { --main: #fff; --accent: #ff0000; --dim: #222; }
+        :root { --main: #fff; --accent: #ff0000; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: var(--main); font-family: 'Courier New', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         
-        #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; transform: translate(-50%, -50%); opacity: 0.3; filter: grayscale(1) contrast(1.8) brightness(0.7); }
+        /* Video Fix */
+        #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; transform: translate(-50%, -50%); opacity: 0.35; filter: grayscale(1) contrast(1.8) brightness(0.6); }
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
 
-        .frame { z-index: 10; text-align: center; width: 90%; max-width: 500px; padding: 30px; border: 1px solid #111; background: rgba(0,0,0,0.95); position: relative; }
+        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 25px; border: 1px solid #111; background: rgba(0,0,0,0.96); position: relative; box-shadow: 0 0 60px #000; }
         
-        .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 6px; text-transform: uppercase; margin-bottom: 10px; animation: flicker 0.1s infinite alternate; }
-        @keyframes flicker { 0% { opacity: 0.8; } 100% { opacity: 1; } }
-
-        .pct { font-size: 7rem; font-weight: 900; margin: 0; letter-spacing: -8px; text-shadow: 0 0 30px rgba(255,255,255,0.1); }
+        .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 10px; }
+        .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
         
-        .warning-box { font-size: 0.7rem; color: #666; margin: 25px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0; line-height: 1.6; text-transform: uppercase; }
+        .warning-box { font-size: 0.7rem; color: #555; margin: 25px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0; line-height: 1.6; text-transform: uppercase; }
         .warning-box b { color: #fff; letter-spacing: 1px; }
 
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .btn { border: 1px solid #222; padding: 18px 0; cursor: pointer; transition: 0.15s; background: transparent; position: relative; overflow: hidden; }
+        /* Grid & Buttons */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
+        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; box-sizing: border-box; }
         .btn:hover { background: var(--main); color: #000; border-color: var(--main); }
         
-        .sym { font-size: 1.6rem; display: block; margin-bottom: 3px; }
-        .net { font-size: 0.45rem; color: #444; margin-bottom: 6px; display: block; letter-spacing: 1px; }
-        .call { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; }
+        .sym { font-size: 1.7rem; display: block; margin-bottom: 2px; line-height: 1; }
+        .info { font-size: 0.5rem; color: #444; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .btn:hover .info { color: #222; }
+        .call { font-size: 0.6rem; font-weight: 900; letter-spacing: 2px; border-top: 1px solid #111; padding-top: 5px; width: 80%; }
+        .btn:hover .call { border-color: #ddd; }
 
+        /* Modal */
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .addr { border: 1px solid #222; padding: 25px; margin: 20px; font-size: 0.8rem; color: #fff; word-break: break-all; width: 80%; background: #050505; }
+        .addr { border: 1px solid #222; padding: 25px; margin: 20px; font-size: 0.85rem; color: #fff; word-break: break-all; width: 80%; background: #050505; text-align: center; box-shadow: inset 0 0 20px rgba(255,255,255,0.05); }
         .fomo-msg { font-size: 0.6rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-top: 15px; }
-
-        .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.05); animation: scan 3s linear infinite; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
     </style>
 </head>
 <body onclick="init()">
 
-    <video autoplay muted loop playsinline id="bg-video"><source src="bg.mp4" type="video/mp4"></video>
+    <video autoplay muted loop playsinline id="bg-video" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+        <source src="bg.mp4" type="video/mp4">
+    </video>
     <audio id="bg-audio" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
     <div class="noise"></div>
 
     <div class="frame">
-        <div class="scanline"></div>
         <div class="sys-header">NON-RECURSIVE_PROTOCOL // PHASE_01</div>
         <div class="pct" id="p">0.0104%</div>
         
@@ -56,48 +57,60 @@
         </div>
 
         <div class="grid">
-            <div class="btn" onclick="cp('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
-                <span class="sym">ᚦ</span><span class="net">NETWORK_01</span><span class="call">RESERVE</span>
+            <div class="btn" onclick="cp('BTC (Native)', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
+                <span class="sym">ᚦ</span><span class="info">BTC NET</span><span class="call">RESERVE</span>
             </div>
-            <div class="btn" onclick="cp('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
-                <span class="sym">Ξ</span><span class="net">NETWORK_02</span><span class="call">ASCEND</span>
+            <div class="btn" onclick="cp('ETH (ERC20)', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">ASCEND</span>
             </div>
-            <div class="btn" onclick="cp('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
-                <span class="rune">₮</span><span class="net">NETWORK_03</span><span class="call">COMMIT</span>
+            <div class="btn" onclick="cp('USDT (TRC20)', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
+                <span class="sym">₮</span><span class="info">TRC20</span><span class="call">COMMIT</span>
             </div>
-            <div class="btn" onclick="cp('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
-                <span class="sym">◎</span><span class="net">NETWORK_04</span><span class="call">ASCEND</span>
+            <div class="btn" onclick="cp('SOL (Native)', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
+                <span class="sym">◎</span><span class="info">SOLANA</span><span class="call">ASCEND</span>
             </div>
-            <div class="btn" onclick="cp('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
-                <span class="sym">✕</span><span class="net">NETWORK_05</span><span class="call">COMMIT</span>
+            <div class="btn" onclick="cp('XRP (Native)', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
+                <span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">COMMIT</span>
             </div>
-            <div class="btn" onclick="cp('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
-                <span class="sym">B</span><span class="net">NETWORK_06</span><span class="call">RESERVE</span>
+            <div class="btn" onclick="cp('BNB (BEP20)', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="sym">B</span><span class="info">BEP20</span><span class="call">RESERVE</span>
             </div>
         </div>
     </div>
 
     <div id="modal">
-        <div class="sys-header">ACCESSING_NODE</div>
+        <div class="sys-header" id="h">ACCESSING_NODE</div>
         <div class="addr" id="t"></div>
-        <div class="fomo-msg">WARNING: GATE CLOSES AT 100%.</div>
-        <div style="font-size: 0.5rem; color: #333; margin-top: 10px; text-transform: uppercase;">Allocation size = Clearance level.</div>
-        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 10px 40px; cursor: pointer; font-size: 0.6rem; letter-spacing: 2px;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
+        <div class="fomo-msg">WARNING: WRONG NETWORK = DELETION.</div>
+        <div style="font-size: 0.5rem; color: #444; margin-top: 10px; text-transform: uppercase;">Size defines your status in the New Order.</div>
+        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem; letter-spacing: 2px;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
     </div>
 
     <script>
         let s = false;
-        function init() { if(!s) { document.getElementById('bg-audio').play(); document.getElementById('bg-video').play(); s = true; } }
-        function cp(n, a) {
-            navigator.clipboard.writeText(a);
-            document.getElementById('t').innerText = a;
+        const v = document.getElementById('bg-video');
+        const a = document.getElementById('bg-audio');
+
+        function init() { 
+            if(!s) { 
+                a.play(); 
+                v.play(); // Примусовий старт відео
+                s = true; 
+            } 
+        }
+
+        function cp(n, ad) {
+            navigator.clipboard.writeText(ad);
+            document.getElementById('h').innerText = "NODE: " + n;
+            document.getElementById('t').innerText = ad;
             document.getElementById('modal').style.display = 'flex';
         }
-        let v = 0.0104;
+
+        let pVal = 0.0104;
         setInterval(() => {
-            v += 0.0001;
-            document.getElementById('p').innerText = v.toFixed(4) + "%";
-        }, 15000);
+            pVal += 0.0001;
+            document.getElementById('p').innerText = pVal.toFixed(4) + "%";
+        }, 12000);
     </script>
 </body>
 </html>
