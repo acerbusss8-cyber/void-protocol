@@ -13,6 +13,7 @@
             align-items: center; justify-content: center;
         }
 
+        /* Відео-фон */
         #bg-video {
             position: fixed; top: 50%; left: 50%;
             min-width: 100%; min-height: 100%;
@@ -21,6 +22,7 @@
             opacity: 0.4; filter: grayscale(100%) contrast(120%);
         }
 
+        /* Лазерний сканер */
         .scanner {
             position: fixed; top: 0; left: 0; width: 100%; height: 2px;
             background: rgba(255,255,255,0.3); box-shadow: 0 0 15px #fff;
@@ -28,53 +30,77 @@
         }
         @keyframes scan { 0% { top: -5%; } 100% { top: 105%; } }
 
-        .container { z-index: 1; text-align: center; background: rgba(0,0,0,0.7); padding: 30px; border-radius: 10px; border: 1px solid #222; }
+        /* Контейнер */
+        .container { 
+            z-index: 1; text-align: center; 
+            background: rgba(0,0,0,0.8); padding: 30px; 
+            border-radius: 10px; border: 1px solid #222;
+            backdrop-filter: blur(5px);
+        }
 
         .percentage {
             font-size: 4rem; font-weight: bold; margin: 0;
-            letter-spacing: -2px; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            letter-spacing: -2px; color: #fff; 
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            animation: flicker 0.1s infinite alternate;
         }
+        @keyframes flicker { 0% { opacity: 0.9; } 100% { opacity: 1; } }
 
-        .creators-stat { font-size: 0.8rem; letter-spacing: 3px; color: #555; margin-bottom: 20px; }
+        .creators-stat { font-size: 0.8rem; letter-spacing: 3px; color: #555; margin-bottom: 20px; text-transform: uppercase; }
 
+        /* Сітка активів */
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
 
         .asset {
             border: 1px solid #333; padding: 15px; cursor: pointer;
-            transition: 0.3s; background: rgba(10,10,10,0.8);
+            transition: 0.3s; background: rgba(10,10,10,0.9);
         }
-        .asset:hover { border-color: #fff; background: #111; }
+        .asset:hover { border-color: #fff; background: #111; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
         .sigil { font-size: 1.8rem; margin-bottom: 5px; }
         .label { font-size: 0.6rem; color: #666; letter-spacing: 1px; }
 
-        /* Вікно з адресою */
+        /* Модальне вікно (адреса) */
         #modal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #fff; color: #000; padding: 20px; text-align: center;
-            display: none; z-index: 1000; border-radius: 5px; width: 80%; max-width: 400px;
+            background: #fff; color: #000; padding: 25px; text-align: center;
+            display: none; z-index: 1000; border-radius: 2px; width: 85%; max-width: 420px;
+            box-shadow: 0 0 50px rgba(255,255,255,0.2);
         }
-        #modal h3 { margin-top: 0; font-size: 0.9rem; text-transform: uppercase; }
-        #addr-text { word-break: break-all; font-weight: bold; font-size: 0.8rem; margin: 15px 0; display: block; background: #eee; padding: 10px; }
-        .close-btn { background: #000; color: #fff; border: none; padding: 10px 20px; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
+        #modal h3 { margin-top: 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; }
+        #addr-text { 
+            word-break: break-all; font-weight: bold; font-size: 0.85rem; 
+            margin: 15px 0; display: block; background: #f0f0f0; 
+            padding: 12px; border: 1px dashed #ccc;
+        }
+        .close-btn { 
+            background: #000; color: #fff; border: none; 
+            padding: 10px 25px; cursor: pointer; text-transform: uppercase; 
+            font-size: 0.7rem; letter-spacing: 1px; transition: 0.3s;
+        }
+        .close-btn:hover { background: #333; }
     </style>
 </head>
-<body>
+<body onclick="initAudio()">
 
     <video autoplay muted loop id="bg-video">
         <source src="bg.mp4" type="video/mp4">
     </video>
 
+    <audio id="bg-audio" loop>
+        <source src="ambient.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="scanner"></div>
 
     <div id="modal">
-        <h3 id="modal-title">INJECTION POINT</h3>
+        <h3 id="modal-title">PROTOCOL ESTABLISHED</h3>
         <span id="addr-text"></span>
-        <div style="font-size: 0.6rem; margin-bottom: 10px;">АДРЕСУ СКОПІЙОВАНО</div>
-        <button class="close-btn" onclick="closeModal()">ЗАКРИТИ</button>
+        <div style="font-size: 0.6rem; margin-bottom: 15px; color: #666;">ADDRESS COPIED TO BUFFER</div>
+        <button class="close-btn" onclick="closeModal()">BACK TO CONSOLE</button>
     </div>
 
     <div class="container">
-        <div class="percentage" id="percent-display">0.0001%</div>
+        <div class="percentage" id="percent-display">0.0100%</div>
         <div class="creators-stat" id="creators-display">ACTIVE CREATORS: 7</div>
 
         <div class="grid">
@@ -100,8 +126,23 @@
     </div>
 
     <script>
+        let audioInited = false;
+        const audio = document.getElementById('bg-audio');
+
+        // Функція ініціалізації звуку при першому кліку по сторінці
+        function initAudio() {
+            if (!audioInited) {
+                audio.volume = 0.4; // Гучність 40%
+                audio.play().catch(err => console.log("Audio waiting for interaction"));
+                audioInited = true;
+            }
+        }
+
         function showAddr(coin, addr) {
+            // Копіювання в буфер
             navigator.clipboard.writeText(addr);
+            
+            // Налаштування вікна
             document.getElementById('modal-title').innerText = "INJECTING " + coin;
             document.getElementById('addr-text').innerText = addr;
             document.getElementById('modal').style.display = 'block';
@@ -111,13 +152,12 @@
             document.getElementById('modal').style.display = 'none';
         }
 
-        // Авто-оновлення відсотків (симуляція для вайбу)
+        // Симуляція "дихання" відсотків для вайбу
         setInterval(() => {
             let current = parseFloat(document.getElementById('percent-display').innerText);
-            if(current < 0.001) {
-                document.getElementById('percent-display').innerText = (current + 0.00001).toFixed(4) + "%";
-            }
-        }, 10000);
+            let drift = (Math.random() * 0.0001).toFixed(4);
+            document.getElementById('percent-display').innerText = (0.0100 + parseFloat(drift)).toFixed(4) + "%";
+        }, 3000);
     </script>
 </body>
 </html>
