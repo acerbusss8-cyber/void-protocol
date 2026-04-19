@@ -1,119 +1,102 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VOID PROTOCOL | UNKNOWN SOURCE</title>
+    <title>VOID PROTOCOL | THE ANOMALY</title>
     <style>
-        :root { --main-color: #ffffff; --accent: #ff0000; --dim: #555; }
+        :root { --main: #ffffff; --error: #ff0000; --dark: #000; }
         
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; color: var(--main-color);
+            background-color: var(--dark); color: var(--main);
             font-family: 'Courier New', Courier, monospace;
             overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
+        /* Background Video */
         #bg-video {
             position: fixed; top: 50%; left: 50%;
             min-width: 100%; min-height: 100%;
             width: auto; height: auto; z-index: -1;
             transform: translateX(-50%) translateY(-50%);
-            opacity: 0.3; filter: grayscale(100%) brightness(0.7) contrast(150%);
+            opacity: 0.4; filter: grayscale(100%) contrast(150%) brightness(0.7);
         }
 
-        /* Глітч анімація */
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
+        /* Digital noise & scanlines */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.03));
+            background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 5;
         }
 
-        .main-frame {
-            z-index: 10; text-align: center;
-            width: 90%; max-width: 550px;
-            padding: 30px;
-            background: rgba(0,0,0,0.9);
-            border: 1px solid #1a1a1a;
-            position: relative;
+        .main-container {
+            z-index: 10; text-align: center; width: 95%; max-width: 550px;
+            padding: 30px; background: rgba(0,0,0,0.92);
+            border: 1px solid #1a1a1a; position: relative;
+            box-shadow: 0 0 80px rgba(0,0,0,1);
+            backdrop-filter: blur(8px);
         }
 
-        .system-id {
-            position: absolute; top: 10px; left: 10px;
-            font-size: 0.5rem; color: var(--dim); letter-spacing: 2px;
-        }
+        .sys-id { font-size: 0.5rem; color: #444; position: absolute; top: 10px; right: 15px; letter-spacing: 2px; }
 
-        .status-tag {
-            font-size: 0.6rem; color: var(--accent);
-            text-transform: uppercase; letter-spacing: 3px;
-            margin-bottom: 20px; animation: glitch 0.5s infinite;
+        .status-header {
+            font-size: 0.65rem; color: var(--error); letter-spacing: 5px;
+            text-transform: uppercase; margin-bottom: 15px;
+            animation: glitch-text 0.3s infinite alternate;
         }
+        @keyframes glitch-text { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 2px 0 var(--error); } }
 
-        .big-percent {
-            font-size: 5.5rem; font-weight: 900; margin: 5px 0;
-            letter-spacing: -4px; text-shadow: 0 0 15px rgba(255,255,255,0.3);
+        .big-number {
+            font-size: 5.5rem; font-weight: 900; margin: 10px 0;
+            letter-spacing: -4px; color: #fff;
+            text-shadow: 0 0 30px rgba(255,255,255,0.2);
         }
 
         .manifesto {
-            font-size: 0.7rem; color: #888; line-height: 1.8;
-            margin: 20px 0 30px 0; text-transform: uppercase;
-            letter-spacing: 1px; border-top: 1px solid #222;
-            border-bottom: 1px solid #222; padding: 15px 0;
+            font-size: 0.7rem; color: #777; line-height: 1.8;
+            margin: 25px 0; border-top: 1px solid #222; border-bottom: 1px solid #222;
+            padding: 15px 5px; text-transform: uppercase; letter-spacing: 1px;
         }
+        .manifesto b { color: #fff; border-bottom: 1px solid #444; }
 
-        .manifesto span { color: #fff; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-
-        .btn-asset {
-            border: 1px solid #222; padding: 15px 5px; cursor: pointer;
-            transition: all 0.3s ease; background: transparent;
+        .node-btn {
+            border: 1px solid #333; padding: 18px 5px; cursor: pointer;
+            transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1); background: rgba(255,255,255,0.02);
         }
-        .btn-asset:hover {
-            background: #fff; color: #000; border-color: #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
-        }
-        .btn-asset .icon { font-size: 1.4rem; display: block; margin-bottom: 5px; }
-        .btn-asset .name { font-size: 0.55rem; letter-spacing: 1px; font-weight: bold; }
+        .node-btn:hover { background: #fff; color: #000; border-color: #fff; box-shadow: 0 0 25px rgba(255,255,255,0.3); }
+        .node-btn .rune { font-size: 1.6rem; display: block; margin-bottom: 5px; }
+        .node-btn .tag { font-size: 0.55rem; letter-spacing: 1px; font-weight: bold; }
 
-        /* Логи внизу */
         .logs {
-            position: absolute; bottom: 10px; width: 100%;
-            font-size: 0.5rem; color: #333; text-align: center;
-            text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 25px; font-size: 0.5rem; color: #333;
+            text-transform: uppercase; letter-spacing: 2px;
         }
 
-        /* Модальне вікно */
-        #copy-modal {
+        #copy-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.98); display: none;
+            background: rgba(0,0,0,0.98); z-index: 1000; display: none;
             flex-direction: column; justify-content: center; align-items: center;
-            z-index: 1000;
+            text-align: center;
         }
-        .modal-content { text-align: center; width: 85%; }
-        .modal-addr {
-            background: #050505; border: 1px solid #222; padding: 25px;
-            word-break: break-all; font-size: 0.8rem; margin: 20px 0;
-            color: #fff; box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+        .modal-box { width: 80%; max-width: 400px; }
+        .addr-display {
+            background: #080808; border: 1px solid #333; padding: 25px;
+            margin: 20px 0; font-size: 0.85rem; color: #fff; word-break: break-all;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.05);
         }
         .close-btn {
-            border: 1px solid #fff; background: transparent; color: #fff;
-            padding: 12px 40px; cursor: pointer; text-transform: uppercase;
-            font-size: 0.65rem; letter-spacing: 2px;
+            background: transparent; border: 1px solid #fff; color: #fff;
+            padding: 12px 40px; cursor: pointer; font-size: 0.7rem; letter-spacing: 2px;
+            transition: 0.3s;
         }
         .close-btn:hover { background: #fff; color: #000; }
-
-        .flicker-scan {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(rgba(18, 16, 16, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(18, 16, 16, 0) 100%);
-            background-size: 100% 4px; z-index: 5; pointer-events: none;
-        }
     </style>
 </head>
-<body onclick="startAudio()">
+<body onclick="activate()">
 
     <video autoplay muted loop playsinline id="bg-video">
         <source src="bg.mp4" type="video/mp4">
@@ -123,93 +106,81 @@
         <source src="ambient.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="flicker-scan"></div>
+    <div class="scanlines"></div>
 
-    <div class="main-frame">
-        <div class="system-id">ID: 0x44_VOID_TERMINAL</div>
-        <div class="status-tag">System: Autonomous / Creators Only</div>
+    <div class="main-container">
+        <div class="sys-id">NODE_77_A</div>
+        <div class="status-header">SYSTEM: ACTIVE / UNSTOPPABLE</div>
         
-        <div class="big-percent" id="pct">0.0100%</div>
+        <div class="big-number" id="num">0.0100%</div>
         
         <div class="manifesto">
-            Спостерігачі залишаться за склом.<br>
-            <span>Творці</span> будують Аномалію.<br>
-            Фаза 01: Ініціалізація енергії.
+            We don't ask for permission. <br>
+            We define the <b>new order</b>. <br>
+            Phase 01: Gathering Creators. <br>
+            Your contribution is your <b>right to the future</b>.
         </div>
 
         <div class="grid">
-            <div class="btn-asset" onclick="copy('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
-                <span class="icon">ᚦ</span><span class="name">BTC</span>
+            <div class="node-btn" onclick="copy('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
+                <span class="rune">ᚦ</span><span class="tag">BTC</span>
             </div>
-            <div class="btn-asset" onclick="copy('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
-                <span class="icon">Ξ</span><span class="name">ETH</span>
+            <div class="node-btn" onclick="copy('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="rune">Ξ</span><span class="tag">ETH</span>
             </div>
-            <div class="btn-asset" onclick="copy('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
-                <span class="icon">₮</span><span class="name">USDT</span>
+            <div class="node-btn" onclick="copy('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
+                <span class="rune">₮</span><span class="tag">USDT</span>
             </div>
-            <div class="btn-asset" onclick="copy('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
-                <span class="icon">◎</span><span class="name">SOL</span>
+            <div class="node-btn" onclick="copy('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
+                <span class="rune">◎</span><span class="tag">SOL</span>
             </div>
-            <div class="btn-asset" onclick="copy('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
-                <span class="icon">✕</span><span class="name">XRP</span>
+            <div class="node-btn" onclick="copy('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
+                <span class="rune">✕</span><span class="tag">XRP</span>
             </div>
-            <div class="btn-asset" onclick="copy('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
-                <span class="icon">B</span><span class="name">BNB</span>
+            <div class="node-btn" onclick="copy('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+                <span class="rune">B</span><span class="tag">BNB</span>
             </div>
         </div>
 
-        <div style="margin-top: 25px; font-size: 0.55rem; color: #444; letter-spacing: 2px;">
-            ACTIVE CREATORS: <span style="color: #888;" id="creators">7</span> / UNKNOWN
-        </div>
+        <div class="logs" id="logs">INITIALIZING_VOID_STREAM...</div>
     </div>
 
-    <div class="logs" id="log-line">INITIALIZING VOID_PROTOCOL... CONNECTION SECURE...</div>
-
-    <div id="copy-modal">
-        <div class="modal-content">
-            <div class="status-tag" id="m-title">Accessing Injection Point</div>
-            <div class="modal-addr" id="m-addr"></div>
-            <div style="font-size: 0.6rem; color: #555; margin-bottom: 20px; letter-spacing: 2px;">HASH COPIED TO SYSTEM BUFFER</div>
-            <button class="close-btn" onclick="document.getElementById('copy-modal').style.display='none'">Disconnect</button>
+    <div id="copy-overlay">
+        <div class="modal-box">
+            <div class="status-header">INJECTION POINT OPEN</div>
+            <div class="addr-display" id="addr-display"></div>
+            <div style="font-size: 0.6rem; color: #444; margin-bottom: 25px; letter-spacing: 2px;">HASH_COPIED_TO_CLIPBOARD</div>
+            <button class="close-btn" onclick="document.getElementById('copy-overlay').style.display='none'">RETURN</button>
         </div>
     </div>
 
     <script>
-        let aInited = false;
-        function startAudio() {
-            if(!aInited) {
+        let started = false;
+        function activate() {
+            if(!started) {
                 const a = document.getElementById('bg-audio');
-                a.volume = 0.3;
+                a.volume = 0.4;
                 a.play();
-                aInited = true;
+                started = true;
             }
         }
 
-        function copy(name, addr) {
+        function copy(coin, addr) {
             navigator.clipboard.writeText(addr);
-            document.getElementById('m-title').innerText = "Target: " + name + " Node";
-            document.getElementById('m-addr').innerText = addr;
-            document.getElementById('copy-modal').style.display = 'flex';
+            document.getElementById('addr-display').innerText = addr;
+            document.getElementById('copy-overlay').style.display = 'flex';
         }
 
-        // Рандомний дрифт відсотків
         setInterval(() => {
-            let drift = (0.0100 + Math.random() * 0.0003).toFixed(4);
-            document.getElementById('pct').innerText = drift + "%";
+            let val = (0.0100 + Math.random() * 0.0006).toFixed(4);
+            document.getElementById('num').innerText = val + "%";
         }, 3000);
 
-        // Бігаючі логи
-        const logMsgs = [
-            "SCANNING NETWORK NODES...", 
-            "ENCRYPTING CREATOR ID...", 
-            "ANOMALY GROWTH DETECTED...", 
-            "FETCHING BLOCKCHAIN DATA...",
-            "STABILITY: 98.4%"
-        ];
-        let logIdx = 0;
+        const m = ["TRACING_NODES...", "ENCRYPTING_ID...", "VOID_CONNECTED", "STATUS_CRYPTIC"];
+        let i = 0;
         setInterval(() => {
-            document.getElementById('log-line').innerText = logMsgs[logIdx];
-            logIdx = (logIdx + 1) % logMsgs.length;
+            document.getElementById('logs').innerText = m[i];
+            i = (i + 1) % m.length;
         }, 4000);
     </script>
 </body>
