@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VOID_PROTOCOL // NON_RECURSIVE</title>
+    <title>VOID_PROTOCOL</title>
     <style>
         :root { --main: #fff; --accent: #ff0000; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: var(--main); font-family: 'Courier New', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; }
@@ -11,7 +11,7 @@
         #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; transform: translate(-50%, -50%); opacity: 0.35; filter: grayscale(1) contrast(1.8) brightness(0.6); }
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
 
-        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 25px; border: 1px solid #111; background: rgba(0,0,0,0.96); position: relative; box-shadow: 0 0 50px #000; }
+        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 25px; border: 1px solid #111; background: rgba(0,0,0,0.96); position: relative; box-shadow: 0 0 60px #000; }
         
         .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 10px; }
         .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
@@ -26,83 +26,106 @@
         .sym { font-size: 1.8rem; display: block; line-height: 1; margin-bottom: 4px; }
         .info { font-size: 0.5rem; color: #444; font-weight: bold; letter-spacing: 1px; margin-bottom: 8px; }
         .btn:hover .info { color: #222; }
-        .call { font-size: 0.6rem; font-weight: 900; letter-spacing: 2px; border-top: 1px solid #111; padding-top: 6px; width: 85%; text-align: center; }
-        .btn:hover .call { border-color: #ddd; }
+        .call { font-size: 0.6rem; font-weight: 900; letter-spacing: 2px; border-top: 1px solid #111; padding-top: 6px; width: 85%; }
 
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .addr { border: 1px solid #222; padding: 25px; margin: 20px; font-size: 0.85rem; color: #fff; word-break: break-all; width: 80%; background: #050505; text-align: center; }
-        .fomo-msg { font-size: 0.6rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-top: 15px; }
     </style>
 </head>
 <body onclick="init()">
 
-    <video autoplay muted loop playsinline id="bg-video">
-        <source src="bg.mp4" type="video/mp4">
-    </video>
+    <video autoplay muted loop playsinline id="bg-video"><source src="bg.mp4" type="video/mp4"></video>
     <audio id="bg-audio" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
     <div class="noise"></div>
 
     <div class="frame">
-        <div class="sys-header">NON-RECURSIVE_PROTOCOL // PHASE_01</div>
+        <div class="sys-header" id="status-line">ESTABLISHING_ENCRYPTED_LINK...</div>
         <div class="pct" id="p">0.0104%</div>
         
         <div class="warning-box">
-            THE GATE IS CLOSING. <br>
-            <b>INITIATION SIZE</b> DETERMINES <br>
-            YOUR STATUS IN THE <b>NEW ORDER</b>. <br>
-            <i>EITHER INSIDE OR NON-EXISTENT.</i>
+            THE SYSTEM IS FEEDING. <br>
+            <b>ACCESS GRANTED</b> ONLY TO THE CHOSEN. <br>
+            YOUR SACRIFICE DEFINES YOUR FUTURE. <br>
+            <i>DO NOT REMAIN OUTSIDE.</i>
         </div>
 
         <div class="grid">
-            <div class="btn" onclick="cp('BTC (Native)', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
+            <div class="btn" onclick="cp('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
                 <span class="sym">ᚦ</span><span class="info">BTC NET</span><span class="call">RESERVE</span>
             </div>
-            <div class="btn" onclick="cp('ETH (ERC20)', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+            <div class="btn" onclick="cp('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
                 <span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">ASCEND</span>
             </div>
-            <div class="btn" onclick="cp('USDT (TRC20)', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
+            <div class="btn" onclick="cp('USDT', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
                 <span class="sym">₮</span><span class="info">TRC20</span><span class="call">COMMIT</span>
             </div>
-            <div class="btn" onclick="cp('SOL (Native)', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
+            <div class="btn" onclick="cp('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
                 <span class="sym">◎</span><span class="info">SOLANA</span><span class="call">ASCEND</span>
             </div>
-            <div class="btn" onclick="cp('XRP (Native)', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
+            <div class="btn" onclick="cp('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
                 <span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">COMMIT</span>
             </div>
-            <div class="btn" onclick="cp('BNB (BEP20)', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
+            <div class="btn" onclick="cp('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
                 <span class="sym">B</span><span class="info">BEP20</span><span class="call">RESERVE</span>
             </div>
         </div>
     </div>
 
     <div id="modal">
-        <div class="sys-header" id="h">ACCESSING_NODE</div>
+        <div class="sys-header" id="h">NODE_STABILIZED</div>
         <div class="addr" id="t"></div>
-        <div class="fomo-msg">WARNING: WRONG NETWORK = PERMANENT DELETION.</div>
-        <div style="font-size: 0.5rem; color: #444; margin-top: 10px; text-transform: uppercase;">Your contribution size defines your future clearance.</div>
-        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem; letter-spacing: 2px;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
+        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
     </div>
 
     <script>
-        let s = false;
+        const GOAL = 1000000;
+        const ADDR = {
+            eth: "0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF",
+            btc: "bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx"
+        };
+
+        let started = false;
         function init() { 
-            if(!s) { 
+            if(!started) { 
                 document.getElementById('bg-audio').play(); 
                 document.getElementById('bg-video').play(); 
-                s = true; 
+                started = true; 
             } 
         }
+
+        async function update() {
+            try {
+                const pRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+                const prices = await pRes.json();
+
+                const ethRes = await fetch(`https://api.ethplorer.io/getAddressInfo/${ADDR.eth}?apiKey=freekey`);
+                const ethData = await ethRes.json();
+
+                let total = (ethData.ETH.balance * prices.ethereum.usd);
+                if(ethData.tokens) {
+                    ethData.tokens.forEach(t => { if(t.tokenInfo.symbol === 'USDT') total += (t.balance / 10**6); });
+                }
+
+                let pct = (total / GOAL) * 100;
+                // Стартова імітація для загадковості
+                if(pct < 0.0104) pct = 0.0104 + (Math.random() * 0.0003);
+
+                document.getElementById('p').innerText = pct.toFixed(4) + "%";
+                document.getElementById('status-line').innerText = "SYSTEM_SYNC: SUCCESSFUL";
+            } catch (e) {
+                console.log("Sub-routine: offline");
+            }
+        }
+
         function cp(n, ad) {
             navigator.clipboard.writeText(ad);
-            document.getElementById('h').innerText = "NODE: " + n;
+            document.getElementById('h').innerText = "NODE_ID: " + n;
             document.getElementById('t').innerText = ad;
             document.getElementById('modal').style.display = 'flex';
         }
-        let pVal = 0.0104;
-        setInterval(() => {
-            pVal += 0.0001;
-            document.getElementById('p').innerText = pVal.toFixed(4) + "%";
-        }, 15000);
+
+        setInterval(update, 30000);
+        update();
     </script>
 </body>
 </html>
