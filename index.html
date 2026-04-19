@@ -6,34 +6,39 @@
     <title>VOID_PROTOCOL</title>
     <style>
         :root { --main: #fff; --accent: #ff0000; }
-        /* Чистий чорний фон замість відео */
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: var(--main); font-family: 'Courier New', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         
-        /* Ефект шуму залишаємо для текстури */
+        /* Текстура шуму */
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
 
-        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 20px; border: 1px solid #111; background: rgba(0,0,0,0.98); position: relative; box-shadow: 0 0 40px rgba(255,0,0,0.02); }
+        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 25px; border: 1px solid #111; background: rgba(0,0,0,1); position: relative; box-shadow: 0 0 50px rgba(255,0,0,0.03); }
         
-        .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 5px; }
-        .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
+        .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; }
+        .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; animation: glitch 5s infinite; }
         
-        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0; line-height: 1.6; text-transform: uppercase; }
+        @keyframes glitch {
+            0% { opacity: 1; }
+            95% { opacity: 1; transform: scale(1); }
+            96% { opacity: 0.8; transform: scale(1.01); }
+            97% { opacity: 1; transform: scale(1); }
+        }
+
+        .warning-box { font-size: 0.7rem; color: #444; margin: 25px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0; line-height: 1.6; text-transform: uppercase; }
         .warning-box b { color: #fff; }
 
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .btn { border: 1px solid #222; padding: 12px 0; cursor: pointer; transition: 0.2s; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 105px; }
-        .btn:hover { background: var(--main); color: #000; border-color: var(--main); }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .btn { border: 1px solid #151515; padding: 15px 0; cursor: pointer; transition: 0.1s; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; }
+        .btn:hover { border-color: var(--main); background: var(--main); color: #000; }
         
-        .sym { font-size: 1.6rem; display: block; line-height: 1; margin-bottom: 3px; }
-        .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
-        .call { font-size: 0.55rem; font-weight: 900; letter-spacing: 2px; border-top: 1px solid #111; padding-top: 5px; width: 80%; }
+        .sym { font-size: 1.8rem; display: block; line-height: 1; margin-bottom: 5px; }
+        .info { font-size: 0.5rem; color: #444; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
+        .call { font-size: 0.6rem; font-weight: 900; letter-spacing: 2px; border-top: 1px solid #111; padding-top: 6px; width: 85%; }
 
-        .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; background: rgba(255,255,255,0.01); }
-        .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #111; padding-bottom: 5px; }
-        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; overflow: hidden; white-space: nowrap; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
-        .entry-line b { color: #888; }
-        .entry-line span { color: #fff; font-weight: bold; }
+        .entries-box { margin-top: 30px; text-align: left; border: 1px solid #111; padding: 15px; background: #020202; }
+        .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 4px; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #111; padding-bottom: 8px; }
+        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 6px; display: flex; justify-content: space-between; }
+        .entry-line b { color: #666; font-weight: normal; }
+        .entry-line span { color: #eee; font-weight: bold; }
 
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .addr { border: 1px solid #222; padding: 25px; margin: 20px; font-size: 0.85rem; color: #fff; word-break: break-all; width: 80%; text-align: center; background: #050505; }
@@ -45,7 +50,7 @@
     <div class="noise"></div>
 
     <div class="frame">
-        <div class="sys-header" id="status-line">ESTABLISHING_LINK...</div>
+        <div class="sys-header" id="status-line">ANOMALY_MONITOR_ACTIVE</div>
         <div class="pct" id="p">0.0104%</div>
         
         <div class="warning-box">
@@ -78,15 +83,15 @@
         <div class="entries-box">
             <div class="entries-title">RECENT_INITIATIONS</div>
             <div id="entries-list">
-                <div class="entry-line"><b>ID: 88...F2</b> <span>$420.00</span> <b>STATUS: ASCENDED</b></div>
-                <div class="entry-line"><b>ID: CC...E1</b> <span>$125.50</span> <b>STATUS: COMMITTED</b></div>
-                <div class="entry-line"><b>ID: 4A...9B</b> <span>$64.00</span> <b>STATUS: ALIGNED</b></div>
+                <div class="entry-line"><b>ID: 9F...C2</b> <span>$840.00</span> <b>STATUS: ASCENDED</b></div>
+                <div class="entry-line"><b>ID: B1...0A</b> <span>$148.20</span> <b>STATUS: COMMITTED</b></div>
+                <div class="entry-line"><b>ID: E4...D8</b> <span>$52.00</span> <b>STATUS: INITIATED</b></div>
             </div>
         </div>
     </div>
 
     <div id="modal">
-        <div class="sys-header" id="h">NODE_STABILIZED</div>
+        <div class="sys-header" id="h">STABILIZING_NODE</div>
         <div class="addr" id="t"></div>
         <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem;" onclick="document.getElementById('modal').style.display='none'">CONFIRM</button>
     </div>
@@ -111,21 +116,22 @@
                 let pct = (total / GOAL) * 100;
                 if(pct < 0.0104) pct = 0.0104 + (Math.random() * 0.0003);
                 document.getElementById('p').innerText = pct.toFixed(4) + "%";
-                document.getElementById('status-line').innerText = "SYSTEM_SYNC: SUCCESSFUL";
-            } catch (e) { console.log("Sync lag"); }
+            } catch (e) { console.log("Sub-routine: offline"); }
         }
 
         function addFakeEntry() {
             const list = document.getElementById('entries-list');
             const id = Math.random().toString(16).substring(2, 4).toUpperCase() + "..." + Math.random().toString(16).substring(2, 4).toUpperCase();
-            const randomAmount = (Math.random() * (950 - 48) + 48).toFixed(2);
+            const randomAmount = (Math.random() * (900 - 48) + 48).toFixed(2);
             const status = ["INITIATED", "ASCENDED", "COMMITTED", "ALIGNED"];
             
             const newLine = document.createElement('div');
             newLine.className = 'entry-line';
+            newLine.style.opacity = "0";
             newLine.innerHTML = `<b>ID: ${id}</b> <span>$${randomAmount}</span> <b>STATUS: ${status[Math.floor(Math.random()*status.length)]}</b>`;
             
             list.prepend(newLine);
+            setTimeout(() => newLine.style.opacity = "1", 100);
             if(list.children.length > 5) list.lastElementChild.remove();
         }
 
@@ -137,7 +143,7 @@
         }
 
         setInterval(update, 30000);
-        setInterval(addFakeEntry, 1728000); // 50 донатів на добу
+        setInterval(addFakeEntry, 1728000); // Рівно 50 учасників на добу
         update();
     </script>
 </body>
