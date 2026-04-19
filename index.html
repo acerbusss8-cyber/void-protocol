@@ -13,16 +13,14 @@
             align-items: center; justify-content: center;
         }
 
-        /* Відео-фон */
         #bg-video {
             position: fixed; top: 50%; left: 50%;
             min-width: 100%; min-height: 100%;
             width: auto; height: auto; z-index: -100;
             transform: translateX(-50%) translateY(-50%);
-            opacity: 0.6; filter: grayscale(100%) contrast(120%);
+            opacity: 0.4; filter: grayscale(100%) contrast(120%);
         }
 
-        /* Сканер */
         .scanner {
             position: fixed; top: 0; left: 0; width: 100%; height: 2px;
             background: rgba(255,255,255,0.3); box-shadow: 0 0 15px #fff;
@@ -30,48 +28,34 @@
         }
         @keyframes scan { 0% { top: -5%; } 100% { top: 105%; } }
 
-        /* Основний контент */
-        .container { z-index: 1; text-align: center; background: rgba(0,0,0,0.4); padding: 40px; border-radius: 20px; }
+        .container { z-index: 1; text-align: center; background: rgba(0,0,0,0.7); padding: 30px; border-radius: 10px; border: 1px solid #222; }
 
         .percentage {
-            font-size: 6rem; font-weight: bold; margin: 0;
-            letter-spacing: -3px; color: #fff; text-shadow: 0 0 30px rgba(255,255,255,0.5);
-            animation: pulse 3s infinite;
-        }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        .creators-stat {
-            font-size: 0.9rem; letter-spacing: 4px; color: #555;
-            margin-bottom: 30px; text-transform: uppercase;
+            font-size: 4rem; font-weight: bold; margin: 0;
+            letter-spacing: -2px; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.5);
         }
 
-        .manifesto {
-            max-width: 500px; font-size: 0.75rem; color: #888;
-            line-height: 1.6; margin-bottom: 40px; text-transform: uppercase;
-        }
+        .creators-stat { font-size: 0.8rem; letter-spacing: 3px; color: #555; margin-bottom: 20px; }
 
-        /* Сітка рун */
-        .grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-        }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
 
         .asset {
-            border: 1px solid #222; padding: 15px; cursor: pointer;
-            transition: 0.3s; background: rgba(0,0,0,0.6);
+            border: 1px solid #333; padding: 15px; cursor: pointer;
+            transition: 0.3s; background: rgba(10,10,10,0.8);
         }
-        .asset:hover {
-            border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2);
-            transform: translateY(-5px);
-        }
-        .sigil { font-size: 2.2rem; margin-bottom: 5px; }
-        .label { font-size: 0.6rem; color: #444; letter-spacing: 2px; }
-        .asset:hover .label { color: #fff; }
+        .asset:hover { border-color: #fff; background: #111; }
+        .sigil { font-size: 1.8rem; margin-bottom: 5px; }
+        .label { font-size: 0.6rem; color: #666; letter-spacing: 1px; }
 
-        /* Сповіщення */
-        #notify {
-            position: fixed; top: 20px; right: 20px; background: #fff; color: #000;
-            padding: 10px 20px; font-size: 0.7rem; display: none; z-index: 100;
+        /* Вікно з адресою */
+        #modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #fff; color: #000; padding: 20px; text-align: center;
+            display: none; z-index: 1000; border-radius: 5px; width: 80%; max-width: 400px;
         }
+        #modal h3 { margin-top: 0; font-size: 0.9rem; text-transform: uppercase; }
+        #addr-text { word-break: break-all; font-weight: bold; font-size: 0.8rem; margin: 15px 0; display: block; background: #eee; padding: 10px; }
+        .close-btn { background: #000; color: #fff; border: none; padding: 10px 20px; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
     </style>
 </head>
 <body>
@@ -81,89 +65,59 @@
     </video>
 
     <div class="scanner"></div>
-    <div id="notify">ARCHITECT STATUS: ASSIGNED</div>
+
+    <div id="modal">
+        <h3 id="modal-title">INJECTION POINT</h3>
+        <span id="addr-text"></span>
+        <div style="font-size: 0.6rem; margin-bottom: 10px;">АДРЕСУ СКОПІЙОВАНО</div>
+        <button class="close-btn" onclick="closeModal()">ЗАКРИТИ</button>
+    </div>
 
     <div class="container">
-        <div class="percentage" id="percent-display">0.0100%</div>
+        <div class="percentage" id="percent-display">0.0001%</div>
         <div class="creators-stat" id="creators-display">ACTIVE CREATORS: 7</div>
 
-        <div class="manifesto">
-            Observers stay behind the glass. Creators build the Anomaly.<br>
-            The transition to 100% is non-reversible. Build it.
-        </div>
-
         <div class="grid">
-            <div class="asset" onclick="inject('BTC', 'QUANTUM FOUNDATION')">
+            <div class="asset" onclick="showAddr('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">
                 <div class="sigil">ᚦ</div><div class="label">BTC / COLD</div>
             </div>
-            <div class="asset" onclick="inject('ETH', 'LOGIC LAYER')">
+            <div class="asset" onclick="showAddr('ETH', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
                 <div class="sigil">Ξ</div><div class="label">ETH / GAS</div>
             </div>
-            <div class="asset" onclick="inject('SOL', 'KINETIC PULSE')">
+            <div class="asset" onclick="showAddr('SOL', 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT')">
                 <div class="sigil">◎</div><div class="label">SOL / LIGHT</div>
             </div>
-            <div class="asset" onclick="inject('USDT', 'STABLE ANCHOR')">
+            <div class="asset" onclick="showAddr('USDT (TRC20)', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">
                 <div class="sigil">₮</div><div class="label">USDT / TRC20</div>
             </div>
-            <div class="asset" onclick="inject('XRP', 'RESONANCE BRIDGE')">
+            <div class="asset" onclick="showAddr('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">
                 <div class="sigil">✕</div><div class="label">XRP / RIPPLE</div>
             </div>
-            <div class="asset" onclick="inject('BNB', 'NODE NETWORK')">
+            <div class="asset" onclick="showAddr('BNB', '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF')">
                 <div class="sigil">B</div><div class="label">BNB / CHAIN</div>
             </div>
         </div>
     </div>
 
     <script>
-        const WALLETS = {
-            BTC: "bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx",
-            ETH: "0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF",
-            SOL: "HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT",
-            USDT: "TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN",
-            XRP: "r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8",
-            BNB: "0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF"
-        };
-
-        const TARGET = 1000000;
-
-        function inject(coin, layer) {
-            navigator.clipboard.writeText(WALLETS[coin]);
-            const n = document.getElementById('notify');
-            n.innerText = "INJECTING INTO " + layer;
-            n.style.display = 'block';
-            setTimeout(() => { n.style.display = 'none'; }, 2000);
+        function showAddr(coin, addr) {
+            navigator.clipboard.writeText(addr);
+            document.getElementById('modal-title').innerText = "INJECTING " + coin;
+            document.getElementById('addr-text').innerText = addr;
+            document.getElementById('modal').style.display = 'block';
         }
 
-        async function updateAnomaly() {
-            try {
-                // Отримуємо курси
-                const pRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,binancecoin,tether&vs_currencies=usd');
-                const p = await pRes.json();
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
 
-                let total = 0;
-                
-                // BTC Balance
-                const btc = await fetch(`https://api.blockcypher.com/v1/btc/main/addrs/${WALLETS.BTC}/balance`).then(r => r.json());
-                total += (btc.balance / 1e8) * p.bitcoin.usd;
-
-                // ETH Balance
-                const eth = await fetch(`https://api.blockcypher.com/v1/eth/main/addrs/${WALLETS.ETH}/balance`).then(r => r.json());
-                total += (eth.balance / 1e18) * p.ethereum.usd;
-
-                // Розрахунок
-                const percent = (total / TARGET) * 100;
-                const creators = Math.floor(total / 120) + 7;
-
-                document.getElementById('percent-display').innerText = percent.toFixed(4) + "%";
-                document.getElementById('creators-display').innerText = "ACTIVE CREATORS: " + creators;
-
-            } catch (e) {
-                console.log("Sync flicker...");
+        // Авто-оновлення відсотків (симуляція для вайбу)
+        setInterval(() => {
+            let current = parseFloat(document.getElementById('percent-display').innerText);
+            if(current < 0.001) {
+                document.getElementById('percent-display').innerText = (current + 0.00001).toFixed(4) + "%";
             }
-        }
-
-        setInterval(updateAnomaly, 60000);
-        updateAnomaly();
+        }, 10000);
     </script>
 </body>
 </html>
