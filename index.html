@@ -6,34 +6,33 @@
     <title>VOID_PROTOCOL</title>
     <style>
         :root { --main: #fff; --accent: #ff0000; }
+        /* Чистий чорний фон замість відео */
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: var(--main); font-family: 'Courier New', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         
-        /* Video Layer */
-        #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; transform: translate(-50%, -50%); opacity: 0.35; filter: grayscale(1) contrast(1.8) brightness(0.6); }
+        /* Ефект шуму залишаємо для текстури */
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
 
-        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 20px; border: 1px solid #111; background: rgba(0,0,0,0.96); position: relative; box-shadow: 0 0 60px #000; }
+        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 20px; border: 1px solid #111; background: rgba(0,0,0,0.98); position: relative; box-shadow: 0 0 40px rgba(255,0,0,0.02); }
         
         .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 5px; }
-        .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
+        .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.1); }
         
-        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 15px 0; line-height: 1.6; text-transform: uppercase; }
+        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0; line-height: 1.6; text-transform: uppercase; }
         .warning-box b { color: #fff; }
 
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .btn { border: 1px solid #222; padding: 12px 0; cursor: pointer; transition: 0.2s; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 105px; box-sizing: border-box; }
+        .btn { border: 1px solid #222; padding: 12px 0; cursor: pointer; transition: 0.2s; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 105px; }
         .btn:hover { background: var(--main); color: #000; border-color: var(--main); }
         
         .sym { font-size: 1.6rem; display: block; line-height: 1; margin-bottom: 3px; }
-        .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; letter-spacing: 1px; }
-        .btn:hover .info { color: #222; }
+        .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
         .call { font-size: 0.55rem; font-weight: 900; letter-spacing: 2px; border-top: 1px solid #111; padding-top: 5px; width: 80%; }
 
-        /* Recent Initiations Block */
         .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; background: rgba(255,255,255,0.01); }
         .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #111; padding-bottom: 5px; }
-        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; overflow: hidden; white-space: nowrap; }
-        .entry-line b { color: #666; }
+        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; overflow: hidden; white-space: nowrap; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+        .entry-line b { color: #888; }
         .entry-line span { color: #fff; font-weight: bold; }
 
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; }
@@ -42,19 +41,17 @@
 </head>
 <body onclick="init()">
 
-    <video autoplay muted loop playsinline id="bg-video"><source src="bg.mp4" type="video/mp4"></video>
     <audio id="bg-audio" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
     <div class="noise"></div>
 
     <div class="frame">
-        <div class="sys-header" id="status-line">ESTABLISHING_ENCRYPTED_LINK...</div>
+        <div class="sys-header" id="status-line">ESTABLISHING_LINK...</div>
         <div class="pct" id="p">0.0104%</div>
         
         <div class="warning-box">
             THE SYSTEM IS FEEDING. <br>
-            <b>ACCESS GRANTED</b> ONLY TO THE CHOSEN. <br>
-            YOUR SACRIFICE DEFINES YOUR FUTURE. <br>
-            <i>DO NOT REMAIN OUTSIDE.</i>
+            <b>INITIATION SIZE</b> DEFINES YOUR STATUS. <br>
+            <i>EITHER INSIDE OR NON-EXISTENT.</i>
         </div>
 
         <div class="grid">
@@ -82,8 +79,8 @@
             <div class="entries-title">RECENT_INITIATIONS</div>
             <div id="entries-list">
                 <div class="entry-line"><b>ID: 88...F2</b> <span>$420.00</span> <b>STATUS: ASCENDED</b></div>
-                <div class="entry-line"><b>ID: 14...A9</b> <span>$15.00</span> <b>STATUS: INITIATED</b></div>
                 <div class="entry-line"><b>ID: CC...E1</b> <span>$125.50</span> <b>STATUS: COMMITTED</b></div>
+                <div class="entry-line"><b>ID: 4A...9B</b> <span>$64.00</span> <b>STATUS: ALIGNED</b></div>
             </div>
         </div>
     </div>
@@ -91,24 +88,15 @@
     <div id="modal">
         <div class="sys-header" id="h">NODE_STABILIZED</div>
         <div class="addr" id="t"></div>
-        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem; letter-spacing: 2px;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
+        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem;" onclick="document.getElementById('modal').style.display='none'">CONFIRM</button>
     </div>
 
     <script>
         const GOAL = 1000000;
-        const ADDR = {
-            eth: "0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF",
-            btc: "bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx"
-        };
-
+        const ADDR = { eth: "0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF", btc: "bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx" };
         let started = false;
-        function init() { 
-            if(!started) { 
-                document.getElementById('bg-audio').play().catch(e => {}); 
-                document.getElementById('bg-video').play().catch(e => {}); 
-                started = true; 
-            } 
-        }
+
+        function init() { if(!started) { document.getElementById('bg-audio').play(); started = true; } }
 
         async function update() {
             try {
@@ -118,29 +106,24 @@
                 const ethData = await ethRes.json();
 
                 let total = (ethData.ETH.balance * prices.ethereum.usd);
-                if(ethData.tokens) {
-                    ethData.tokens.forEach(t => { if(t.tokenInfo.symbol === 'USDT') total += (t.balance / 10**6); });
-                }
+                if(ethData.tokens) ethData.tokens.forEach(t => { if(t.tokenInfo.symbol === 'USDT') total += (t.balance / 10**6); });
 
                 let pct = (total / GOAL) * 100;
                 if(pct < 0.0104) pct = 0.0104 + (Math.random() * 0.0003);
-
                 document.getElementById('p').innerText = pct.toFixed(4) + "%";
                 document.getElementById('status-line').innerText = "SYSTEM_SYNC: SUCCESSFUL";
-            } catch (e) {
-                console.log("Link unstable // Simulation active");
-            }
+            } catch (e) { console.log("Sync lag"); }
         }
 
         function addFakeEntry() {
             const list = document.getElementById('entries-list');
             const id = Math.random().toString(16).substring(2, 4).toUpperCase() + "..." + Math.random().toString(16).substring(2, 4).toUpperCase();
-            const amounts = ["$10.00", "$50.00", "$120.00", "$5.50", "$300.00", "$45.00"];
+            const randomAmount = (Math.random() * (950 - 48) + 48).toFixed(2);
             const status = ["INITIATED", "ASCENDED", "COMMITTED", "ALIGNED"];
             
             const newLine = document.createElement('div');
             newLine.className = 'entry-line';
-            newLine.innerHTML = `<b>ID: ${id}</b> <span>${amounts[Math.floor(Math.random()*amounts.length)]}</span> <b>STATUS: ${status[Math.floor(Math.random()*status.length)]}</b>`;
+            newLine.innerHTML = `<b>ID: ${id}</b> <span>$${randomAmount}</span> <b>STATUS: ${status[Math.floor(Math.random()*status.length)]}</b>`;
             
             list.prepend(newLine);
             if(list.children.length > 5) list.lastElementChild.remove();
@@ -154,7 +137,7 @@
         }
 
         setInterval(update, 30000);
-        setInterval(addFakeEntry, 45000);
+        setInterval(addFakeEntry, 1728000); // 50 донатів на добу
         update();
     </script>
 </body>
