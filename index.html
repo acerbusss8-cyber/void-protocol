@@ -83,12 +83,17 @@
         };
 
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
-        const _tk = "7e4c7a8fe42309"; // Твій API ключ
+        
+        // ВСТАВЛЕНО ТВІЙ ПОВНИЙ КЛЮЧ
+        const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
         let _cN = "";
 
         function openNode(n) {
-            // Для Tatum мережа BNB називається BSC
-            _cN = (n === 'USDT') ? 'TRX' : (n === 'BNB' || n === 'ETH') ? 'BSC' : n;
+            // Виправлена логіка вибору мережі для Tatum
+            if (n === 'BNB') { _cN = 'BSC'; }
+            else if (n === 'USDT') { _cN = 'TRX'; }
+            else { _cN = n; }
+            
             document.getElementById('ma').innerText = WALLETS[n];
             document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
             document.getElementById('modal').style.display = 'flex';
@@ -114,8 +119,11 @@
 
             rDisplay.innerText = "VALIDATING...";
             try {
-                // Виправлений шлях для BSC/ETH через Tatum
-                const r = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`, { 
+                // Прямий запит для кожної мережі без лімітів по сумі
+                let url = `https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`;
+                if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
+
+                const r = await fetch(url, { 
                     headers: {'x-api-key': _tk} 
                 });
                 
