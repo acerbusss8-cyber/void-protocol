@@ -3,98 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOID Protocol</title>
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Courier New', monospace; text-align: center; padding: 50px; }
-        .manifest { color: #00ffff; font-style: italic; margin-bottom: 30px; border: 1px solid #333; padding: 25px; line-height: 1.6; max-width: 800px; margin-left: auto; margin-right: auto; }
-        .wallet-box { border: 1px solid #444; padding: 15px; margin: 10px auto; max-width: 600px; background: #111; word-break: break-all; }
-        .input-area { margin-top: 40px; }
-        input { background: #000; color: #00ffff; border: 1px solid #00ffff; padding: 12px; width: 320px; font-family: inherit; }
-        button { background: #00ffff; color: #000; border: none; padding: 12px 25px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #ff00ff; color: #fff; }
-        #word-display { margin-top: 30px; font-size: 26px; color: #ff00ff; text-shadow: 0 0 15px #ff00ff; font-weight: bold; }
-        .label { color: #555; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        body { background-color: #000; color: #fff; font-family: monospace; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; text-transform: uppercase; }
+        .manifest-container { border: 1px solid #333; padding: 25px; margin-bottom: 30px; max-width: 400px; text-align: center; line-height: 1.6; }
+        .manifest-text { color: #00ffff; font-size: 16px; letter-spacing: 1px; }
+        .wallet-card { border: 1px solid #222; padding: 15px; margin-bottom: 10px; width: 100%; max-width: 400px; background: #000; box-sizing: border-box; }
+        .wallet-type { color: #555; font-size: 10px; margin-bottom: 8px; letter-spacing: 2px; }
+        .wallet-address { color: #fff; font-size: 13px; word-break: break-all; font-weight: bold; }
+        .input-box { width: 100%; max-width: 400px; background: #000; border: 1px solid #00ffff; color: #555; padding: 15px; margin-top: 20px; box-sizing: border-box; font-family: monospace; outline: none; }
+        .decode-btn { width: 100%; max-width: 400px; background: #00ffff; color: #000; border: none; padding: 15px; margin-top: 10px; font-weight: bold; cursor: pointer; font-size: 14px; letter-spacing: 2px; }
+        #status-output { color: #00ffff; margin-top: 25px; font-size: 16px; letter-spacing: 3px; }
     </style>
 </head>
 <body>
 
-    <div class="manifest">
-        Architect of the Silence. VOID is the inevitable digital reset.<br>
-        Access isn’t bought, it’s earned. Join the anomaly or remain static.<br>
-        0808 is live. ᚦ
+    <div class="manifest-container">
+        <div class="manifest-text">
+            Architect of the Silence. VOID is the inevitable digital reset. <br><br>
+            Access isn’t bought, it’s earned. Join the anomaly or remain static. <br><br>
+            0808 is live. ᚦ
+        </div>
     </div>
 
-    <div class="wallet-box">
-        <span class="label">ETH / BSC (BEP20) / USDT (ERC20)</span>
-        0x847AeC161Eb94BD10529f950fc5a8d3534f07AF
+    <div class="wallet-card">
+        <div class="wallet-type">ETH / BSC (BEP20) / USDT (ERC20)</div>
+        <div class="wallet-address">0x847AeC161Eb94BD10529f950fc5a8d3534f07AF</div>
     </div>
 
-    <div class="wallet-box">
-        <span class="label">BTC (Bitcoin)</span>
-        bc1qf0376q090vujzsd08t76098sc09vujzsd08t76
+    <div class="wallet-card">
+        <div class="wallet-type">BTC (BITCOIN)</div>
+        <div class="wallet-address">bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx</div>
     </div>
 
-    <div class="wallet-box">
-        <span class="label">SOL (Solana)</span>
-        9d767583B22e468e9172B4fc17A1b16a4f22c90
+    <div class="wallet-card">
+        <div class="wallet-type">SOL (SOLANA)</div>
+        <div class="wallet-address">HqgjkDPXqcQkoXPnvAeUUehggCMmjdLqFHWonAZPrT</div>
     </div>
 
-    <div class="wallet-box">
-        <span class="label">USDT (TRC20)</span>
-        TN9d767583B22e468e9172B4fc17A1b16a
+    <div class="wallet-card">
+        <div class="wallet-type">USDT (TRON / TRC20)</div>
+        <div class="wallet-address">TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN</div>
     </div>
 
-    <div class="input-area">
-        <input type="text" id="txid-input" placeholder="ВСТАВИТИ TXID (ХЕШ)">
-        <button id="decode-btn">DECODE_ANOMALY</button>
+    <div class="wallet-card">
+        <div class="wallet-type">XRP</div>
+        <div class="wallet-address">r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8</div>
     </div>
 
-    <div id="word-display">_STATUS: WAITING_FOR_HASH_</div>
+    <input type="text" id="txid-input" class="input-box" placeholder="ВСТАВИТИ TXID (ХЕШ)">
+    <button class="decode-btn" onclick="process()">DECODE_ANOMALY</button>
+
+    <div id="status-output">_ОЧІКУЄМО_НА_ХЕШ_</div>
 
     <script>
-    (function(_0x1a2b,_0x3c4d){const _0xVOID=function(_0x5e6f){while(--_0x5e6f){_0x1a2b['push'](_0x1a2b['shift']());}};_0xVOID(++_0x3c4d);}(['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'],0x1a2));
-    
-    const _0xKEY = "ТВІЙ_API_KEY_TATUM"; // Твій робочий API ключ
-    const _0xTARGET = "0x847AeC161Eb94BD10529f950fc5a8d3534f07AF";
-    const _0xWORDS = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
+        /* ШИФРОВАНА ЛОГІКА ТА АПІ-КЛЮЧ */
+        const _0x5a12=['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
+        const _0x1k2 = "ТВІЙ_API_KEY"; // Твій ключ вставляється сюди
 
-    document.getElementById('decode-btn').addEventListener('click', async () => {
-        const _0xINPUT = document.getElementById('txid-input').value.trim();
-        const _0xOUT = document.getElementById('word-display');
-        
-        if(!_0xINPUT) return alert("EMPTY HASH");
-        _0xOUT.innerText = "DECRYPTING...";
-
-        try {
-            const _0xREQ = await fetch(`https://api.tatum.io/v3/blockchain/transaction/BSC/${_0xINPUT}`, {
-                method: 'GET',
-                headers: {'x-api-key': _0xKEY}
-            });
-            const _0xDATA = await _0xREQ.json();
-
-            if(_0xREQ.ok && (_0xDATA.to === _0xTARGET || _0xDATA.address === _0xTARGET)) {
-                let _0xLOG = JSON.parse(localStorage.getItem('void_hashes') || "[]");
-                if(_0xLOG.includes(_0xINPUT)) {
-                    _0xOUT.innerText = "HASH ALREADY ACTIVATED";
-                    return;
+        async function process(){
+            const h = document.getElementById('txid-input').value.trim();
+            const o = document.getElementById('status-output');
+            if(!h){o.innerText="EMPTY_HASH";return;}
+            o.innerText="DECODING...";
+            try{
+                const r = await fetch(`https://api.tatum.io/v3/blockchain/transaction/BSC/${h}`,{
+                    headers:{'x-api-key':_0x1k2}
+                });
+                if(r.ok){
+                    let s = parseInt(localStorage.getItem('v_step')||"0");
+                    if(s < 12){
+                        o.innerText = "WORD "+(s+1)+": "+_0x5a12[s];
+                        localStorage.setItem('v_step', s+1);
+                    }else{
+                        o.innerText = "ACCESS_COMPLETE";
+                    }
+                }else{
+                    o.innerText = "INVALID_HASH";
                 }
-
-                let _0xSTEP = parseInt(localStorage.getItem('void_step') || "0");
-                if(_0xSTEP < 12) {
-                    _0xLOG.push(_0xINPUT);
-                    localStorage.setItem('void_hashes', JSON.stringify(_0xLOG));
-                    localStorage.setItem('void_step', _0xSTEP + 1);
-                    _0xOUT.innerText = `WORD ${_0xSTEP + 1}: ${_0xWORDS[_0xSTEP]}`;
-                } else {
-                    _0xOUT.innerText = "SYSTEM COMPLETE: ARCHITECT ACCESS GRANTED";
-                }
-            } else {
-                _0xOUT.innerText = "INVALID ANOMALY HASH";
-            }
-        } catch(e) {
-            _0xOUT.innerText = "COMMUNICATION ERROR";
+            }catch(e){o.innerText="CONNECTION_ERROR";}
         }
-    });
     </script>
 </body>
 </html>
