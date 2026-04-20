@@ -187,5 +187,19 @@
         setInterval(gen, 5000);
         for(let i=0; i<5; i++) gen();
     </script>
+                    <audio id="bgMusic" loop>
+  <source src="ambient.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const audio = document.getElementById('bgMusic');
+    audio.volume = 0.5; // Рівень гучності (0.0 до 1.0)
+    
+    document.body.addEventListener('click', () => {
+        audio.play();
+    }, { once: true });
+  });
+</script>
 </body>
 </html>
