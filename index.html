@@ -5,122 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VOID_PROTOCOL // ANOMALY</title>
     <style>
-        /* ПРИМУСОВЕ ВИДАЛЕННЯ БІЛИХ НАПИСІВ */
-        * { background-image: none !important; }
-        div[style*="background-image"], div[class*="video"] { display: none !important; }
-
-        :root { --main: #fff; --accent: #ff0000; }
-        
-        html, body { 
-            background: #000 !important; 
-            background-color: #000 !important; 
-            margin: 0; padding: 0; 
-            width: 100%; height: 100%; 
-            color: var(--main); 
-            font-family: 'Courier New', monospace; 
-            overflow: hidden; 
-            display: flex; justify-content: center; align-items: center; 
-        }
-        
+        * { background-image: none !important; } div[style*="background-image"], div[class*="video"] { display: none !important; }
+        :root { --main: #fff; --accent: #ff0000; --terminal: #00ffff; }
+        html, body { background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
         .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 20px; border: 1px solid #111; background: #000 !important; position: relative; }
         .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 5px; }
         .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
-        
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; text-transform: uppercase; }
         .warning-box b { color: #fff; }
-        
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn { border: 1px solid #222; padding: 12px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 105px; }
         .btn:hover { background: var(--main); color: #000; }
-        
+        .btn.active { border-color: var(--terminal); color: var(--terminal); }
         .sym { font-size: 1.6rem; display: block; line-height: 1; margin-bottom: 3px; }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
         .call { font-size: 0.55rem; font-weight: 900; letter-spacing: 2px; border-top: 1px solid #111; padding-top: 5px; width: 80%; }
-
+        .void-input-block { margin-top: 15px; border: 1px solid #111; padding: 10px; background: #050505; }
+        input#txid-field { background: #000; border: 1px solid #222; color: var(--terminal); width: 90%; padding: 8px; font-size: 0.6rem; text-align: center; outline: none; margin-bottom: 10px; }
+        #word-vault { font-size: 0.8rem; color: var(--terminal); min-height: 20px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
         .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; background: #000; }
         .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #111; padding-bottom: 5px; }
-        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; overflow: hidden; }
-        .entry-line b { color: #888; }
+        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
         .entry-line span { color: #fff; font-weight: bold; }
-
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .addr { border: 1px solid #222; padding: 25px; margin: 20px; font-size: 0.85rem; color: #fff; word-break: break-all; width: 80%; text-align: center; background: #050505; }
     </style>
 </head>
 <body onclick="sPlay()">
-
     <audio id="ax"><source src="ambient.mp3" type="audio/mpeg"></audio>
     <div class="noise"></div>
-
     <div class="frame">
         <div class="sys-header" id="lg">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.0104%</div>
-        
-       <div class="warning-box">
-    ANOMALY_CREATING. <br>
-    <b>INITIATION SIZE</b> DEFINES YOUR STATUS. <br>
-    YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE. <br>
-    DO NOT REMAIN <b>OUTSIDE</b> SO AS NOT TO REGRET. <br>
-    <i>ACCESS WILL BE GRANTED TO THE <b>CHOSEN</b>.</i>
-    </div>
-
-        <div class="grid">
-            <div class="btn" onclick="cp('BTC')"><span class="sym">ᚦ</span><span class="info">BTC NET</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('ETH')"><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('USDT')"><span class="sym">₮</span><span class="info">TRC20</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('SOL')"><span class="sym">◎</span><span class="info">SOLANA</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('XRP')"><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('BNB')"><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE ACCESS</span></div>
+        <div class="warning-box"><b>INITIATION_PROTOCOL_0808</b><br>PROVIDE <b>TXID</b> TO DECODE THE ARCHITECT'S VISION.<br>EACH VALIDATION REVEALS ONE PIECE OF THE <b>VOID</b>.</div>
+        <div class="grid" id="node-grid">
+            <div class="btn" onclick="selNode('BTC', this)"><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">SELECT NODE</span></div>
+            <div class="btn" onclick="selNode('ETH', this)"><span class="sym">Ξ</span><span class="info">ETH</span><span class="call">SELECT NODE</span></div>
+            <div class="btn" onclick="selNode('TRX', this)"><span class="sym">₮</span><span class="info">USDT</span><span class="call">SELECT NODE</span></div>
+            <div class="btn" onclick="selNode('SOL', this)"><span class="sym">◎</span><span class="info">SOLANA</span><span class="call">SELECT NODE</span></div>
+            <div class="btn" onclick="selNode('XRP', this)"><span class="sym">✕</span><span class="info">XRP</span><span class="call">SELECT NODE</span></div>
+            <div class="btn" onclick="selNode('BSC', this)"><span class="sym">B</span><span class="info">BNB</span><span class="call">SELECT NODE</span></div>
         </div>
-
+        <div class="void-input-block">
+            <input type="text" id="txid-field" placeholder="ENTER TRANSACTION HASH (TXID)">
+            <div id="word-vault">_WAITING_FOR_INPUT_</div>
+            <button onclick="vfy()" style="background: none; border: 1px solid #444; color: #888; font-size: 0.5rem; padding: 5px 15px; margin-top: 10px; cursor: pointer;">DECODE_SEQUENCE</button>
+        </div>
         <div class="entries-box">
             <div class="entries-title">RECENT_INITIATIONS</div>
             <div id="en"></div>
         </div>
     </div>
-
     <div id="modal">
         <div class="sys-header" id="mh">NODE_STABILIZED</div>
         <div class="addr" id="ma"></div>
-        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
+        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem;" onclick="document.getElementById('modal').style.display='none'">CLOSE_NODE</button>
     </div>
-
     <script>
-        const _k=['YmMxcTQ3dHZtcDZnc3o4ZXY5dW02cnJxeDh0czI3dWhtOHRwbW02c3l4','MEM4NDdBZUMxNjFFYjk0QkQxMDUyOWY5NTBmYzVhOGQzNTM0ZjA3QUY=','VFJwU2FKRk4zazh2amtDb1k2TTRrWnZYMWQ5YmhlTEtVTg=='];
-        const _aA=atob(_k[0]),_aB=atob(_k[1]),_aC=atob(_k[2]);
-        let _on=false;
-        
-        function sPlay(){if(!_on){const a=document.getElementById('ax');if(a){a.play();_on=true;}}}
-
-        async function sc(){try{
-            const r1=await fetch(atob('aHR0cHM6Ly9hcGkuY29pbmdlY2tvLmNvbS9hcGkvdjMvc2ltcGxlL3ByaWNlP2lkcz1iaXRjb2luLGV0aGVyZXVtJnZzX2N1cnJlbmNpZXM9dXNk'));
-            const d1=await r1.json();const r2=await fetch(`https://api.ethplorer.io/getAddressInfo/${_aB}?apiKey=freekey`);
-            const d2=await r2.json();let t=(d2.ETH.balance*d1.ethereum.usd);
-            if(d2.tokens)d2.tokens.forEach(tk=>{if(tk.tokenInfo.symbol==='USDT')t+=(tk.balance/10**6);});
-            let p=(t/1000000)*100;if(p<0.0104)p=0.0104+(Math.random()*0.0003);
-            document.getElementById('pv').innerText=p.toFixed(4)+'%';
-            document.getElementById('lg').innerText=atob('QU5PTUFMWV9TWU5DX0FDVElWRQ==');
-        }catch(e){}}
-
-        function en(){
-            const l=document.getElementById('en');
-            const i=Math.random().toString(16).substring(2,4).toUpperCase()+"..."+Math.random().toString(16).substring(2,4).toUpperCase();
-            // СУВОРИЙ ЛІМІТ: Мін 46, Макс 340
-            const a=(Math.random()*(340-46)+46).toFixed(2);
-            const s=["INITIATED","ASCENDED","COMMITTED","CHOSEN"];
-            const n=document.createElement('div');
-            n.className='entry-line';
-            n.innerHTML=`<b>ID: ${i}</b> <span>$${a}</span> <b>STATUS: ${s[Math.floor(Math.random()*s.length)]}</b>`;
-            l.prepend(n);
-            if(l.children.length>10)l.lastElementChild.remove();
-        }
-
-        function cp(x){let v='';if(x==='BTC')v=_aA;else if(x==='ETH'||x==='BNB')v=_aB;else v=_aC;
-        navigator.clipboard.writeText(v);document.getElementById('mh').innerText="NODE_ID: "+x;
-        document.getElementById('ma').innerText=v;document.getElementById('modal').style.display='flex';}
-
-        for(let i=0;i<10;i++){en();}
-        setInterval(sc,30000);setInterval(en,1728000);sc();
+        (function(_0x1a2b){const _0x4c5d=['t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309','ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION','bitcoin','ethereum','tron','solana','xrp','bsc','YmMxcTQ3dHZtcDZnc3o4ZXY5dW02cnJxeDh0czI3dWhtOHRwbW02c3l4','MEM4NDdBZUMxNjFFYjk0QkQxMDUyOWY5NTBmYzVhOGQzNTM0ZjA3QUY=','VFJwU2FKRk4zazh2amtDb1k2TTRrWnZYMWQ5YmhlTEtVTg=='];const _0x3e2f=function(_0x221a){return _0x4c5d[_0x221a];};window.sPlay=function(){if(!this._on){const a=document.getElementById('ax');if(a){a.play();this._on=true;}}};let sNode='',used=[],pgr=0;window.selNode=function(n,el){sNode=n;document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');let v=(n==='BTC')?atob(_0x3e2f(19)):(n==='ETH'||n==='BSC')?atob(_0x3e2f(20)):atob(_0x3e2f(21));navigator.clipboard.writeText(v);document.getElementById('ma').innerText=v;document.getElementById('mh').innerText="NODE_ID: "+n;document.getElementById('modal').style.display='flex';};window.vfy=async function(){const tx=document.getElementById('txid-field').value.trim();const out=document.getElementById('word-vault');if(!tx||!sNode){out.innerText="ERROR: SELECT NODE & INPUT TXID";return;}if(used.includes(tx)){out.innerText="ERROR: TXID_ALREADY_USED";return;}out.innerText="DECODING...";try{const cM={"BTC":_0x3e2f(13),"ETH":_0x3e2f(14),"TRX":_0x3e2f(15),"SOL":_0x3e2f(16),"XRP":_0x3e2f(17),"BSC":_0x3e2f(18)};const res=await fetch(`https://api.tatum.io/v3/blockchain/transaction/${cM[sNode]}/${tx}`,{headers:{"x-api-key":_0x3e2f(0)}});if(res.ok){used.push(tx);out.innerText=_0x3e2f(pgr%12+1);pgr++;if(pgr>=12)out.style.color="#ff0000";}else{out.innerText="ERROR: INVALID_TRANSACTION";}}catch(e){out.innerText="CONNECTION_FAILED";}};window.en=function(){const l=document.getElementById('en');const i=Math.random().toString(16).substring(2,4).toUpperCase()+"..."+Math.random().toString(16).substring(2,4).toUpperCase();const a=(Math.random()*(340-46)+46).toFixed(2);const s=["INITIATED","ASCENDED","COMMITTED","CHOSEN"];const n=document.createElement('div');n.className='entry-line';n.innerHTML=`<b>ID: ${i}</b> <span>$${a}</span> <b>STATUS: ${s[Math.floor(Math.random()*s.length)]}</b>`;l.prepend(n);if(l.children.length>5)l.lastElementChild.remove();};setInterval(window.en,5000);for(let i=0;i<5;i++)window.en();})();
     </script>
 </body>
+</html>
