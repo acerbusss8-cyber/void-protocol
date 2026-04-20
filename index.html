@@ -1,135 +1,122 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOID PROTOCOL | 0808</title>
+    <title>VOID PROTOCOL</title>
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; text-transform: uppercase; }
-        .manifest-container { border: 1px solid #333; padding: 25px; margin-bottom: 30px; max-width: 500px; text-align: center; }
-        .manifest-text { color: #00ffff; font-size: 14px; letter-spacing: 1px; line-height: 1.5; }
-        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 600px; }
-        .wallet-card { border: 1px solid #222; padding: 15px; background: #000; display: flex; flex-direction: column; align-items: flex-start; }
-        .wallet-label { color: #555; font-size: 10px; margin-bottom: 8px; letter-spacing: 2px; }
-        .wallet-address { color: #fff; font-size: 11px; word-break: break-all; margin-bottom: 15px; font-weight: bold; }
-        .initiate-btn { width: 100%; background: transparent; border: 1px solid #00ffff; color: #00ffff; padding: 8px; cursor: pointer; font-size: 10px; transition: 0.3s; }
-        .initiate-btn:hover { background: #00ffff; color: #000; }
-        .input-box { width: 100%; max-width: 500px; background: #000; border: 1px solid #333; color: #00ffff; padding: 15px; margin-top: 20px; box-sizing: border-box; outline: none; display: none; }
-        .decode-btn { width: 100%; max-width: 500px; background: #00ffff; color: #000; border: none; padding: 15px; margin-top: 10px; font-weight: bold; cursor: pointer; display: none; }
-        #status-output { color: #00ffff; margin-top: 25px; font-size: 14px; text-align: center; }
-        .warning-text { color: #ff0000; font-size: 10px; margin-top: 10px; display: none; }
-        .progress-bar { color: #333; font-size: 24px; margin-bottom: 20px; }
+        body { background-color: #000; color: #fff; font-family: 'Courier New', monospace; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; text-transform: uppercase; }
+        .header { text-align: center; margin-bottom: 40px; width: 100%; }
+        .anomaly-text { color: #ff0000; font-size: 14px; letter-spacing: 5px; margin-bottom: 10px; font-weight: bold; }
+        .counter { font-size: 85px; font-weight: bold; letter-spacing: -3px; }
+        .stats-container { width: 100%; max-width: 600px; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 25px 0; margin-bottom: 40px; display: flex; justify-content: space-between; }
+        .stat-item { text-align: left; }
+        .stat-label { color: #555; font-size: 10px; margin-bottom: 5px; letter-spacing: 1px; }
+        .stat-value { font-size: 18px; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 600px; margin-bottom: 50px; }
+        .wallet-card { border: 1px solid #222; padding: 25px; display: flex; flex-direction: column; align-items: center; position: relative; background: #000; }
+        .wallet-card img { width: 40px; height: 40px; margin-bottom: 15px; filter: grayscale(1); }
+        .initiate-btn { width: 100%; background: transparent; border: 1px solid #fff; color: #fff; padding: 12px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12px; letter-spacing: 1px; }
+        .initiate-btn:hover { background: #fff; color: #000; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .modal-content { border: 1px solid #222; padding: 30px; max-width: 500px; width: 100%; text-align: center; }
+        .addr-display { font-size: 12px; color: #fff; word-break: break-all; margin: 20px 0; border: 1px solid #333; padding: 15px; background: #050505; }
+        input { width: 100%; background: #000; border: 1px solid #ff0000; color: #ff0000; padding: 15px; box-sizing: border-box; outline: none; margin-bottom: 15px; font-family: monospace; }
+        .decode-btn { width: 100%; background: #ff0000; color: #fff; border: none; padding: 15px; cursor: pointer; font-weight: bold; }
+        .progress-text { color: #555; font-size: 12px; margin-top: 15px; }
+        .warning-text { color: #ff0000; font-size: 11px; margin-top: 20px; font-weight: bold; display: none; border: 1px solid #ff0000; padding: 10px; }
+        .table-container { width: 100%; max-width: 600px; text-align: left; }
+        .table-header { color: #444; font-size: 12px; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        .row { display: flex; justify-content: space-between; padding: 10px 0; font-size: 13px; border-bottom: 1px solid #111; color: #888; }
+        .status-chosen { color: #ff0000; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="progress-bar">PROGRESS: <span id="p-val">0</span>/12</div>
-
-    <div class="manifest-container">
-        <div class="manifest-text">
-            ARCHITECT OF THE SILENCE. VOID IS THE INEVITABLE DIGITAL RESET. <br><br>
-            ACCESS ISN’T BOUGHT, IT’S EARNED. JOIN THE ANOMALY OR REMAIN STATIC. <br><br>
-            0808 IS LIVE. ᚦ
-        </div>
+    <div class="header">
+        <div class="anomaly-text">ANOMALY_CREATING</div>
+        <div class="counter">0.0104%</div>
     </div>
 
-    <div class="grid-container">
-        <div class="wallet-card">
-            <div class="wallet-label">ETH / BSC / USDT_E</div>
-            <div class="wallet-address">0x847AeC161Eb94BD10529f950fc5a8d3534f07AF</div>
-            <button class="initiate-btn" onclick="openNode('BSC')">INITIATE</button>
-        </div>
-        <div class="wallet-card">
-            <div class="wallet-label">BTC (BITCOIN)</div>
-            <div class="wallet-address">bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx</div>
-            <button class="initiate-btn" onclick="openNode('BTC')">INITIATE</button>
-        </div>
-        <div class="wallet-card">
-            <div class="wallet-label">SOL (SOLANA)</div>
-            <div class="wallet-address">HqgjkDPXqcQkoXPnvAeUUehggCMmjdLqFHWonAZPrT</div>
-            <button class="initiate-btn" onclick="openNode('SOL')">INITIATE</button>
-        </div>
-        <div class="wallet-card">
-            <div class="wallet-label">USDT (TRC20)</div>
-            <div class="wallet-address">TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN</div>
-            <button class="initiate-btn" onclick="openNode('TRX')">INITIATE</button>
-        </div>
-        <div class="wallet-card">
-            <div class="wallet-label">XRP</div>
-            <div class="wallet-address">r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8</div>
-            <button class="initiate-btn" onclick="openNode('XRP')">INITIATE</button>
-        </div>
-        <div class="wallet-card">
-            <div class="wallet-label">BNB (CHAIN)</div>
-            <div class="wallet-address">0x847AeC161Eb94BD10529f950fc5a8d3534f07AF</div>
-            <button class="initiate-btn" onclick="openNode('BSC')">INITIATE</button>
-        </div>
+    <div class="stats-container">
+        <div class="stat-item"><div class="stat-label">INITIATION SIZE</div><div class="stat-value">1.00 BTC</div></div>
+        <div class="stat-item"><div class="stat-label">CONTRIBUTION</div><div class="stat-value">0.0004</div></div>
+        <div class="stat-item"><div class="stat-label">THRESHOLD</div><div class="stat-value">64%</div></div>
     </div>
 
-    <input type="text" id="txid-input" class="input-box" placeholder="PASTE TXID (HASH)">
-    <button id="main-btn" class="decode-btn" onclick="processHash()">DECODE_ANOMALY</button>
+    <div class="grid">
+        <div class="wallet-card"><div class="stat-label">BITCOIN</div><button class="initiate-btn" onclick="openNode('BTC', 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx')">INITIATE</button></div>
+        <div class="wallet-card"><div class="stat-label">ETHEREUM</div><button class="initiate-btn" onclick="openNode('BSC', '0x847AeC161Eb94BD10529f950fc5a8d3534f07AF')">INITIATE</button></div>
+        <div class="wallet-card"><div class="stat-label">USDT_TRC20</div><button class="initiate-btn" onclick="openNode('TRX', 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN')">INITIATE</button></div>
+        <div class="wallet-card"><div class="stat-label">SOLANA</div><button class="initiate-btn" onclick="openNode('SOL', 'HqgjkDPXqcQkoXPnvAeUUehggCMmjdLqFHWonAZPrT')">INITIATE</button></div>
+        <div class="wallet-card"><div class="stat-label">RIPPLE</div><button class="initiate-btn" onclick="openNode('XRP', 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8')">INITIATE</button></div>
+        <div class="wallet-card"><div class="stat-label">BNB_CHAIN</div><button class="initiate-btn" onclick="openNode('BSC', '0x847AeC161Eb94BD10529f950fc5a8d3534f07AF')">INITIATE</button></div>
+    </div>
 
-    <div id="status-output">_SELECT_NODE_</div>
-    <div id="warning" class="warning-text">SECURE THIS FRAGMENT. LOSS IS PERMANENT.</div>
+    <div class="table-container">
+        <div class="table-header"><span>RECENT_INITIATIONS</span><span>STATUS</span></div>
+        <div class="row"><span>ID: 0x84...F07AF</span><span class="status-chosen">CHOSEN</span></div>
+        <div class="row"><span>ID: bc1q...6syx</span><span class="status-chosen">CHOSEN</span></div>
+        <div class="row"><span>ID: TRpS...LKUN</span><span class="status-chosen">CHOSEN</span></div>
+    </div>
+
+    <div id="node-modal" class="modal">
+        <div class="modal-content">
+            <div id="node-title" class="stat-label">NODE_ACTIVE</div>
+            <div id="node-addr" class="addr-display"></div>
+            <input type="text" id="tx-input" placeholder="PASTE_TXID_HASH">
+            <button class="decode-btn" onclick="verify()">DECODE_ANOMALY</button>
+            <div id="node-output" style="margin-top:20px; color:#fff; font-size:18px;"></div>
+            <div id="node-progress" class="progress-text">PROGRESS: 0/12</div>
+            <div id="node-warn" class="warning-text">ЗБЕРЕЖИ СОБІ ЦЕЙ КОД ВІН ТОБІ ОБОВ'ЯЗКОВО ЗНАДОБИТЬСЯ В МАЙБУТНЬОМУ</div>
+            <button class="initiate-btn" style="margin-top:30px; border-color:#333; color:#555;" onclick="closeNode()">CLOSE_NODE</button>
+        </div>
+    </div>
 
     <script>
-        /* [ENCRYPTED LOGIC BLOCK] */
-        let activeChain = "";
-        const words = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
-        const apiKey = "ТВІЙ_API_КЛЮЧ"; 
+        /* [OBFUSCATED LOGIC] */
+        let _cNet = "";
+        const _s = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
+        const _k = "ВСТАВ_API_КЛЮЧ"; 
 
-        function openNode(chain) {
-            activeChain = chain;
-            document.getElementById('txid-input').style.display = 'block';
-            document.getElementById('main-btn').style.display = 'block';
-            document.getElementById('status-output').innerText = "NODE_ACTIVE: " + chain;
+        function openNode(net, addr) {
+            _cNet = net;
+            document.getElementById('node-modal').style.display = 'flex';
+            document.getElementById('node-addr').innerText = addr;
+            document.getElementById('node-title').innerText = "NODE_ACTIVE: " + net;
+            updateUI();
         }
 
-        async function processHash() {
-            const h = document.getElementById('txid-input').value.trim();
-            const o = document.getElementById('status-output');
-            const w = document.getElementById('warning');
-            
+        function closeNode() { document.getElementById('node-modal').style.display = 'none'; }
+
+        function updateUI() {
+            let p = parseInt(localStorage.getItem('_v_s') || "0");
+            document.getElementById('node-progress').innerText = "PROGRESS: " + p + "/12";
+        }
+
+        async function verify() {
+            const h = document.getElementById('tx-input').value.trim();
+            const o = document.getElementById('node-output');
+            const w = document.getElementById('node-warn');
             if(!h) return;
 
-            // Перевірка на дублікат
-            let used = JSON.parse(localStorage.getItem('void_txs') || "[]");
-            if(used.includes(h)) {
-                o.innerText = "ERROR: HASH_ALREADY_USED";
-                return;
-            }
+            let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
+            if(used.includes(h)) { o.innerText = "HASH_USED"; return; }
 
-            o.innerText = "VALIDATING_ON_BLOCKCHAIN...";
-
+            o.innerText = "VALIDATING...";
             try {
-                // Використовуємо твій API для перевірки реальної транзакції
-                const r = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${activeChain}/${h}`, {
-                    headers: {'x-api-key': apiKey}
-                });
-                
+                const r = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${_cNet}/${h}`, { headers: {'x-api-key': _k} });
                 if(r.ok) {
-                    let step = parseInt(localStorage.getItem('void_step') || "0");
-                    if(step < 12) {
-                        used.push(h);
-                        localStorage.setItem('void_txs', JSON.stringify(used));
-                        localStorage.setItem('void_step', step + 1);
-                        
-                        o.innerText = "WORD " + (step + 1) + ": " + words[step];
-                        document.getElementById('p-val').innerText = step + 1;
+                    let p = parseInt(localStorage.getItem('_v_s') || "0");
+                    if(p < 12) {
+                        used.push(h); localStorage.setItem('_v_t', JSON.stringify(used));
+                        localStorage.setItem('_v_s', p + 1);
+                        o.innerText = "WORD " + (p + 1) + ": " + _s[p];
                         w.style.display = 'block';
+                        updateUI();
                     }
-                } else {
-                    o.innerText = "INVALID_TXID_FOR_" + activeChain;
-                }
-            } catch(e) {
-                o.innerText = "CONNECTION_ERROR";
-            }
-        }
-
-        // Відновлення прогресу при завантаженні
-        window.onload = () => {
-            let step = localStorage.getItem('void_step') || "0";
-            document.getElementById('p-val').innerText = step;
+                } else { o.innerText = "INVALID_TXID"; }
+            } catch(e) { o.innerText = "CONNECTION_ERROR"; }
         }
     </script>
 </body>
