@@ -5,73 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VOID_PROTOCOL // ANOMALY</title>
     <style>
-        /* ПРИМУСОВЕ ВИДАЛЕННЯ БІЛИХ НАПИСІВ */
-        * { background-image: none !important; }
-        div[style*="background-image"], div[class*="video"] { display: none !important; }
-
+        * { background-image: none !important; box-sizing: border-box; }
         :root { --main: #fff; --accent: #ff0000; }
-        
-        html, body { 
-            background: #000 !important; 
-            background-color: #000 !important; 
-            margin: 0; padding: 0; 
-            width: 100%; height: 100%; 
-            color: var(--main); 
-            font-family: 'Courier New', monospace; 
-            overflow: hidden; 
-            display: flex; justify-content: center; align-items: center; 
-        }
-        
+        html, body { background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
-        .frame { z-index: 10; text-align: center; width: 92%; max-width: 500px; padding: 20px; border: 1px solid #111; background: #000 !important; position: relative; }
-        .sys-header { font-size: 0.55rem; color: var(--accent); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 5px; }
+        .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
+        .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
-        
-        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; text-transform: uppercase; }
+        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; }
         .warning-box b { color: #fff; }
-        
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .btn { border: 1px solid #222; padding: 12px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 105px; }
-        .btn:hover { background: var(--main); color: #000; }
-        
-        .sym { font-size: 1.6rem; display: block; line-height: 1; margin-bottom: 3px; }
+        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; }
+        .btn:hover { border-color: var(--main); }
+        .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
-        .call { font-size: 0.55rem; font-weight: 900; letter-spacing: 2px; border-top: 1px solid #111; padding-top: 5px; width: 80%; }
-
-        .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; background: #000; }
-        .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; text-transform: uppercase; border-bottom: 1px solid #111; padding-bottom: 5px; }
-        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; overflow: hidden; }
-        .entry-line b { color: #888; }
+        .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; }
+        .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
+        .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 5px; }
+        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
         .entry-line span { color: #fff; font-weight: bold; }
-
-        #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .addr { border: 1px solid #222; padding: 25px; margin: 20px; font-size: 0.85rem; color: #fff; word-break: break-all; width: 80%; text-align: center; background: #050505; }
+        #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
+        input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; }
+        .action-btn { background: var(--accent); color: #fff; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
+        #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
+        #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
     </style>
 </head>
-<body onclick="sPlay()">
+<body>
 
-    <audio id="ax"><source src="ambient.mp3" type="audio/mpeg"></audio>
     <div class="noise"></div>
 
     <div class="frame">
-        <div class="sys-header" id="lg">ANOMALY_CREATING</div>
+        <div class="sys-header">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.0104%</div>
         
-       <div class="warning-box">
-    ANOMALY_CREATING. <br>
-    <b>INITIATION SIZE</b> DEFINES YOUR STATUS. <br>
-    YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE. <br>
-    DO NOT REMAIN <b>OUTSIDE</b> SO AS NOT TO REGRET. <br>
-    <i>ACCESS WILL BE GRANTED TO THE <b>CHOSEN</b>.</i>
-    </div>
+        <div class="warning-box">
+            INITIATION SIZE DEFINES YOUR STATUS. <br>
+            YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE. <br>
+            DO NOT REMAIN <b>OUTSIDE</b>. <br>
+            <i>ACCESS GRANTED TO THE <b>CHOSEN</b>.</i>
+        </div>
 
         <div class="grid">
-            <div class="btn" onclick="cp('BTC')"><span class="sym">ᚦ</span><span class="info">BTC NET</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('ETH')"><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('USDT')"><span class="sym">₮</span><span class="info">TRC20</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('SOL')"><span class="sym">◎</span><span class="info">SOLANA</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('XRP')"><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE ACCESS</span></div>
-            <div class="btn" onclick="cp('BNB')"><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE ACCESS</span></div>
+            <div class="btn" onclick="openNode('BTC')"><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('ETH')"><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('USDT')"><span class="sym">₮</span><span class="info">TRC20</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('SOL')"><span class="sym">◎</span><span class="info">SOLANA</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('XRP')"><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('BNB')"><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
         </div>
 
         <div class="entries-box">
@@ -83,44 +65,85 @@
     <div id="modal">
         <div class="sys-header" id="mh">NODE_STABILIZED</div>
         <div class="addr" id="ma"></div>
-        <button style="margin-top: 40px; background: none; border: 1px solid #fff; color: #fff; padding: 12px 40px; cursor: pointer; font-size: 0.65rem;" onclick="document.getElementById('modal').style.display='none'">CONFIRM ENTRY</button>
+        <input type="text" id="tx-hash" placeholder="PASTE_TRANSACTION_HASH">
+        <button class="action-btn" onclick="verifyTx()">DECODE_TRANSACTION</button>
+        <div id="res"></div>
+        <div id="prog">PROGRESS: 0/12</div>
+        <button style="margin-top:30px; background:none; border:none; color:#444; cursor:pointer; font-size:0.6rem;" onclick="closeModal()">[ CLOSE_CONNECTION ]</button>
     </div>
 
     <script>
-        const _k=['YmMxcTQ3dHZtcDZnc3o4ZXY5dW02cnJxeDh0czI3dWhtOHRwbW02c3l4','MEM4NDdBZUMxNjFFYjk0QkQxMDUyOWY5NTBmYzVhOGQzNTM0ZjA3QUY=','VFJwU2FKRk4zazh2amtDb1k2TTRrWnZYMWQ5YmhlTEtVTg=='];
-        const _aA=atob(_k[0]),_aB=atob(_k[1]),_aC=atob(_k[2]);
-        let _on=false;
-        
-        function sPlay(){if(!_on){const a=document.getElementById('ax');if(a){a.play();_on=true;}}}
+        /* ЗАСВІЧЕНІ АДРЕСИ (ВІДКРИТО) */
+        const WALLETS = {
+            'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx',
+            'ETH': '0x847AeC161Eb94BD10529f950fc5a8d3534f07AF',
+            'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN',
+            'SOL': 'HqgjkDPXqcQkoXPnvAeUUehggCMmjdLqFHWonAZPrT',
+            'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8',
+            'BNB': '0x847AeC161Eb94BD10529f950fc5a8d3534f07AF'
+        };
 
-        async function sc(){try{
-            const r1=await fetch(atob('aHR0cHM6Ly9hcGkuY29pbmdlY2tvLmNvbS9hcGkvdjMvc2ltcGxlL3ByaWNlP2lkcz1iaXRjb2luLGV0aGVyZXVtJnZzX2N1cnJlbmNpZXM9dXNk'));
-            const d1=await r1.json();const r2=await fetch(`https://api.ethplorer.io/getAddressInfo/${_aB}?apiKey=freekey`);
-            const d2=await r2.json();let t=(d2.ETH.balance*d1.ethereum.usd);
-            if(d2.tokens)d2.tokens.forEach(tk=>{if(tk.tokenInfo.symbol==='USDT')t+=(tk.balance/10**6);});
-            let p=(t/1000000)*100;if(p<0.0104)p=0.0104+(Math.random()*0.0003);
-            document.getElementById('pv').innerText=p.toFixed(4)+'%';
-            document.getElementById('lg').innerText=atob('QU5PTUFMWV9TWU5DX0FDVElWRQ==');
-        }catch(e){}}
+        /* [ENCRYPTED LOGIC] */
+        const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
+        const _tk = "ТВІЙ_TATUM_API_КЛЮЧ"; 
+        let _cN = "";
 
-        function en(){
-            const l=document.getElementById('en');
-            const i=Math.random().toString(16).substring(2,4).toUpperCase()+"..."+Math.random().toString(16).substring(2,4).toUpperCase();
-            // СУВОРИЙ ЛІМІТ: Мін 46, Макс 340
-            const a=(Math.random()*(340-46)+46).toFixed(2);
-            const s=["INITIATED","ASCENDED","COMMITTED","CHOSEN"];
-            const n=document.createElement('div');
-            n.className='entry-line';
-            n.innerHTML=`<b>ID: ${i}</b> <span>$${a}</span> <b>STATUS: ${s[Math.floor(Math.random()*s.length)]}</b>`;
-            l.prepend(n);
-            if(l.children.length>10)l.lastElementChild.remove();
+        function openNode(n) {
+            _cN = (n === 'USDT') ? 'TRX' : (n === 'BNB' || n === 'ETH') ? 'BSC' : n;
+            document.getElementById('ma').innerText = WALLETS[n];
+            document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('tx-hash').value = '';
+            document.getElementById('res').innerText = '';
+            updateP();
         }
 
-        function cp(x){let v='';if(x==='BTC')v=_aA;else if(x==='ETH'||x==='BNB')v=_aB;else v=_aC;
-        navigator.clipboard.writeText(v);document.getElementById('mh').innerText="NODE_ID: "+x;
-        document.getElementById('ma').innerText=v;document.getElementById('modal').style.display='flex';}
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
-        for(let i=0;i<10;i++){en();}
-        setInterval(sc,30000);setInterval(en,1728000);sc();
+        function updateP() {
+            let s = localStorage.getItem('_v_s') || "0";
+            document.getElementById('prog').innerText = "PROGRESS: " + s + "/12";
+        }
+
+        async function verifyTx() {
+            const h = document.getElementById('tx-hash').value.trim();
+            const r = document.getElementById('res');
+            if(!h) return;
+
+            let u = JSON.parse(localStorage.getItem('_v_u') || "[]");
+            if(u.includes(h)) { r.innerText = "HASH_USED"; return; }
+
+            r.innerText = "VALIDATING...";
+            try {
+                const res = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`, {
+                    headers: {'x-api-key': _tk}
+                });
+                if(res.ok) {
+                    let s = parseInt(localStorage.getItem('_v_s') || "0");
+                    if(s < 12) {
+                        u.push(h); localStorage.setItem('_v_u', JSON.stringify(u));
+                        localStorage.setItem('_v_s', s + 1);
+                        r.innerText = _v[s];
+                        updateP();
+                        alert("SECURE THIS FRAGMENT. IT IS ESSENTIAL FOR YOUR FUTURE ACCESS.");
+                    }
+                } else { r.innerText = "INVALID_TX"; }
+            } catch(e) { r.innerText = "SYS_ERROR"; }
+        }
+
+        /* ЕМУЛЯЦІЯ ТАБЛИЦІ */
+        function gen() {
+            const l = document.getElementById('en');
+            const id = Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
+            const am = (Math.random() * (340 - 46) + 46).toFixed(2);
+            const d = document.createElement('div');
+            d.className = 'entry-line';
+            d.innerHTML = `<b>ID: ${id}</b> <span>$${am}</span> <b>STATUS: CHOSEN</b>`;
+            l.prepend(d);
+            if(l.children.length > 8) l.lastElementChild.remove();
+        }
+        setInterval(gen, 5000);
+        for(let i=0; i<5; i++) gen();
     </script>
 </body>
+</html>
