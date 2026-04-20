@@ -49,9 +49,8 @@
             INITIATION SIZE DEFINES YOUR STATUS. <br>
             YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE. <br>
             DO NOT REMAIN <b>OUTSIDE</b>. <br>
-            <i><b>ACCESS GRANTED TO THE <b>CHOSEN</b>.
-                
-               <br><b>ASSEMBLE COMPLETE SEED PHRASE.</b></i>
+            <i>ACCESS GRANTED TO THE <b>CHOSEN</b>
+                <i>ASSEMBLE COMPLETE SEED PHRASE</i>.</i>
         </div>
 
         <div class="grid">
@@ -97,4 +96,96 @@
         function unlockAudio() {
             if (!audioUnlocked) {
                 // Запуск амбієнту
-                const
+                const amb = document.getElementById('amb-loop');
+                if(amb) { amb.volume = 0.5; amb.play().catch(()=>{}); }
+
+                ['click-snd', 'error-snd', 'success-snd'].forEach(id => {
+                    const a = document.getElementById(id);
+                    if(a) { a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(()=>{}); }
+                });
+                audioUnlocked = true;
+            }
+        }
+
+        const playSnd = (id) => { 
+            const s = document.getElementById(id);
+            if(s) { s.currentTime = 0; s.play().catch(()=>{}); }
+        };
+
+        function openNode(n) {
+            playSnd('click-snd'); 
+            _cN = n;
+            document.getElementById('ma').innerText = WALLETS[n];
+            document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('tx-hash').value = '';
+            document.getElementById('res').innerText = '';
+            updateP();
+        }
+
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        function updateP() {
+            let s = localStorage.getItem('_v_s') || "0";
+            document.getElementById('prog').innerText = "PROGRESS: " + s + "/12";
+        }
+
+        async function verifyTx() {
+            const h = document.getElementById('tx-hash').value.trim();
+            const rDisplay = document.getElementById('res');
+            if(!h) return;
+
+            let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
+            if(used.includes(h)) { 
+                rDisplay.innerText = "HASH_USED"; 
+                playSnd('error-snd');
+                return; 
+            }
+
+            rDisplay.innerText = "VALIDATING...";
+            try {
+                let url = "";
+                if (_cN === 'BNB') url = `https://api.tatum.io/v3/bsc/transaction/${h}`;
+                else if (_cN === 'ETH') url = `https://api.tatum.io/v3/ethereum/transaction/${h}`;
+                else if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
+                else if (_cN === 'USDT') url = `https://api.tatum.io/v3/tron/transaction/${h}`;
+                else if (_cN === 'BTC') url = `https://api.tatum.io/v3/bitcoin/transaction/${h}`;
+                else if (_cN === 'XRP') url = `https://api.tatum.io/v3/xrp/transaction/${h}`;
+
+                const r = await fetch(url, { headers: {'x-api-key': _tk} });
+                
+                if(r.ok) {
+                    let p = parseInt(localStorage.getItem('_v_s') || "0");
+                    if(p < 12) {
+                        used.push(h); 
+                        localStorage.setItem('_v_t', JSON.stringify(used));
+                        localStorage.setItem('_v_s', p + 1);
+                        rDisplay.innerText = _v[p];
+                        playSnd('success-snd'); 
+                        updateP();
+                    }
+                } else { 
+                    rDisplay.innerText = "NOT_FOUND_IN_NODE"; 
+                    playSnd('error-snd');
+                }
+            } catch(e) { 
+                rDisplay.innerText = "ERROR"; 
+                playSnd('error-snd');
+            }
+        }
+
+        function gen() {
+            const l = document.getElementById('en');
+            const id = Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
+            const am = (Math.random() * (340 - 46) + 46).toFixed(2);
+            const d = document.createElement('div');
+            d.className = 'entry-line';
+            d.innerHTML = `<b>ID: ${id}</b> <span>$${am}</span> <b>STATUS: CHOSEN</b>`;
+            l.prepend(d);
+            if(l.children.length > 8) l.lastElementChild.remove();
+        }
+        setInterval(gen, 5000);
+        for(let i=0; i<5; i++) gen();
+    </script>
+</body>
+</html>
