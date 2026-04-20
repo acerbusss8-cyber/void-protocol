@@ -83,10 +83,11 @@
         };
 
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
-        const _tk = "7e4c7a8fe42309"; 
+        const _tk = "7e4c7a8fe42309"; // Твій API ключ
         let _cN = "";
 
         function openNode(n) {
+            // Для Tatum мережа BNB називається BSC
             _cN = (n === 'USDT') ? 'TRX' : (n === 'BNB' || n === 'ETH') ? 'BSC' : n;
             document.getElementById('ma').innerText = WALLETS[n];
             document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
@@ -113,6 +114,7 @@
 
             rDisplay.innerText = "VALIDATING...";
             try {
+                // Виправлений шлях для BSC/ETH через Tatum
                 const r = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`, { 
                     headers: {'x-api-key': _tk} 
                 });
