@@ -23,7 +23,6 @@
         .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
         .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 5px; }
         .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
-        .entry-line span { color: #fff; font-weight: bold; }
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
         input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; }
@@ -33,20 +32,16 @@
     </style>
 </head>
 <body>
-
     <div class="noise"></div>
-
     <div class="frame">
         <div class="sys-header">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.0104%</div>
-        
         <div class="warning-box">
             INITIATION SIZE DEFINES YOUR STATUS. <br>
             YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE. <br>
             DO NOT REMAIN <b>OUTSIDE</b>. <br>
             <i>ACCESS GRANTED TO THE <b>CHOSEN</b>.</i>
         </div>
-
         <div class="grid">
             <div class="btn" onclick="openNode('BTC')"><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('ETH')"><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
@@ -55,13 +50,8 @@
             <div class="btn" onclick="openNode('XRP')"><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('BNB')"><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
         </div>
-
-        <div class="entries-box">
-            <div class="entries-title">RECENT_INITIATIONS</div>
-            <div id="en"></div>
-        </div>
+        <div class="entries-box"><div class="entries-title">RECENT_INITIATIONS</div><div id="en"></div></div>
     </div>
-
     <div id="modal">
         <div class="sys-header" id="mh">NODE_STABILIZED</div>
         <div class="addr" id="ma"></div>
@@ -81,19 +71,12 @@
             'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8',
             'BNB': '0x847AeC161Eb94BD10529f950fc5a8d3534f07AF'
         };
-
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
-        
-        // ВСТАВЛЕНО ТВІЙ ПОВНИЙ КЛЮЧ
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
         let _cN = "";
 
         function openNode(n) {
-            // Виправлена логіка вибору мережі для Tatum
-            if (n === 'BNB') { _cN = 'BSC'; }
-            else if (n === 'USDT') { _cN = 'TRX'; }
-            else { _cN = n; }
-            
+            _cN = n;
             document.getElementById('ma').innerText = WALLETS[n];
             document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
             document.getElementById('modal').style.display = 'flex';
@@ -103,7 +86,6 @@
         }
 
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
-
         function updateP() {
             let s = localStorage.getItem('_v_s') || "0";
             document.getElementById('prog').innerText = "PROGRESS: " + s + "/12";
@@ -119,13 +101,15 @@
 
             rDisplay.innerText = "VALIDATING...";
             try {
-                // Прямий запит для кожної мережі без лімітів по сумі
-                let url = `https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`;
-                if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
+                let url = "";
+                // Прямі маршрути для Tatum API
+                if (_cN === 'BNB') url = `https://api.tatum.io/v3/blockchain/transaction/BSC/${h}`;
+                else if (_cN === 'ETH') url = `https://api.tatum.io/v3/ethereum/transaction/${h}`;
+                else if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
+                else if (_cN === 'USDT') url = `https://api.tatum.io/v3/blockchain/transaction/TRON/${h}`;
+                else url = `https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`;
 
-                const r = await fetch(url, { 
-                    headers: {'x-api-key': _tk} 
-                });
+                const r = await fetch(url, { headers: {'x-api-key': _tk} });
                 
                 if(r.ok) {
                     let p = parseInt(localStorage.getItem('_v_s') || "0");
@@ -133,15 +117,11 @@
                         used.push(h); 
                         localStorage.setItem('_v_t', JSON.stringify(used));
                         localStorage.setItem('_v_s', p + 1);
-                        rDisplay.innerText = "WORD " + (p + 1) + ": " + _v[p];
+                        rDisplay.innerText = _v[p];
                         updateP();
                     }
-                } else { 
-                    rDisplay.innerText = "INVALID_TXID"; 
-                }
-            } catch(e) { 
-                rDisplay.innerText = "ERROR"; 
-            }
+                } else { rDisplay.innerText = "NOT_FOUND_IN_NODE"; }
+            } catch(e) { rDisplay.innerText = "CONNECTION_ERROR"; }
         }
 
         function gen() {
