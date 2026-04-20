@@ -20,33 +20,36 @@
         .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
         .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; }
+        
+        /* ТАБЛИЦЯ ТРАНЗАКЦІЙ */
+        .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
+        .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 5px; }
+        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .entry-line span { color: #fff; font-weight: bold; }
+
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
         input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; font-size: 16px; }
         .action-btn { background: var(--accent); color: #fff; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
         #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; height: 30px; }
+        #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
     </style>
 </head>
-<body onclick="forceStart()">
+<body onclick="unlockAudio()">
 
-    <audio id="amb-loop" loop preload="auto">
-        <source src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3" type="audio/mpeg">
-    </audio>
-    
+    <audio id="amb-loop" loop src="https://raw.githubusercontent.com/Anuunaki/Void/main/ambient.mp3"></audio>
     <audio id="click-snd" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
     <audio id="error-snd" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
     <audio id="success-snd" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
 
     <div class="noise"></div>
     <div class="frame">
-        <div class="sys-header" id="status">AUDIO_OFF // CLICK_TO_ACTIVATE</div>
+        <div class="sys-header">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.0104%</div>
-        
         <div class="warning-box">
             INITIATION SIZE DEFINES YOUR STATUS. <br>
             YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE.
         </div>
-
         <div class="grid">
             <div class="btn" onclick="openNode('BTC')"><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('ETH')"><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
@@ -54,6 +57,11 @@
             <div class="btn" onclick="openNode('SOL')"><span class="sym">◎</span><span class="info">SOLANA</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('XRP')"><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('BNB')"><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
+        </div>
+
+        <div class="entries-box">
+            <div class="entries-title">RECENT_INITIATIONS</div>
+            <div id="en"></div>
         </div>
     </div>
 
@@ -64,7 +72,7 @@
         <button class="action-btn" onclick="verifyTx()">DECODE_TRANSACTION</button>
         <div id="res"></div>
         <div id="prog">PROGRESS: 0/12</div>
-        <button style="margin-top:30px; background:none; border:none; color:#444; cursor:pointer; font-size:0.6rem;" onclick="closeModal()">[ CLOSE ]</button>
+        <button style="margin-top:40px; background:none; border:none; color:#444; font-size:10px;" onclick="closeModal()">[ CLOSE ]</button>
     </div>
 
     <script>
@@ -76,29 +84,17 @@
             'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8',
             'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF'
         };
-
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
-        const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
+        const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309";
         let _cN = "";
-        let audioStarted = false;
+        let audioActive = false;
 
-        // ПРИМУСОВИЙ ЗАПУСК
-        function forceStart() {
-            if (!audioStarted) {
-                const amb = document.getElementById('amb-loop');
-                amb.volume = 0.5;
-                
-                // Пробуємо грати
-                let playPromise = amb.play();
-
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        document.getElementById('status').innerText = "AUDIO_ON // VOID_ACTIVE";
-                        audioStarted = true;
-                    }).catch(error => {
-                        document.getElementById('status').innerText = "ERROR: INTERACT_WITH_SCREEN";
-                    });
-                }
+        function unlockAudio() {
+            if (!audioActive) {
+                const a = document.getElementById('amb-loop');
+                a.volume = 0.4;
+                a.play().catch(() => {});
+                audioActive = true;
             }
         }
 
@@ -108,55 +104,6 @@
         }
 
         function openNode(n) {
-            forceStart(); // Додатковий запуск при натисканні кнопок
+            unlockAudio();
             playSnd('click-snd'); 
-            _cN = n;
-            document.getElementById('ma').innerText = WALLETS[n];
-            document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
-            document.getElementById('modal').style.display = 'flex';
-            document.getElementById('res').innerText = '';
-            updateP();
-        }
-
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
-        function updateP() {
-            let s = localStorage.getItem('_v_s') || "0";
-            document.getElementById('prog').innerText = "PROGRESS: " + s + "/12";
-        }
-
-        async function verifyTx() {
-            const h = document.getElementById('tx-hash').value.trim();
-            const rDisplay = document.getElementById('res');
-            if(!h) return;
-
-            let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
-            if(used.includes(h)) { rDisplay.innerText = "HASH_USED"; playSnd('error-snd'); return; }
-
-            rDisplay.innerText = "VALIDATING...";
-            try {
-                let net = (_cN === 'BNB') ? 'BSC' : (_cN === 'USDT' ? 'TRX' : _cN);
-                let url = `https://api.tatum.io/v3/blockchain/transaction/${net}/${h}`;
-                if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
-                if (_cN === 'ETH') url = `https://api.tatum.io/v3/ethereum/transaction/${h}`;
-
-                const r = await fetch(url, { headers: {'x-api-key': _tk} });
-                if(r.ok) {
-                    let p = parseInt(localStorage.getItem('_v_s') || "0");
-                    if(p < 12) {
-                        used.push(h); localStorage.setItem('_v_t', JSON.stringify(used));
-                        localStorage.setItem('_v_s', p + 1);
-                        rDisplay.innerText = _v[p];
-                        playSnd('success-snd'); 
-                        updateP();
-                    }
-                } else { 
-                    rDisplay.innerText = "NOT_FOUND"; 
-                    playSnd('error-snd');
-                }
-            } catch(e) { 
-                rDisplay.innerText = "ERROR"; playSnd('error-snd');
-            }
-        }
-    </script>
-</body>
-</html>
+            _
