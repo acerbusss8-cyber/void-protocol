@@ -33,7 +33,7 @@
 </head>
 <body onclick="unlockAudio()">
 
-    <audio id="amb-loop" loop src="https://raw.githubusercontent.com/Anuunaki/Void/main/ambient.mp3"></audio>
+    <audio id="amb-loop" loop src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3"></audio>
     
     <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
     <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
@@ -95,8 +95,8 @@
         function unlockAudio() {
             if (!audioUnlocked) {
                 const amb = document.getElementById('amb-loop');
-                amb.volume = 0.4;
-                amb.play().catch(()=>{});
+                amb.volume = 0.5;
+                amb.play().catch(e => console.log("Ambient error:", e));
 
                 ['click-snd', 'error-snd', 'success-snd'].forEach(id => {
                     const a = document.getElementById(id);
