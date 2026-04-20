@@ -25,17 +25,17 @@
         .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
-        input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; }
+        input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; font-size: 16px; }
         .action-btn { background: var(--accent); color: #fff; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
         #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
         #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
     </style>
 </head>
-<body>
+<body onclick="unlockAudio()">
 
-    <audio id="click-snd" src="https://www.soundjay.com/buttons/sounds/button-29.mp3"></audio>
-    <audio id="error-snd" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
-    <audio id="success-snd" src="https://www.soundjay.com/communication/sounds/digital-beeps-05.mp3"></audio>
+    <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
+    <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+    <audio id="success-snd" preload="auto" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
 
     <div class="noise"></div>
 
@@ -76,7 +76,6 @@
     </div>
 
     <script>
-        // АДРЕСИ З ТВОГО LEDGER
         const WALLETS = {
             'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx',
             'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF',
@@ -87,12 +86,21 @@
         };
 
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
-        
-        // ТВІЙ ПОВНИЙ API КЛЮЧ
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
         let _cN = "";
+        let audioUnlocked = false;
 
-        // ФУНКЦІЯ ЗВУКУ
+        // ФУНКЦІЯ РОЗБЛОКУВАННЯ ЗВУКУ (ДЛЯ ТЕЛЕФОНІВ)
+        function unlockAudio() {
+            if (!audioUnlocked) {
+                ['click-snd', 'error-snd', 'success-snd'].forEach(id => {
+                    const a = document.getElementById(id);
+                    if(a) { a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(()=>{}); }
+                });
+                audioUnlocked = true;
+            }
+        }
+
         const playSnd = (id) => { 
             const s = document.getElementById(id);
             if(s) { s.currentTime = 0; s.play().catch(()=>{}); }
@@ -131,7 +139,6 @@
             rDisplay.innerText = "VALIDATING...";
             try {
                 let url = "";
-                // ПРАВИЛЬНІ ШЛЯХИ TATUM ДЛЯ КОЖНОЇ МЕРЕЖІ
                 if (_cN === 'BNB') url = `https://api.tatum.io/v3/bsc/transaction/${h}`;
                 else if (_cN === 'ETH') url = `https://api.tatum.io/v3/ethereum/transaction/${h}`;
                 else if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
