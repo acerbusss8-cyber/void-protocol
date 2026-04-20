@@ -33,6 +33,7 @@
 </head>
 <body onclick="unlockAudio()">
 
+    <audio id="amb-loop" loop src="https://codeskulptor-demos.commondatastorage.googleapis.com/descent/background%20music.mp3"></audio>
     <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
     <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
     <audio id="success-snd" preload="auto" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
@@ -90,9 +91,15 @@
         let _cN = "";
         let audioUnlocked = false;
 
-        // ФУНКЦІЯ РОЗБЛОКУВАННЯ ЗВУКУ (ДЛЯ ТЕЛЕФОНІВ)
+        // ФУНКЦІЯ РОЗБЛОКУВАННЯ ЗВУКУ ТА ЗАПУСКУ АМБІЄНТУ
         function unlockAudio() {
             if (!audioUnlocked) {
+                // Запуск фонової музики
+                const amb = document.getElementById('amb-loop');
+                amb.volume = 0.3; // Гучність 30%
+                amb.play().catch(()=>{});
+
+                // Розблокування ефектів
                 ['click-snd', 'error-snd', 'success-snd'].forEach(id => {
                     const a = document.getElementById(id);
                     if(a) { a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(()=>{}); }
