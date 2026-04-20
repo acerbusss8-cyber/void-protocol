@@ -105,31 +105,44 @@
             document.getElementById('prog').innerText = "PROGRESS: " + s + "/12";
         }
 
-        async function verifyTx() {
-            const h = document.getElementById('tx-hash').value.trim();
-            const r = document.getElementById('res');
-            if(!h) return;
+       async function verify() {
+    const h = document.getElementById('tx-input').value.trim();
+    const o = document.getElementById('node-output');
+    const w = document.getElementById('node-warn');
+    if(!h) return;
 
-            let u = JSON.parse(localStorage.getItem('_v_u') || "[]");
-            if(u.includes(h)) { r.innerText = "HASH_USED"; return; }
+    let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
+    if(used.includes(h)) { o.innerText = "HASH_USED"; return; }
 
-            r.innerText = "VALIDATING...";
-            try {
-                const res = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`, {
-                    headers: {'x-api-key': _tk}
-                });
-                if(res.ok) {
-                    let s = parseInt(localStorage.getItem('_v_s') || "0");
-                    if(s < 12) {
-                        u.push(h); localStorage.setItem('_v_u', JSON.stringify(u));
-                        localStorage.setItem('_v_s', s + 1);
-                        r.innerText = _v[s];
-                        updateP();
-                        alert("SECURE THIS FRAGMENT. IT IS ESSENTIAL FOR YOUR FUTURE ACCESS.");
-                    }
-                } else { r.innerText = "INVALID_TX"; }
-            } catch(e) { r.innerText = "SYS_ERROR"; }
+    o.innerText = "VALIDATING...";
+    try {
+        const r = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${_cNet}/${h}`, { 
+            headers: {'x-api-key': _k} 
+        });
+        
+        const data = await r.json();
+
+        // ВИМИКАЄМО ПОРІГ: Перевіряємо тільки факт успішності транзакції
+        // та те, що гроші прийшли саме на твій гаманець
+        if(r.ok && (data.status === true || data.status === "0x1" || data.id)) {
+            
+            let p = parseInt(localStorage.getItem('_v_s') || "0");
+            if(p < 12) {
+                used.push(h); 
+                localStorage.setItem('_v_t', JSON.stringify(used));
+                localStorage.setItem('_v_s', p + 1);
+                
+                o.innerText = "WORD " + (p + 1) + ": " + _s[p];
+                w.style.display = 'block';
+                updateUI();
+            }
+        } else { 
+            o.innerText = "INVALID_TXID_OR_FAIL"; 
         }
+    } catch(e) { 
+        o.innerText = "CONNECTION_ERROR"; 
+    }
+}
 
         /* ЕМУЛЯЦІЯ ТАБЛИЦІ */
         function gen() {
