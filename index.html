@@ -28,8 +28,9 @@
         .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
         input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; }
         .action-btn { background: var(--accent); color: #fff; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
-        #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
+        #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; text-align: center; }
         #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
+        #warn-msg { color: #ff0000; font-size: 0.6rem; margin-top: 15px; display: none; border: 1px solid #ff0000; padding: 10px; width: 90%; text-align: center; }
     </style>
 </head>
 <body>
@@ -69,11 +70,11 @@
         <button class="action-btn" onclick="verifyTx()">DECODE_TRANSACTION</button>
         <div id="res"></div>
         <div id="prog">PROGRESS: 0/12</div>
+        <div id="warn-msg">ЗБЕРЕЖИ ЦЕЙ ФРАГМЕНТ. ВІН ЗНАДОБИТЬСЯ В МАЙБУТНЬОМУ.</div>
         <button style="margin-top:30px; background:none; border:none; color:#444; cursor:pointer; font-size:0.6rem;" onclick="closeModal()">[ CLOSE_CONNECTION ]</button>
     </div>
 
     <script>
-        /* ЗАСВІЧЕНІ АДРЕСИ (ВІДКРИТО) */
         const WALLETS = {
             'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx',
             'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF',
@@ -83,18 +84,19 @@
             'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF'
         };
 
-        /* [ENCRYPTED LOGIC] */
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
-        const _tk = "ТВІЙ_TATUM_API_КЛЮЧ"; 
+        const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
         let _cN = "";
 
         function openNode(n) {
+            // Мережі для Tatum: ETH/BNB через BSC (якщо ти так налаштував), USDT через TRX
             _cN = (n === 'USDT') ? 'TRX' : (n === 'BNB' || n === 'ETH') ? 'BSC' : n;
             document.getElementById('ma').innerText = WALLETS[n];
             document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
             document.getElementById('modal').style.display = 'flex';
             document.getElementById('tx-hash').value = '';
             document.getElementById('res').innerText = '';
+            document.getElementById('warn-msg').style.display = 'none';
             updateP();
         }
 
@@ -105,58 +107,56 @@
             document.getElementById('prog').innerText = "PROGRESS: " + s + "/12";
         }
 
-       async function verify() {
-    const h = document.getElementById('tx-input').value.trim();
-    const o = document.getElementById('node-output');
-    const w = document.getElementById('node-warn');
-    if(!h) return;
-
-    let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
-    if(used.includes(h)) { o.innerText = "HASH_USED"; return; }
-
-    o.innerText = "VALIDATING...";
-    try {
-        const r = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${_cNet}/${h}`, { 
-            headers: {'x-api-key': _k} 
-        });
-        
-        const data = await r.json();
-
-        // ВИМИКАЄМО ПОРІГ: Перевіряємо тільки факт успішності транзакції
-        // та те, що гроші прийшли саме на твій гаманець
-        if(r.ok && (data.status === true || data.status === "0x1" || data.id)) {
+        async function verifyTx() {
+            const h = document.getElementById('tx-hash').value.trim();
+            const rBox = document.getElementById('res');
+            const wMsg = document.getElementById('warn-msg');
             
-            let p = parseInt(localStorage.getItem('_v_s') || "0");
-            if(p < 12) {
-                used.push(h); 
-                localStorage.setItem('_v_t', JSON.stringify(used));
-                localStorage.setItem('_v_s', p + 1);
-                
-                o.innerText = "WORD " + (p + 1) + ": " + _s[p];
-                w.style.display = 'block';
-                updateUI();
-            }
-        } else { 
-            o.innerText = "INVALID_TXID_OR_FAIL"; 
-        }
-    } catch(e) { 
-        o.innerText = "CONNECTION_ERROR"; 
-    }
-}
+            if(!h) return;
 
-        /* ЕМУЛЯЦІЯ ТАБЛИЦІ */
+            let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
+            if(used.includes(h)) { rBox.innerText = "HASH_USED"; return; }
+
+            rBox.innerText = "VALIDATING...";
+            
+            try {
+                const response = await fetch(`https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`, { 
+                    headers: {'x-api-key': _tk} 
+                });
+                
+                const data = await response.json();
+
+                if(response.ok) {
+                    let s = parseInt(localStorage.getItem('_v_s') || "0");
+                    if(s < 12) {
+                        used.push(h);
+                        localStorage.setItem('_v_t', JSON.stringify(used));
+                        localStorage.setItem('_v_s', s + 1);
+                        
+                        rBox.innerText = "WORD " + (s + 1) + ": " + _v[s];
+                        wMsg.style.display = 'block';
+                        updateP();
+                    }
+                } else {
+                    rBox.innerText = "INVALID_TXID";
+                }
+            } catch(e) {
+                rBox.innerText = "CONNECTION_ERROR";
+            }
+        }
+
         function gen() {
             const l = document.getElementById('en');
-            const id = Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
+            const id = "0X" + Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
             const am = (Math.random() * (340 - 46) + 46).toFixed(2);
             const d = document.createElement('div');
             d.className = 'entry-line';
             d.innerHTML = `<b>ID: ${id}</b> <span>$${am}</span> <b>STATUS: CHOSEN</b>`;
             l.prepend(d);
-            if(l.children.length > 8) l.lastElementChild.remove();
+            if(l.children.length > 5) l.lastElementChild.remove();
         }
         setInterval(gen, 5000);
-        for(let i=0; i<5; i++) gen();
+        for(let i=0; i<3; i++) gen();
     </script>
 </body>
 </html>
