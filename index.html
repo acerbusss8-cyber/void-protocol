@@ -102,12 +102,13 @@
             rDisplay.innerText = "VALIDATING...";
             try {
                 let url = "";
-                // Прямі маршрути для Tatum API
-                if (_cN === 'BNB') url = `https://api.tatum.io/v3/blockchain/transaction/BSC/${h}`;
+                // ТЕХНІЧНО ПРАВИЛЬНІ URL ПІД КОЖНУ МЕРЕЖУ ДЛЯ TATUM
+                if (_cN === 'BNB') url = `https://api.tatum.io/v3/bsc/transaction/${h}`;
                 else if (_cN === 'ETH') url = `https://api.tatum.io/v3/ethereum/transaction/${h}`;
                 else if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
-                else if (_cN === 'USDT') url = `https://api.tatum.io/v3/blockchain/transaction/TRON/${h}`;
-                else url = `https://api.tatum.io/v3/blockchain/transaction/${_cN}/${h}`;
+                else if (_cN === 'USDT') url = `https://api.tatum.io/v3/tron/transaction/${h}`;
+                else if (_cN === 'BTC') url = `https://api.tatum.io/v3/bitcoin/transaction/${h}`;
+                else if (_cN === 'XRP') url = `https://api.tatum.io/v3/xrp/transaction/${h}`;
 
                 const r = await fetch(url, { headers: {'x-api-key': _tk} });
                 
