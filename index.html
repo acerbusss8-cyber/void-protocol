@@ -42,10 +42,6 @@
         #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
         #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
         .disclaimer { font-size: 0.5rem; color: var(--accent); margin-top: 5px; width: 90%; line-height: 1.2; text-transform: uppercase; }
-        
-        /* Приховуємо слова до моменту анімації */
-        .word { opacity: 0; transition: opacity 0.1s; display: inline-block; margin-right: 4px; }
-        .word.visible { opacity: 1; }
     </style>
 </head>
 <body onclick="unlockAudio()">
@@ -89,64 +85,30 @@
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
 
-        const content = `INITIATION SIZE DEFINES YOUR STATUS <br> YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE <br> DO NOT REMAIN <b>OUTSIDE</b> <br> <i>ACCESS WILL BE GRANTED ONLY TO THE CHOSEN</i> <br> <p><strong>COMPLETE <span translate="no"> SEED </span> PHRASE FOR NEXT STEP</strong></p>`;
-
-        function setupTypewriter() {
-            const box = document.getElementById('typewriter-box');
-            // Розбиваємо контент на слова, зберігаючи теги
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = content;
-            
-            const nodes = Array.from(tempDiv.childNodes);
-            box.innerHTML = '';
-            
-            let allWords = [];
-
-            nodes.forEach(node => {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    node.textContent.split(' ').forEach(word => {
-                        if (word.trim()) {
-                            const span = document.createElement('span');
-                            span.className = 'word';
-                            span.textContent = word;
-                            box.appendChild(span);
-                            box.appendChild(document.createTextNode(' '));
-                            allWords.push(span);
-                        }
-                    });
-                } else {
-                    const clone = node.cloneNode(true);
-                    if (clone.childNodes.length > 0 && clone.tagName !== 'BR') {
-                        const innerWords = [];
-                        const text = clone.innerText;
-                        clone.innerText = '';
-                        text.split(' ').forEach(w => {
-                           if(w.trim()){
-                               const s = document.createElement('span');
-                               s.className = 'word';
-                               s.textContent = w;
-                               clone.appendChild(s);
-                               clone.appendChild(document.createTextNode(' '));
-                               innerWords.push(s);
-                           }
-                        });
-                        box.appendChild(clone);
-                        allWords.push(...innerWords);
-                    } else {
-                        box.appendChild(clone);
-                    }
-                }
-            });
-            return allWords;
-        }
+        // Масив речень для покрокової появи (для коректного перекладу)
+        const sentences = [
+            "INITIATION SIZE DEFINES YOUR STATUS",
+            "YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE",
+            "DO NOT REMAIN <b>OUTSIDE</b>",
+            "<i>ACCESS WILL BE GRANTED ONLY TO THE CHOSEN</i>",
+            "<p><strong>COMPLETE <span translate='no'> SEED </span> PHRASE FOR NEXT STEP</strong></p>"
+        ];
 
         async function startProtocolSequence() {
-            const words = setupTypewriter();
+            const box = document.getElementById('typewriter-box');
             
-            // 1. Поява слів по черзі
-            for (let i = 0; i < words.length; i++) {
-                await new Promise(r => setTimeout(r, 333));
-                words[i].classList.add('visible');
+            // 1. Поява речень по черзі (збереження контексту для перекладача)
+            for (let i = 0; i < sentences.length; i++) {
+                const p = document.createElement('div');
+                p.style.opacity = "0";
+                p.style.transition = "opacity 0.5s";
+                p.innerHTML = sentences[i];
+                box.appendChild(p);
+                
+                await new Promise(r => setTimeout(r, 100)); // невелика пауза перед рендером
+                p.style.opacity = "1";
+                
+                await new Promise(r => setTimeout(r, 600)); // пауза між реченнями
             }
 
             // 2. Анімація рамок гаманців
@@ -167,16 +129,12 @@
             const btns = document.querySelectorAll('.btn');
             const symbols = document.querySelectorAll('.sym');
             
-            // Вимикаємо рамки активного неону перед фінальним станом (якщо потрібно за логікою)
             btns.forEach(btn => btn.classList.remove('active-neon'));
-            
-            // Вмикаємо постійне світіння символів
             symbols.forEach(sym => { 
                 sym.style.color = 'var(--neon-color)'; 
                 sym.style.textShadow = '0 0 8px var(--neon-color)';
             });
 
-            // Нескінченна підсвітка слова INITIATE
             while(true) {
                 for(let i = 0; i < calls.length; i++) {
                     calls[i].style.color = 'var(--neon-color)';
@@ -195,15 +153,12 @@
             if (!audioUnlocked) {
                 const amb = document.getElementById('amb-loop'); if(amb) { amb.volume = 0.5; amb.play().catch(()=>{}); }
                 const bg = document.getElementById('bgMusic'); if(bg) { bg.volume = 0.3; bg.play().catch(()=>{}); }
-                ['click-snd', 'error-snd', 'success-snd'].forEach(id => {
-                    const a = document.getElementById(id); if(a) { a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(()=>{}); }
-                });
                 audioUnlocked = true;
             }
         }
-        const playSnd = (id) => { const s = document.getElementById(id); if(s) { s.currentTime = 0; s.play().catch(()=>{}); } };
+
         function openNode(n) {
-            playSnd('click-snd'); window._currentNode = n;
+            window._currentNode = n;
             document.getElementById('ma').innerText = WALLETS[n];
             document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
             document.getElementById('modal').style.display = 'flex';
@@ -217,7 +172,7 @@
             const h = document.getElementById('tx-hash').value.trim();
             const rDisplay = document.getElementById('res'); if(!h) return;
             let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
-            if(used.includes(h)) { rDisplay.innerText = "HASH_USED"; playSnd('error-snd'); return; }
+            if(used.includes(h)) { rDisplay.innerText = "HASH_USED"; return; }
             rDisplay.innerText = "VALIDATING...";
             try {
                 let n = window._currentNode;
@@ -228,10 +183,10 @@
                     if(p < 12) {
                         used.push(h); localStorage.setItem('_v_t', JSON.stringify(used));
                         localStorage.setItem('_v_s', p + 1);
-                        rDisplay.innerText = _v[p]; playSnd('success-snd'); updateP();
+                        rDisplay.innerText = _v[p]; updateP();
                     }
-                } else { rDisplay.innerText = "NOT_FOUND"; playSnd('error-snd'); }
-            } catch(e) { rDisplay.innerText = "ERROR"; playSnd('error-snd'); }
+                } else { rDisplay.innerText = "NOT_FOUND"; }
+            } catch(e) { rDisplay.innerText = "ERROR"; }
         }
         function gen() {
             const l = document.getElementById('en');
