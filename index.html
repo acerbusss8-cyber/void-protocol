@@ -6,7 +6,8 @@
     <title>VOID_PROTOCOL // ANOMALY</title>
     <style>
         * { background-image: none !important; box-sizing: border-box; }
-        :root { --main: #fff; --accent: #ff0000; --neon: rgba(255, 0, 0, 0.8); }
+        /* Змінено: блідо-зелений колір та зменшена яскравість (0.4) */
+        :root { --main: #fff; --accent: #90ee90; --neon: rgba(144, 238, 144, 0.4); }
         html, body { background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
         .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
@@ -16,21 +17,18 @@
         .warning-box b { color: #fff; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         
-        /* Стилі для кнопок-гаманців з анімацією */
         .btn { 
             border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; 
             background: #000; display: flex; flex-direction: column; align-items: center; 
             justify-content: center; min-height: 110px; position: relative; overflow: hidden;
         }
         
-        /* Ефект неонової рамки */
         .btn.active-neon {
             border-color: var(--accent);
             box-shadow: inset 0 0 10px var(--neon), 0 0 5px var(--neon);
             transition: all 0.5s ease-in;
         }
 
-        /* Бігуча лінія (сканер) */
         .btn .line {
             position: absolute;
             background: var(--accent);
@@ -38,10 +36,11 @@
         }
         .btn.scanning .line { display: block; }
         
-        .btn .line-1 { top: 0; left: -100%; width: 100%; height: 2px; animation: l1 0.375s linear forwards; }
-        .btn .line-2 { top: -100%; right: 0; width: 2px; height: 100%; animation: l2 0.375s linear 0.375s forwards; }
-        .btn .line-3 { bottom: 0; right: -100%; width: 100%; height: 2px; animation: l3 0.375s linear 0.75s forwards; }
-        .btn .line-4 { bottom: -100%; left: 0; width: 2px; height: 100%; animation: l4 0.375s linear 1.125s forwards; }
+        /* Змінено: швидкість анімації кожної лінії 0.25с (разом 1с на коло) */
+        .btn .line-1 { top: 0; left: -100%; width: 100%; height: 2px; animation: l1 0.25s linear forwards; }
+        .btn .line-2 { top: -100%; right: 0; width: 2px; height: 100%; animation: l2 0.25s linear 0.25s forwards; }
+        .btn .line-3 { bottom: 0; right: -100%; width: 100%; height: 2px; animation: l3 0.25s linear 0.5s forwards; }
+        .btn .line-4 { bottom: -100%; left: 0; width: 2px; height: 100%; animation: l4 0.25s linear 0.75s forwards; }
 
         @keyframes l1 { to { left: 0; } }
         @keyframes l2 { to { top: 0; } }
@@ -60,7 +59,7 @@
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
         input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; font-size: 16px; }
-        .action-btn { background: var(--accent); color: #fff; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
+        .action-btn { background: var(--accent); color: #000; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
         #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
         #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
     </style>
@@ -145,18 +144,17 @@
         let _cN = "";
         let audioUnlocked = false;
 
-        // Послідовна анімація неонового підсвічування
+        // Змінено: Послідовна анімація по 1 секунді на кожен гаманець
         function startNeonSequence() {
             const btns = document.querySelectorAll('.btn');
             btns.forEach((btn, index) => {
                 setTimeout(() => {
                     btn.classList.add('scanning');
-                    // Через 1.5 сек (час кола) фіксуємо неонове світло
                     setTimeout(() => {
                         btn.classList.remove('scanning');
                         btn.classList.add('active-neon');
-                    }, 1500);
-                }, index * 1500); // Послідовність через кожні 1.5 сек
+                    }, 1000); // Час анімації 1с
+                }, index * 1000); // Пауза між гаманцями 1с
             });
         }
 
