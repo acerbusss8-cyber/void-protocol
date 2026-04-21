@@ -12,7 +12,7 @@
         .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 5.5rem; font-weight: 900; margin: 0; letter-spacing: -5px; line-height: 1; white-space: nowrap; }
-        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; }
+        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; min-height: 120px; }
         .warning-box b { color: #fff; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
@@ -28,7 +28,7 @@
         @keyframes l3 { to { right: 0; } }
         @keyframes l4 { to { bottom: 0; } }
         .btn:hover { border-color: var(--main); }
-        .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; transition: color 0.5s; text-shadow: 0 0 5px var(--neon-blur); }
+        .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; transition: color 0.5s; color: #111; }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
         .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; transition: color 0.2s; }
         .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
@@ -41,8 +41,11 @@
         .action-btn { background: var(--accent); color: #000; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
         #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
         #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
-        /* Колір застереження змінено на червоний */
         .disclaimer { font-size: 0.5rem; color: var(--accent); margin-top: 5px; width: 90%; line-height: 1.2; text-transform: uppercase; }
+        
+        /* Приховуємо слова до моменту анімації */
+        .word { opacity: 0; transition: opacity 0.1s; display: inline-block; margin-right: 4px; }
+        .word.visible { opacity: 1; }
     </style>
 </head>
 <body onclick="unlockAudio()">
@@ -55,13 +58,8 @@
     <div class="frame">
         <div class="sys-header">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.1088%</div>
-        <div class="warning-box">
-            INITIATION SIZE DEFINES YOUR STATUS <br>
-            YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE <br>
-            DO NOT REMAIN <b>OUTSIDE</b> <br>
-            <i>ACCESS WILL BE GRANTED ONLY TO THE CHOSEN</b>
-                <p><strong>COMPLETE <span translate="no"> SEED </span> PHRASE FOR NEXT STEP</strong></p>
-        </div>
+        <div class="warning-box" id="typewriter-box">
+            </div>
         <div class="grid" id="wallet-grid">
             <div class="btn" onclick="openNode('BTC')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('ETH')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
@@ -91,29 +89,94 @@
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
 
-        function startNeonSequence() {
-            const btns = document.querySelectorAll('.btn');
-            btns.forEach((btn, index) => {
-                setTimeout(() => {
-                    btn.classList.add('scanning');
-                    setTimeout(() => {
-                        btn.classList.remove('scanning');
-                        btn.classList.add('active-neon');
-                        if(index === btns.length - 1) { setTimeout(startInitiateSequence, 500); }
-                    }, 1000);
-                }, index * 1000);
+        const content = `INITIATION SIZE DEFINES YOUR STATUS <br> YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE <br> DO NOT REMAIN <b>OUTSIDE</b> <br> <i>ACCESS WILL BE GRANTED ONLY TO THE CHOSEN</i> <br> <p><strong>COMPLETE <span translate="no"> SEED </span> PHRASE FOR NEXT STEP</strong></p>`;
+
+        function setupTypewriter() {
+            const box = document.getElementById('typewriter-box');
+            // Розбиваємо контент на слова, зберігаючи теги
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            
+            const nodes = Array.from(tempDiv.childNodes);
+            box.innerHTML = '';
+            
+            let allWords = [];
+
+            nodes.forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    node.textContent.split(' ').forEach(word => {
+                        if (word.trim()) {
+                            const span = document.createElement('span');
+                            span.className = 'word';
+                            span.textContent = word;
+                            box.appendChild(span);
+                            box.appendChild(document.createTextNode(' '));
+                            allWords.push(span);
+                        }
+                    });
+                } else {
+                    const clone = node.cloneNode(true);
+                    if (clone.childNodes.length > 0 && clone.tagName !== 'BR') {
+                        const innerWords = [];
+                        const text = clone.innerText;
+                        clone.innerText = '';
+                        text.split(' ').forEach(w => {
+                           if(w.trim()){
+                               const s = document.createElement('span');
+                               s.className = 'word';
+                               s.textContent = w;
+                               clone.appendChild(s);
+                               clone.appendChild(document.createTextNode(' '));
+                               innerWords.push(s);
+                           }
+                        });
+                        box.appendChild(clone);
+                        allWords.push(...innerWords);
+                    } else {
+                        box.appendChild(clone);
+                    }
+                }
             });
+            return allWords;
         }
 
-        async function startInitiateSequence() {
+        async function startProtocolSequence() {
+            const words = setupTypewriter();
+            
+            // 1. Поява слів по черзі
+            for (let i = 0; i < words.length; i++) {
+                await new Promise(r => setTimeout(r, 333));
+                words[i].classList.add('visible');
+            }
+
+            // 2. Анімація рамок гаманців
+            const btns = document.querySelectorAll('.btn');
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].classList.add('scanning');
+                await new Promise(r => setTimeout(r, 1000));
+                btns[i].classList.remove('scanning');
+                btns[i].classList.add('active-neon');
+            }
+
+            // 3. Анімація підсвітки кнопок INITIATE та світіння символів
+            startInitiateAndSymbols();
+        }
+
+        async function startInitiateAndSymbols() {
             const calls = document.querySelectorAll('.call');
             const btns = document.querySelectorAll('.btn');
             const symbols = document.querySelectorAll('.sym');
+            
+            // Вимикаємо рамки активного неону перед фінальним станом (якщо потрібно за логікою)
             btns.forEach(btn => btn.classList.remove('active-neon'));
+            
+            // Вмикаємо постійне світіння символів
             symbols.forEach(sym => { 
                 sym.style.color = 'var(--neon-color)'; 
                 sym.style.textShadow = '0 0 8px var(--neon-color)';
             });
+
+            // Нескінченна підсвітка слова INITIATE
             while(true) {
                 for(let i = 0; i < calls.length; i++) {
                     calls[i].style.color = 'var(--neon-color)';
@@ -125,7 +188,8 @@
             }
         }
 
-        window.addEventListener('DOMContentLoaded', startNeonSequence);
+        window.addEventListener('DOMContentLoaded', startProtocolSequence);
+
         let audioUnlocked = false;
         function unlockAudio() {
             if (!audioUnlocked) {
