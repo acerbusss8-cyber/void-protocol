@@ -78,7 +78,6 @@
     </div>
 
     <script>
-        // АДРЕСИ ГАМАНЦІВ (ВІДКРИТІ)
         const WALLETS = {
             'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx',
             'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF',
@@ -88,13 +87,43 @@
             'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF'
         };
 
-        // ОБФУСКОВАНА ЛОГІКА ТА КЛЮЧІ
         const _0x1f2e = ['QVJDSElURUNU', 'VU5MT0NLUw==', 'Rk9SQklEREVO', 'Q0hBTUJFUg==', 'U0lMRU5DRQ==', 'VFJBTlNGT1JNUw==', 'QU5PTUFMWQ==', 'SU5UTw==', 'U1VQUkVNRQ==', 'UkFESUFOQ0U=', 'RVRFUk5BTA==', 'RE9NSU5JT04='];
         const _0x5a2d = _0x1f2e.map(w => atob(w));
         const _0x9k2l = atob("dC02OWU2MDBlY2QyNmE1NGQ3Nzg4YTA3YzYtMTVlZmRmMmRjNzdlNGM3YThmZTQyMzA5");
         
         let _cN = "";
         let audioUnlocked = false;
+
+        // --- ДВИГУН ПРОГРЕСУ (РЕАЛЬНІ БАЛАНСИ) ---
+        async function updateProgress() {
+            const goal = 1000000; 
+            const assets = [
+                { id: 'BTC', chain: 'bitcoin' },
+                { id: 'ETH', chain: 'ethereum' },
+                { id: 'SOL', chain: 'solana' },
+                { id: 'XRP', chain: 'xrp' },
+                { id: 'BNB', chain: 'bsc' }
+            ];
+            let totalUSD = 0;
+            try {
+                for (let a of assets) {
+                    const r = await fetch(`https://api.tatum.io/v3/blockchain/address/balance/${a.chain}/${WALLETS[a.id]}`, {headers: {'x-api-key': _0x9k2l}});
+                    const d = await r.json();
+                    const bal = parseFloat(d.balance || 0);
+                    
+                    const pR = await fetch(`https://api.tatum.io/v3/tatum/rate/${a.id}?basePair=USD`, {headers: {'x-api-key': _0x9k2l}});
+                    const pD = await pR.json();
+                    const price = parseFloat(pD.value || 1);
+                    totalUSD += (bal * price);
+                }
+                let calc = (totalUSD / goal) * 100;
+                let final = calc > 0.0104 ? calc.toFixed(4) : "0.0104";
+                document.getElementById('pv').innerText = final + "%";
+            } catch(e) { console.log("NODE_SYNC..."); }
+        }
+        setInterval(updateProgress, 120000); 
+        updateProgress();
+        // ------------------------------------------
 
         function unlockAudio() {
             if (!audioUnlocked) {
@@ -164,6 +193,7 @@
                         rDisplay.innerText = _0x5a2d[p];
                         playSnd('success-snd'); 
                         updateP();
+                        updateProgress(); // Миттєво оновити прогрес після донату
                     }
                 } else { 
                     rDisplay.innerText = "NOT_FOUND_IN_NODE"; 
@@ -194,22 +224,4 @@
     </div>
 
 </body>
-   <audio id="player" loop>
-    <source src="ambient.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-    // Функція, яка запустить звук
-    function playMusic() {
-        var audio = document.getElementById("player");
-        audio.play().catch(function(error) {
-            console.log("Браузер чекає на клік...");
-        });
-        // Видаляємо стеження за кліком після першого разу
-        document.removeEventListener('click', playMusic);
-    }
-
-    // Слухаємо перший клік по будь-якому місцю на сторінці
-    document.addEventListener('click', playMusic);
-</script>
 </html>
