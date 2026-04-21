@@ -116,7 +116,7 @@
                     totalUSD += (bal * price);
                 }
                 let calc = (totalUSD / goal) * 100;
-                let final = calc > 0.0104 ? calc.toFixed(4) : "0.0104";
+                let final = calc > 0.1002 ? calc.toFixed(4) : "0.1002";
                 document.getElementById('pv').innerText = final + "%";
             } catch(e) { console.log("NODE_SYNC..."); }
         }
