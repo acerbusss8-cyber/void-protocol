@@ -14,23 +14,23 @@
             display: flex; justify-content: center; align-items: center; 
         }
 
-        /* Контейнер мапи на весь екран за контентом */
-        #map-overlay {
+        /* Контейнер мапи */
+        #map-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; background: #050505;
+            z-index: 0; background: #050505;
         }
 
-        #mapCanvas { width: 100%; height: 100%; opacity: 0.7; }
+        #mapCanvas { width: 100%; height: 100%; }
 
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
         
-        /* Основний екран з прозорістю */
+        /* Прозорість фрейму */
         .frame { 
             z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; 
             border: 1px solid #111; position: relative; 
-            background: rgba(0, 0, 0, 0.85); 
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.88); 
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
@@ -64,7 +64,7 @@
 </head>
 <body onclick="unlockAudio()">
     
-    <div id="map-overlay">
+    <div id="map-container">
         <canvas id="mapCanvas"></canvas>
     </div>
 
@@ -111,90 +111,81 @@
     </div>
 
     <script>
-        // --- ЦИФРОВА МАПА СВІТУ (СПРАВЖНЯ ГЕОМЕТРІЯ) ---
+        // --- ЦИФРОВА МАПА ---
         const canvas = document.getElementById('mapCanvas');
         const ctx = canvas.getContext('2d');
-        let dots = [];
-        let realVisitors = [];
-
-        // Вбудована спрощена координатна сітка континентів
-        const worldMap = [
-            {lat: 50, lon: 10, w: 20, h: 10}, // Європа
-            {lat: 40, lon: -100, w: 30, h: 15}, // Пн. Америка
-            {lat: -20, lon: -60, w: 15, h: 20}, // Пд. Америка
-            {lat: 10, lon: 20, w: 15, h: 25}, // Африка
-            {lat: 40, lon: 80, w: 40, h: 20}, // Азія
-            {lat: -25, lon: 135, w: 12, h: 8} // Австралія
-        ];
+        let mapDots = [];
+        let visitors = [];
 
         function initMap() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            dots = [];
-            // Створення фонової сітки (мапа світу крапками)
-            for(let i=0; i<3000; i++) {
+            mapDots = [];
+            // Генерація "цифрової" сітки світу
+            for (let i = 0; i < 4000; i++) {
                 let x = Math.random() * canvas.width;
                 let y = Math.random() * canvas.height;
-                // Малюємо крапки тільки там, де приблизно континенти
-                dots.push({x, y, a: Math.random() * 0.3});
+                // Спрощений фільтр "континентів" для візуала
+                if (Math.sin(x/100) * Math.cos(y/100) > -0.2) {
+                    mapDots.push({x, y, op: Math.random() * 0.4});
+                }
             }
         }
 
-        async function fetchRealLocation() {
+        async function getRealLocation() {
             try {
-                const r = await fetch('https://ipapi.co/json/');
-                const d = await r.json();
-                const x = (d.longitude + 180) * (canvas.width / 360);
-                const y = (90 - d.latitude) * (canvas.height / 180);
-                // Твоя точка (Помаранчева)
-                realVisitors.push({x, y, color: '#ffa500', size: 4, pulse: 0, heavy: true});
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                const x = (data.longitude + 180) * (canvas.width / 360);
+                const y = (90 - data.latitude) * (canvas.height / 180);
+                // Ти (Помаранчева крапка)
+                visitors.push({x, y, color: '#ffa500', size: 5, pulse: 0, heavy: true});
                 
-                // Додаємо кілька "червоних" (минулі відвідувачі)
-                for(let i=0; i<5; i++) {
-                    realVisitors.push({
+                // Рандомні червоні крапки (архівні)
+                for(let i=0; i<15; i++) {
+                    visitors.push({
                         x: Math.random() * canvas.width, 
                         y: Math.random() * canvas.height, 
-                        color: '#ff0000', size: 2, pulse: 0, heavy: false
+                        color: '#ff0000', size: 2, heavy: false
                     });
                 }
             } catch(e) {}
         }
 
-        function draw() {
+        function drawMap() {
             ctx.fillStyle = '#050505';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Фонова цифрова мапа
-            ctx.fillStyle = '#1a1a1a';
-            dots.forEach(d => {
-                ctx.globalAlpha = d.a;
-                ctx.fillRect(d.x, d.y, 1.5, 1.5);
+            // Малюємо цифрову сітку
+            ctx.fillStyle = '#222';
+            mapDots.forEach(d => {
+                ctx.globalAlpha = d.op;
+                ctx.fillRect(d.x, d.y, 2, 2);
             });
 
-            // Відвідувачі
-            ctx.globalAlpha = 1;
-            realVisitors.forEach(v => {
+            // Малюємо відвідувачів
+            ctx.globalAlpha = 1.0;
+            visitors.forEach(v => {
                 ctx.beginPath();
-                let s = v.size;
+                let r = v.size;
                 if(v.heavy) {
                     v.pulse += 0.05;
-                    s += Math.sin(v.pulse) * 2;
+                    r += Math.sin(v.pulse) * 3;
                     ctx.shadowBlur = 15;
                     ctx.shadowColor = v.color;
                 }
-                ctx.arc(v.x, v.y, s, 0, Math.PI*2);
+                ctx.arc(v.x, v.y, r, 0, Math.PI*2);
                 ctx.fillStyle = v.color;
                 ctx.fill();
                 ctx.shadowBlur = 0;
             });
-
-            requestAnimationFrame(draw);
+            requestAnimationFrame(drawMap);
         }
 
         window.addEventListener('resize', initMap);
         initMap();
-        fetchRealLocation();
-        draw();
+        getRealLocation();
+        drawMap();
 
         // --- ЛОГІКА ПРОТОКОЛУ (БЕЗ ЗМІН) ---
         const WALLETS = { 'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx', 'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF', 'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN', 'SOL': 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT', 'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8', 'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF' };
