@@ -6,39 +6,17 @@
     <title>VOID_PROTOCOL // ANOMALY</title>
     <style>
         * { background-image: none !important; box-sizing: border-box; }
+        /* Колір змінено на більш насичений зелений для контрасту, яскравість посилена через shadow */
         :root { --main: #fff; --accent: #ff0000; --neon-color: #7cfc00; --neon-blur: rgba(124, 252, 0, 0.4); }
-        
-        html, body { 
-            background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; 
-            color: var(--main); font-family: 'Courier New', monospace; overflow: hidden; 
-            display: flex; justify-content: center; align-items: center; 
-        }
-
-        /* Контейнер мапи */
-        #map-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; background: #050505;
-        }
-
-        #mapCanvas { width: 100%; height: 100%; }
-
+        html, body { background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
-        
-        /* Прозорість фрейму */
-        .frame { 
-            z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; 
-            border: 1px solid #111; position: relative; 
-            background: rgba(0, 0, 0, 0.88); 
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 50px rgba(0,0,0,1);
-        }
-
+        .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 5.5rem; font-weight: 900; margin: 0; letter-spacing: -5px; line-height: 1; white-space: nowrap; }
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; }
         .warning-box b { color: #fff; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
+        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
         .btn.active-neon { border-color: var(--neon-color); box-shadow: inset 0 0 10px var(--neon-blur), 0 0 5px var(--neon-blur); transition: all 0.5s ease-in; }
         .btn .line { position: absolute; background: var(--neon-color); display: none; }
         .btn.scanning .line { display: block; }
@@ -50,6 +28,8 @@
         @keyframes l2 { to { top: 0; } }
         @keyframes l3 { to { right: 0; } }
         @keyframes l4 { to { bottom: 0; } }
+        .btn:hover { border-color: var(--main); }
+        /* Додано text-shadow для ефекту свічення */
         .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; transition: color 0.5s; text-shadow: 0 0 5px var(--neon-blur); }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
         .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; transition: color 0.2s; }
@@ -60,22 +40,17 @@
         .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
         input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; font-size: 16px; }
         .action-btn { background: var(--accent); color: #000; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
+        #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
+        #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
     </style>
 </head>
 <body onclick="unlockAudio()">
-    
-    <div id="map-container">
-        <canvas id="mapCanvas"></canvas>
-    </div>
-
     <audio id="amb-loop" loop src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3"></audio>
     <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
     <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
     <audio id="success-snd" preload="auto" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
     <audio id="bgMusic" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
-    
     <div class="noise"></div>
-
     <div class="frame">
         <div class="sys-header">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.1088%</div>
@@ -99,7 +74,6 @@
             <div id="en"></div>
         </div>
     </div>
-
     <div id="modal">
         <div class="sys-header" id="mh">NODE_STABILIZED</div>
         <div class="addr" id="ma"></div>
@@ -109,85 +83,7 @@
         <div id="prog">PROGRESS: 0/12</div>
         <button style="margin-top:30px; background:none; border:none; color:#444; cursor:pointer; font-size:0.6rem;" onclick="closeModal()">[ CLOSE_CONNECTION ]</button>
     </div>
-
     <script>
-        // --- ЦИФРОВА МАПА ---
-        const canvas = document.getElementById('mapCanvas');
-        const ctx = canvas.getContext('2d');
-        let mapDots = [];
-        let visitors = [];
-
-        function initMap() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            mapDots = [];
-            // Генерація "цифрової" сітки світу
-            for (let i = 0; i < 4000; i++) {
-                let x = Math.random() * canvas.width;
-                let y = Math.random() * canvas.height;
-                // Спрощений фільтр "континентів" для візуала
-                if (Math.sin(x/100) * Math.cos(y/100) > -0.2) {
-                    mapDots.push({x, y, op: Math.random() * 0.4});
-                }
-            }
-        }
-
-        async function getRealLocation() {
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
-                const x = (data.longitude + 180) * (canvas.width / 360);
-                const y = (90 - data.latitude) * (canvas.height / 180);
-                // Ти (Помаранчева крапка)
-                visitors.push({x, y, color: '#ffa500', size: 5, pulse: 0, heavy: true});
-                
-                // Рандомні червоні крапки (архівні)
-                for(let i=0; i<15; i++) {
-                    visitors.push({
-                        x: Math.random() * canvas.width, 
-                        y: Math.random() * canvas.height, 
-                        color: '#ff0000', size: 2, heavy: false
-                    });
-                }
-            } catch(e) {}
-        }
-
-        function drawMap() {
-            ctx.fillStyle = '#050505';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Малюємо цифрову сітку
-            ctx.fillStyle = '#222';
-            mapDots.forEach(d => {
-                ctx.globalAlpha = d.op;
-                ctx.fillRect(d.x, d.y, 2, 2);
-            });
-
-            // Малюємо відвідувачів
-            ctx.globalAlpha = 1.0;
-            visitors.forEach(v => {
-                ctx.beginPath();
-                let r = v.size;
-                if(v.heavy) {
-                    v.pulse += 0.05;
-                    r += Math.sin(v.pulse) * 3;
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = v.color;
-                }
-                ctx.arc(v.x, v.y, r, 0, Math.PI*2);
-                ctx.fillStyle = v.color;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            });
-            requestAnimationFrame(drawMap);
-        }
-
-        window.addEventListener('resize', initMap);
-        initMap();
-        getRealLocation();
-        drawMap();
-
-        // --- ЛОГІКА ПРОТОКОЛУ (БЕЗ ЗМІН) ---
         const WALLETS = { 'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx', 'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF', 'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN', 'SOL': 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT', 'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8', 'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF' };
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
@@ -211,11 +107,15 @@
             const calls = document.querySelectorAll('.call');
             const btns = document.querySelectorAll('.btn');
             const symbols = document.querySelectorAll('.sym');
+            
             btns.forEach(btn => btn.classList.remove('active-neon'));
+            
+            // Вмикання постійної підсвітки символів з тінню для яскравості
             symbols.forEach(sym => { 
                 sym.style.color = 'var(--neon-color)'; 
                 sym.style.textShadow = '0 0 8px var(--neon-color)';
             });
+
             while(true) {
                 for(let i = 0; i < calls.length; i++) {
                     calls[i].style.color = 'var(--neon-color)';
