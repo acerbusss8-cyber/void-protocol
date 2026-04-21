@@ -12,8 +12,13 @@
         .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
-        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; }
+        
+        /* Блок маніфесту з анімацією */
+        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; min-height: 100px; }
+        .word-unit { opacity: 0; transition: opacity 0.3s; display: inline-block; }
+        .word-unit.visible { opacity: 1; }
         .warning-box b { color: #fff; }
+
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; }
         .btn:hover { border-color: var(--main); }
@@ -34,7 +39,6 @@
 <body onclick="unlockAudio()">
 
     <audio id="amb-loop" loop src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3"></audio>
-
     <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
     <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
     <audio id="success-snd" preload="auto" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
@@ -42,18 +46,13 @@
     <div class="noise"></div>
 
     <div class="frame">
-        <div class="sys-header">ANOMALY_CREATING</div>
-        <div class="pct" id="pv">0.1088%</div>
+        <div class="sys-header notranslate" translate="no">ANOMALY_CREATING</div>
+        <div class="pct notranslate" translate="no" id="pv">0.1088%</div>
         
-        <div class="warning-box">
-            INITIATION SIZE DEFINES YOUR STATUS. <br>
-            YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE <br>
-            DO NOT REMAIN <b>OUTSIDE</b> <br>
-            <i>ACCESS GRANTED TO THE <b>CHOSEN</b>
-                <p><strong>COMPLETE <span translate="no"> SEED </span> PHRASE FOR NEXT STEP</strong></p>
-        </div>
+        <div class="warning-box" id="manifesto-display">
+            </div>
 
-        <div class="grid">
+        <div class="grid notranslate" translate="no">
             <div class="btn" onclick="openNode('BTC')"><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('ETH')"><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('USDT')"><span class="sym">₮</span><span class="info">TRC20</span><span class="call">INITIATE</span></div>
@@ -62,13 +61,13 @@
             <div class="btn" onclick="openNode('BNB')"><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
         </div>
 
-        <div class="entries-box">
+        <div class="entries-box notranslate" translate="no">
             <div class="entries-title">RECENT_INITIATIONS</div>
             <div id="en"></div>
         </div>
     </div>
 
-    <div id="modal">
+    <div id="modal" class="notranslate" translate="no">
         <div class="sys-header" id="mh">NODE_STABILIZED</div>
         <div class="addr" id="ma"></div>
         <input type="text" id="tx-hash" placeholder="PASTE_TRANSACTION_HASH">
@@ -88,6 +87,22 @@
             'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF'
         };
 
+        const manifestoText = "INITIATION SIZE DEFINES YOUR STATUS. YOUR CONTRIBUTION DETERMINES YOUR FUTURE DO NOT REMAIN OUTSIDE ACCESS GRANTED TO THE CHOSEN COMPLETE SEED PHRASE FOR NEXT STEP";
+        
+        async function startManifesto() {
+            const container = document.getElementById('manifesto-display');
+            const words = manifestoText.split(' ');
+            for (let word of words) {
+                const span = document.createElement('span');
+                span.innerHTML = word + "&nbsp;";
+                span.className = "word-unit";
+                container.appendChild(span);
+                await new Promise(r => setTimeout(r, 10));
+                span.classList.add('visible');
+                await new Promise(r => setTimeout(r, 400));
+            }
+        }
+
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
         let _cN = "";
@@ -95,10 +110,8 @@
 
         function unlockAudio() {
             if (!audioUnlocked) {
-                // Запуск амбієнту
                 const amb = document.getElementById('amb-loop');
                 if(amb) { amb.volume = 0.5; amb.play().catch(()=>{}); }
-
                 ['click-snd', 'error-snd', 'success-snd'].forEach(id => {
                     const a = document.getElementById(id);
                     if(a) { a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(()=>{}); }
@@ -134,26 +147,17 @@
             const h = document.getElementById('tx-hash').value.trim();
             const rDisplay = document.getElementById('res');
             if(!h) return;
-
             let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
             if(used.includes(h)) { 
                 rDisplay.innerText = "HASH_USED"; 
                 playSnd('error-snd');
                 return; 
             }
-
             rDisplay.innerText = "VALIDATING...";
             try {
-                let url = "";
-                if (_cN === 'BNB') url = `https://api.tatum.io/v3/bsc/transaction/${h}`;
-                else if (_cN === 'ETH') url = `https://api.tatum.io/v3/ethereum/transaction/${h}`;
-                else if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
-                else if (_cN === 'USDT') url = `https://api.tatum.io/v3/tron/transaction/${h}`;
-                else if (_cN === 'BTC') url = `https://api.tatum.io/v3/bitcoin/transaction/${h}`;
-                else if (_cN === 'XRP') url = `https://api.tatum.io/v3/xrp/transaction/${h}`;
-
+                let url = `https://api.tatum.io/v3/${_cN.toLowerCase()}/transaction/${h}`;
+                if(_cN === 'BNB') url = `https://api.tatum.io/v3/bsc/transaction/${h}`;
                 const r = await fetch(url, { headers: {'x-api-key': _tk} });
-                
                 if(r.ok) {
                     let p = parseInt(localStorage.getItem('_v_s') || "0");
                     if(p < 12) {
@@ -165,13 +169,10 @@
                         updateP();
                     }
                 } else { 
-                    rDisplay.innerText = "NOT_FOUND_IN_NODE"; 
+                    rDisplay.innerText = "NOT_FOUND"; 
                     playSnd('error-snd');
                 }
-            } catch(e) { 
-                rDisplay.innerText = "ERROR"; 
-                playSnd('error-snd');
-            }
+            } catch(e) { rDisplay.innerText = "ERROR"; playSnd('error-snd'); }
         }
 
         function gen() {
@@ -184,22 +185,10 @@
             l.prepend(d);
             if(l.children.length > 8) l.lastElementChild.remove();
         }
+        
         setInterval(gen, 5000);
         for(let i=0; i<5; i++) gen();
+        startManifesto(); // Запуск анімації тексту при завантаженні
     </script>
-                    <audio id="bgMusic" loop>
-  <source src="ambient.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-  window.addEventListener('DOMContentLoaded', (event) => {
-    const audio = document.getElementById('bgMusic');
-    audio.volume = 0.3; // Рівень гучності (0.0 до 1.0)
-    
-    document.body.addEventListener('click', () => {
-        audio.play();
-    }, { once: true });
-  });
-</script>
 </body>
 </html>
