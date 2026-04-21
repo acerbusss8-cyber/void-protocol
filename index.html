@@ -194,4 +194,29 @@
     </div>
 
 </body>
+    <script>
+  // Функція запуску таємничої атмосфери
+  function startTheVoid() {
+    const audio = document.getElementById('void-ambient');
+    
+    if (audio.paused) {
+      audio.volume = 0; // Починаємо з нуля для ефекту появи
+      audio.play();
+
+      // Плавне збільшення гучності протягом 4 секунд
+      let volumeFade = setInterval(() => {
+        if (audio.volume < 0.4) { // 0.4 — це оптимальна гучність для фону
+          audio.volume += 0.02;
+        } else {
+          clearInterval(volumeFade);
+        }
+      }, 200);
+    }
+  }
+
+  // Чекаємо на будь-яку взаємодію з сайтом (клік, скрол, натискання клавіші)
+  document.addEventListener('mousedown', startTheVoid, { once: true });
+  document.addEventListener('touchstart', startTheVoid, { once: true });
+  document.addEventListener('keydown', startTheVoid, { once: true });
+</script>
 </html>
