@@ -14,21 +14,20 @@
             display: flex; justify-content: center; align-items: center; 
         }
 
-        /* Контейнер для справжньої цифрової мапи */
-        #map-container {
+        /* Фонова мапа */
+        #map-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; background: #0a0a0a; opacity: 0.5;
+            z-index: -1; opacity: 0.6; background: #0a0a0a;
         }
-
-        canvas { display: block; }
 
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
         
+        /* Прозорість основного екрану */
         .frame { 
             z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; 
             border: 1px solid #111; position: relative; 
-            background: rgba(0, 0, 0, 0.82); 
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.85); /* Зроблено прозорішим */
+            box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
@@ -36,7 +35,7 @@
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; }
         .warning-box b { color: #fff; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
+        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
         .btn.active-neon { border-color: var(--neon-color); box-shadow: inset 0 0 10px var(--neon-blur), 0 0 5px var(--neon-blur); transition: all 0.5s ease-in; }
         .btn .line { position: absolute; background: var(--neon-color); display: none; }
         .btn.scanning .line { display: block; }
@@ -48,7 +47,8 @@
         @keyframes l2 { to { top: 0; } }
         @keyframes l3 { to { right: 0; } }
         @keyframes l4 { to { bottom: 0; } }
-        .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; transition: color 0.5s; }
+        .btn:hover { border-color: var(--main); }
+        .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; transition: color 0.5s; text-shadow: 0 0 5px var(--neon-blur); }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
         .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; transition: color 0.2s; }
         .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
@@ -62,9 +62,7 @@
 </head>
 <body onclick="unlockAudio()">
     
-    <div id="map-container">
-        <canvas id="mapCanvas"></canvas>
-    </div>
+    <canvas id="map-canvas"></canvas>
 
     <audio id="amb-loop" loop src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3"></audio>
     <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
@@ -109,66 +107,55 @@
     </div>
 
     <script>
-        // --- LOGIC: REAL DIGITAL WORLD MAP ---
-        const canvas = document.getElementById('mapCanvas');
+        // ЛОГІКА МАПИ
+        const canvas = document.getElementById('map-canvas');
         const ctx = canvas.getContext('2d');
-        let points = [];
+        let visitors = [];
 
-        // Функція для малювання базової мапи (спрощена цифрова сітка)
-        function drawWorldBase() {
-            ctx.fillStyle = '#1a1a1a';
-            // Тут імітація "крапкової" мапи світу
-            for(let i=0; i<canvas.width; i+=15) {
-                for(let j=0; j<canvas.height; j+=15) {
-                    if(Math.random() > 0.8) {
-                        ctx.fillRect(i, j, 1, 1);
-                    }
-                }
+        function initMap() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            // Створення випадкових точок для візуалізації
+            for(let i=0; i<40; i++) {
+                visitors.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    count: Math.floor(Math.random() * 10),
+                    isOld: Math.random() > 0.7,
+                    pulse: 0
+                });
             }
         }
 
-        async function getMyLocation() {
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
-                // Конвертуємо координати в пікселі (спрощено)
-                const x = (data.longitude + 180) * (canvas.width / 360);
-                const y = (90 - data.latitude) * (canvas.height / 180);
-                
-                points.push({ x, y, count: 1, lastSeen: Date.now() });
-            } catch(e) { console.log("Geo error"); }
-        }
-
-        function renderMap() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            ctx.clearRect(0,0, canvas.width, canvas.height);
-            drawWorldBase();
-
-            points.forEach(p => {
-                const isOld = (Date.now() - p.lastSeen) > 3600000; // більше години
-                const isHeavy = p.count >= 5;
-                
+        function drawMap() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            visitors.forEach(v => {
                 ctx.beginPath();
-                let radius = isHeavy ? 6 : 3;
-                if(isHeavy && !isOld) radius += Math.sin(Date.now()/200) * 2; // пульсація
+                let size = v.count > 5 ? 4 : 2;
+                let color = v.isOld ? 'rgba(255, 0, 0, 0.5)' : 'rgba(255, 165, 0, 0.8)';
                 
-                ctx.arc(p.x, p.y, radius, 0, Math.PI*2);
-                ctx.fillStyle = isOld ? '#ff0000' : '#ffa500'; // Червоний або Помаранчевий
+                if (v.count > 5 && !v.isOld) {
+                    v.pulse += 0.05;
+                    size += Math.sin(v.pulse) * 2;
+                }
+
+                ctx.arc(v.x, v.y, size, 0, Math.PI * 2);
+                ctx.fillStyle = color;
                 ctx.fill();
-                
-                if(!isOld) {
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = '#ffa500';
+                if(v.count > 5) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = color;
                 }
             });
-            requestAnimationFrame(renderMap);
+            requestAnimationFrame(drawMap);
         }
 
-        getMyLocation();
-        renderMap();
+        window.addEventListener('resize', initMap);
+        initMap();
+        drawMap();
 
-        // --- ІСНУЮЧА ЛОГІКА ПРОТОКОЛУ ---
+        // ІСНУЮЧА ЛОГІКА ПРОТОКОЛУ
         const WALLETS = { 'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx', 'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF', 'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN', 'SOL': 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT', 'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8', 'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF' };
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
