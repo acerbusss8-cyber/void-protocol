@@ -1,119 +1,111 @@
-<div id="void-source-text" style="display:none;" aria-hidden="true" translate="yes">
-    РОЗМІР ІНІЦІАЦІЇ ВИЗНАЧАЄ ВАШ СТАТУС. ВАШ ВНЕСОК ВИЗНАЧАЄ ВАШЕ МАЙБУТНЄ. НЕ ЗАЛИШАЙСЯ ЗОВНІ. ДОСТУП БУДЕ НАДАНО ТІЛЬКИ ОБРАНИМ. ЗБЕРИ СІД ФРАЗУ ДЛЯ НАСТУПНОГО КРОКУ.
-</div>
-
-<div id="void-world-bg"></div>
-
-<style>
-    /* Фонова мапа */
-    #void-world-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: -2;
-        background: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earth_map_blank_black.svg') no-repeat center;
-        background-size: cover;
-        opacity: 0.12; /* Слабкий фон */
-        filter: invert(0.6) brightness(0.3);
-    }
-
-    /* Контейнер для тексту (пробіли та інтервали) */
-    #void-text-display {
-        white-space: pre-wrap;
-        word-spacing: 0.15em;
-        line-height: 1.6;
-        color: #00ff41;
-        font-family: monospace;
-        text-align: center;
-        min-height: 3em;
-        margin: 20px 0;
-    }
-
-    /* Крапка відвідувача (реальна активність) */
-    .void-dot {
-        position: absolute;
-        width: 3px;
-        height: 3px;
-        background: #00ff41;
-        border-radius: 50%;
-        box-shadow: 0 0 8px #00ff41;
-        animation: pulse-dot 3s infinite;
-    }
-
-    @keyframes pulse-dot {
-        0%, 100% { opacity: 0.3; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.5); }
-    }
-</style>
-
-<script>
-    // 1. ЛОГІКА ПОЯВИ ПО СЛОВАХ
-    function initVoidText() {
-        const source = document.getElementById('void-source-text');
-        const display = document.getElementById('void-text-display');
-        
-        // Беремо вже перекладений текст
-        const fullText = source.innerText || source.textContent;
-        // Розбиваємо на слова, ігноруючи зайві пробіли перекладача
-        const words = fullText.trim().split(/\s+/);
-        let i = 0;
-
-        display.innerHTML = '';
-
-        function printWord() {
-            if (i < words.length) {
-                // Використовуємо &nbsp; для 100% гарантії роздільних слів на всіх мовах
-                display.innerHTML += words[i] + '&nbsp;';
-                i++;
-                // Швидкість появи слів (250мс для комфортного читання)
-                setTimeout(printWord, 250);
-            } else {
-                // Після тексту - підсвітка
-                setTimeout(glowWallets, 500);
-            }
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID PROTOCOL</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        printWord();
-    }
 
-    // 2. СТЕЛС-ПІДСВІТКА ГАМАНЦІВ (Тільки 6 блоків, яскравість -60%)
-    function glowWallets() {
-        // Знаходимо всі блоки ініціації (використовуй свій клас або селектор)
-        const boxes = document.querySelectorAll('.wallet-box, [class*="initiation"]'); 
-        boxes.forEach((box, index) => {
-            if (index < 6) { // Обмежуємо лише шістьма блоками
-                setTimeout(() => {
-                    box.style.transition = "box-shadow 1.5s ease";
-                    box.style.border = "1px solid rgba(0, 255, 65, 0.2)";
-                    box.style.boxShadow = "0 0 12px rgba(0, 255, 65, 0.35)"; // М'який неон
-                }, index * 350); // Послідовно
-            }
-        });
-    }
+        /* ФОНОВА МАПА СВІТУ */
+        #void-world-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earth_map_blank_black.svg') no-repeat center;
+            background-size: cover;
+            opacity: 0.1;
+            filter: invert(0.6) brightness(0.2);
+        }
 
-    // 3. ГЕНЕРАЦІЯ КРАПОК НА МАПІ (Симуляція активних зон)
-    function mapActivity() {
-        const bg = document.getElementById('void-world-bg');
-        const zones = [
-            {t: '38%', l: '82%'}, {t: '42%', l: '78%'}, // Японія
-            {t: '35%', l: '20%'}, {t: '45%', l: '25%'}, // США
-            {t: '30%', l: '52%'}, {t: '48%', l: '58%'}  // Європа/Дубай
-        ];
-        
-        zones.forEach(z => {
-            const dot = document.createElement('div');
-            dot.className = 'void-dot';
-            dot.style.top = z.t;
-            dot.style.left = z.l;
-            bg.appendChild(dot);
-        });
-    }
+        /* ГОЛОВНИЙ КОНТЕЙНЕР */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            padding-top: 50px;
+            z-index: 1;
+        }
 
-    // Запуск системи
-    window.addEventListener('load', () => {
-        mapActivity();
-        // Даємо 1.5 секунди Google Translate, щоб він встиг перекласти прихований текст
-        setTimeout(initVoidText, 1500);
-    });
-</script>
+        .header-red {
+            color: #ff0000;
+            font-size: 12px;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+        }
+
+        .anomaly-counter {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* БЛОК ТЕКСТУ (Виправлені пробіли та переклад) */
+        #void-text-display {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.8;
+            margin-bottom: 50px;
+            min-height: 120px;
+            padding: 0 20px;
+            text-transform: uppercase;
+        }
+
+        /* СІТКА ГАМАНЦІВ */
+        .wallet-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 50px;
+            padding: 0 10px;
+        }
+
+        .wallet-box {
+            border: 1px solid #333;
+            padding: 20px 10px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .wallet-box img {
+            width: 30px;
+            filter: grayscale(1) invert(1);
+            margin-bottom: 10px;
+        }
+
+        .wallet-name {
+            font-size: 10px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .initiation-btn {
+            font-size: 12px;
+            color: #fff;
+            letter-spacing: 2px;
+            font-style: italic;
+        }
+
+        /* ЛОГ ТРАНЗАКЦІЙ */
+        .transactions-log {
+            width: 90%;
+            border-top: 1px solid #222;
+            padding-top: 20px;
+            text-align: left;
+            font-size: 11px;
+            color:
