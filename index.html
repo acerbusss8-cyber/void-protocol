@@ -12,11 +12,8 @@
         .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 5.5rem; font-weight: 900; margin: 0; letter-spacing: -5px; line-height: 1; white-space: nowrap; }
-        
-        /* Однаковий шрифт для всього блоку без нахилів та жирності */
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; min-height: 120px; text-transform: uppercase; }
         .warning-box div { margin-bottom: 4px; }
-        
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
         .btn.active-neon { border-color: var(--neon-color); box-shadow: inset 0 0 10px var(--neon-blur), 0 0 5px var(--neon-blur); transition: all 0.5s ease-in; }
@@ -44,11 +41,10 @@
         .action-btn { background: var(--accent); color: #000; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
         #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
         #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
-        /* Розмір застереження змінено на 10.5px як у підказки */
         .disclaimer { font-size: 10.5px; color: var(--accent); margin-top: 5px; width: 90%; line-height: 1.2; text-transform: uppercase; }
     </style>
 </head>
-<body onclick="unlockAudio()">
+<body onclick="_0x4f2a()">
     <audio id="amb-loop" loop src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3"></audio>
     <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
     <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
@@ -60,12 +56,12 @@
         <div class="pct" id="pv">0.1088%</div>
         <div class="warning-box" id="typewriter-box"></div>
         <div class="grid" id="wallet-grid">
-            <div class="btn" onclick="openNode('BTC')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
-            <div class="btn" onclick="openNode('ETH')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
-            <div class="btn" onclick="openNode('USDT')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">₮</span><span class="info">TRC20</span><span class="call">INITIATE</span></div>
-            <div class="btn" onclick="openNode('SOL')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">◎</span><span class="info">SOLANA</span><span class="call">INITIATE</span></div>
-            <div class="btn" onclick="openNode('XRP')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE</span></div>
-            <div class="btn" onclick="openNode('BNB')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="_0x11a2('BTC')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="_0x11a2('ETH')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="_0x11a2('USDT')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">₮</span><span class="info">TRC20</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="_0x11a2('SOL')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">◎</span><span class="info">SOLANA</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="_0x11a2('XRP')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="_0x11a2('BNB')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
         </div>
         <div class="entries-box">
             <div class="entries-title">RECENT_INITIATIONS</div>
@@ -77,18 +73,18 @@
         <div class="addr" id="ma"></div>
         <div class="input-hint">INSERT TRANSACTION HASH AND RECEIVE PART OF THE SECRET SEED PHRASE</div>
         <input type="text" id="tx-hash" placeholder="................................">
-        <button class="action-btn" onclick="verifyTx()">DECODE_TRANSACTION</button>
+        <button class="action-btn" onclick="_0x99b1()">DECODE_TRANSACTION</button>
         <div id="res"></div>
         <div id="prog">PROGRESS: 0/12</div>
         <div class="disclaimer">BE SURE TO SAVE THE SEED PHRASE PART; YOU WILL NEED IT IN THE FUTURE.</div>
-        <button style="margin-top:20px; background:none; border:none; color:#444; cursor:pointer; font-size:0.6rem;" onclick="closeModal()">[ CLOSE_CONNECTION ]</button>
+        <button style="margin-top:20px; background:none; border:none; color:#444; cursor:pointer; font-size:0.6rem;" onclick="_0x22c3()">[ CLOSE_CONNECTION ]</button>
     </div>
     <script>
         const WALLETS = { 'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx', 'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF', 'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN', 'SOL': 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT', 'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8', 'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF' };
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
 
-        const sentences = [
+        const _sntnc = [
             "INITIATION SIZE DEFINES YOUR STATUS",
             "YOUR CONTRIBUTION DETERMINES YOUR FUTURE",
             "DO NOT STAY BEHIND",
@@ -96,102 +92,97 @@
             "COLLECT SEED PHRASE FOR NEXT STEP"
         ];
 
-        async function startProtocolSequence() {
-            const box = document.getElementById('typewriter-box');
-            for (let i = 0; i < sentences.length; i++) {
-                const line = document.createElement('div');
-                line.style.opacity = "0";
-                line.style.transition = "opacity 0.5s";
-                line.innerText = sentences[i];
-                box.appendChild(line);
+        async function _0xseq() {
+            const _bx = document.getElementById('typewriter-box');
+            for (let i = 0; i < _sntnc.length; i++) {
+                const _l = document.createElement('div');
+                _l.style.opacity = "0";
+                _l.style.transition = "opacity 0.5s";
+                _l.innerText = _sntnc[i];
+                _bx.appendChild(_l);
                 await new Promise(r => setTimeout(r, 100)); 
-                line.style.opacity = "1";
+                _l.style.opacity = "1";
                 await new Promise(r => setTimeout(r, 666));
             }
-            const btns = document.querySelectorAll('.btn');
-            for (let i = 0; i < btns.length; i++) {
-                btns[i].classList.add('scanning');
+            const _btns = document.querySelectorAll('.btn');
+            for (let i = 0; i < _btns.length; i++) {
+                _btns[i].classList.add('scanning');
                 await new Promise(r => setTimeout(r, 1000));
-                btns[i].classList.remove('scanning');
-                btns[i].classList.add('active-neon');
+                _btns[i].classList.remove('scanning');
+                _btns[i].classList.add('active-neon');
             }
-            startInitiateAndSymbols();
+            _0xinit();
         }
 
-        async function startInitiateAndSymbols() {
-            const calls = document.querySelectorAll('.call');
-            const btns = document.querySelectorAll('.btn');
-            const symbols = document.querySelectorAll('.sym');
-            
-            symbols.forEach(sym => { 
-                sym.style.color = 'var(--neon-color)'; 
-                sym.style.textShadow = '0 0 8px var(--neon-color)';
+        async function _0xinit() {
+            const _clls = document.querySelectorAll('.call');
+            const _btns = document.querySelectorAll('.btn');
+            const _syms = document.querySelectorAll('.sym');
+            _syms.forEach(s => { 
+                s.style.color = 'var(--neon-color)'; 
+                s.style.textShadow = '0 0 8px var(--neon-color)';
             });
-
-            let cycleCount = 0;
+            let _cc = 0;
             while(true) {
-                for(let i = 0; i < calls.length; i++) {
-                    calls[i].style.color = 'var(--neon-color)';
-                    calls[i].style.textShadow = '0 0 8px var(--neon-color)';
+                for(let i = 0; i < _clls.length; i++) {
+                    _clls[i].style.color = 'var(--neon-color)';
+                    _clls[i].style.textShadow = '0 0 8px var(--neon-color)';
                     await new Promise(r => setTimeout(r, 333));
-                    calls[i].style.color = '#fff';
-                    calls[i].style.textShadow = 'none';
-                    
-                    // Рахуємо цикли для останнього елемента
-                    if (i === calls.length - 1) {
-                        cycleCount++;
-                        // Після того, як останній проблимнув 3 рази, вимикаємо рамки
-                        if (cycleCount === 3) {
-                            btns.forEach(btn => btn.classList.remove('active-neon'));
+                    _clls[i].style.color = '#fff';
+                    _clls[i].style.textShadow = 'none';
+                    if (i === _clls.length - 1) {
+                        _cc++;
+                        if (_cc === 3) {
+                            _btns.forEach(b => b.classList.remove('active-neon'));
                         }
                     }
                 }
             }
         }
 
-        window.addEventListener('DOMContentLoaded', startProtocolSequence);
+        window.addEventListener('DOMContentLoaded', _0xseq);
 
-        let audioUnlocked = false;
-        function unlockAudio() {
-            if (!audioUnlocked) {
-                const amb = document.getElementById('amb-loop'); if(amb) { amb.volume = 0.5; amb.play().catch(()=>{}); }
-                const bg = document.getElementById('bgMusic'); if(bg) { bg.volume = 0.3; bg.play().catch(()=>{}); }
-                audioUnlocked = true;
+        let _audU = false;
+        function _0x4f2a() {
+            if (!_audU) {
+                const _a1 = document.getElementById('amb-loop'); if(_a1) { _a1.volume = 0.5; _a1.play().catch(()=>{}); }
+                const _a2 = document.getElementById('bgMusic'); if(_a2) { _a2.volume = 0.3; _a2.play().catch(()=>{}); }
+                _audU = true;
             }
         }
 
-        function openNode(n) {
-            window._currentNode = n;
+        function _0x11a2(n) {
+            window._cN = n;
             document.getElementById('ma').innerText = WALLETS[n];
             document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
             document.getElementById('modal').style.display = 'flex';
             document.getElementById('tx-hash').value = '';
             document.getElementById('res').innerText = '';
-            updateP();
+            _0xupP();
         }
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
-        function updateP() { let s = localStorage.getItem('_v_s') || "0"; document.getElementById('prog').innerText = "PROGRESS: " + s + "/12"; }
-        async function verifyTx() {
+        function _0x22c3() { document.getElementById('modal').style.display = 'none'; }
+        function _0xupP() { let s = localStorage.getItem('_v_s') || "0"; document.getElementById('prog').innerText = "PROGRESS: " + s + "/12"; }
+        async function _0x99b1() {
             const h = document.getElementById('tx-hash').value.trim();
-            const rDisplay = document.getElementById('res'); if(!h) return;
-            let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
-            if(used.includes(h)) { rDisplay.innerText = "HASH_USED"; return; }
-            rDisplay.innerText = "VALIDATING...";
+            const rd = document.getElementById('res'); if(!h) return;
+            let u = JSON.parse(localStorage.getItem('_v_t') || "[]");
+            if(u.includes(h)) { rd.innerText = "HASH_USED"; return; }
+            rd.innerText = "VALIDATING...";
             try {
-                let n = window._currentNode;
+                let n = window._cN;
                 let url = `https://api.tatum.io/v3/${n === 'BNB' ? 'bsc' : n.toLowerCase()}/transaction/${h}`;
                 const r = await fetch(url, { headers: {'x-api-key': _tk} });
                 if(r.ok) {
                     let p = parseInt(localStorage.getItem('_v_s') || "0");
                     if(p < 12) {
-                        used.push(h); localStorage.setItem('_v_t', JSON.stringify(used));
+                        u.push(h); localStorage.setItem('_v_t', JSON.stringify(u));
                         localStorage.setItem('_v_s', p + 1);
-                        rDisplay.innerText = _v[p]; updateP();
+                        rd.innerText = _v[p]; _0xupP();
                     }
-                } else { rDisplay.innerText = "NOT_FOUND"; }
-            } catch(e) { rDisplay.innerText = "ERROR"; }
+                } else { rd.innerText = "NOT_FOUND"; }
+            } catch(e) { rd.innerText = "ERROR"; }
         }
-        function gen() {
+        function _0xgen() {
             const l = document.getElementById('en');
             const id = Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
             const am = (Math.random() * (340 - 46) + 46).toFixed(2);
@@ -199,7 +190,7 @@
             d.innerHTML = `<b>ID: ${id}</b> <span>$${am}</span> <b>STATUS: CHOSEN</b>`;
             l.prepend(d); if(l.children.length > 8) l.lastElementChild.remove();
         }
-        setInterval(gen, 5000); for(let i=0; i<5; i++) gen();
+        setInterval(_0xgen, 5000); for(let i=0; i<5; i++) _0xgen();
     </script>
 </body>
 </html>
