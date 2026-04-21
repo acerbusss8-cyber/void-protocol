@@ -1,187 +1,205 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOID PROTOCOL</title>
-    <meta name="google" content="notranslate">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VOID_PROTOCOL // ANOMALY</title>
     <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            font-family: 'Courier New', monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Твоя фонова мапа */
-        #bg-map-container {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earth_map_blank_black.svg') no-repeat center;
-            background-size: cover;
-            opacity: 0.12;
-            filter: brightness(0.4);
-        }
-
-        /* Твоя Шкала Прогресу */
-        .progress-section {
-            margin-top: 50px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .progress-value {
-            font-size: 5rem; /* Твій великий розмір */
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        /* Текстова анімація */
-        .text-zone {
-            max-width: 700px;
-            text-align: center;
-            padding: 20px;
-            min-height: 120px;
-            text-transform: uppercase;
-        }
-
-        .word-fade { opacity: 0; display: inline-block; transition: 0.4s; margin-right: 6px; }
-        .word-fade.visible { opacity: 1; }
-        .highlight { color: #00ff41; font-weight: bold; }
-
-        /* Твоя Сітка Гаманців (Оригінальні розміри) */
-        .wallets-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            width: 90%;
-            max-width: 1000px;
-        }
-
-        .wallet-card {
-            border: 1px solid #222;
-            padding: 25px;
-            text-align: center;
-            transition: 0.6s;
-            background: rgba(0,0,0,0.6);
-        }
-
-        .active-pulse {
-            border-color: rgba(0, 255, 61, 0.4) !important;
-            box-shadow: 0 0 10px rgba(0, 255, 61, 0.2);
-        }
-
-        /* Кнопки */
-        .init-button {
-            display: inline-block;
-            margin-top: 15px;
-            border: 1px solid #00ff41;
-            color: #00ff41;
-            padding: 8px 20px;
-            text-decoration: none;
-            font-size: 12px;
-        }
-
-        /* Лог транзакцій знизу */
-        .transaction-log {
-            width: 90%;
-            max-width: 1000px;
-            margin-top: 30px;
-            font-size: 10px;
-            color: #666;
-            border-top: 1px solid #222;
-            padding-top: 10px;
-        }
+        * { background-image: none !important; box-sizing: border-box; }
+        :root { --main: #fff; --accent: #ff0000; }
+        html, body { background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
+        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
+        .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
+        .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
+        .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
+        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; }
+        .warning-box b { color: #fff; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; }
+        .btn:hover { border-color: var(--main); }
+        .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; }
+        .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
+        .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; }
+        .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
+        .entries-title { font-size: 0.5rem; color: var(--accent); letter-spacing: 3px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 5px; }
+        .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
+        input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; font-size: 16px; }
+        .action-btn { background: var(--accent); color: #fff; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
+        #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
+        #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
     </style>
 </head>
-<body>
+<body onclick="unlockAudio()">
 
-    <div id="bg-map-container" class="notranslate" translate="no"></div>
+    <audio id="amb-loop" loop src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3"></audio>
 
-    <div class="progress-section">
-        <div class="progress-value">0,1002%</div>
-        <div style="color: #ff4d4d; letter-spacing: 5px;">СТВОРЕННЯ АНОМАЛІЇ</div>
-    </div>
+    <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
+    <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+    <audio id="success-snd" preload="auto" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
 
-    <div class="text-zone">
-        <div id="void-output"></div>
-        <div id="hidden-source" style="display:none;">
-            РОЗМІР&nbsp;ІНІЦІАЦІЇ&nbsp;ВИЗНАЧАЄ&nbsp;ВАШ&nbsp;СТАТУС.&nbsp;ВАШ&nbsp;ВНЕСОК&nbsp;ВИЗНАЧАЄ&nbsp;ВАШЕ&nbsp;МАЙБУТНЄ.&nbsp;НЕ&nbsp;ЗАЛИШАЙСЯ&nbsp;ЗОВНІ.&nbsp;ДОСТУП&nbsp;БУДЕ&nbsp;НАДАНО&nbsp;ТІЛЬКИ&nbsp;ОБРАНИМ.
-        </div>
-    </div>
+    <div class="noise"></div>
 
-    <div class="wallets-grid notranslate" translate="no">
-        <div class="wallet-card">
-            <div>₿</div><div class="name">BITCOIN</div>
-            <a href="LINK_1" class="init-button">ІНІЦІАЦІЯ</a>
+    <div class="frame">
+        <div class="sys-header">ANOMALY_CREATING</div>
+        <div class="pct" id="pv">0.0104%</div>
+        
+        <div class="warning-box">
+            INITIATION SIZE DEFINES YOUR STATUS. <br>
+            YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE <br>
+            DO NOT REMAIN <b>OUTSIDE</b> <br>
+            <i>ACCESS GRANTED TO THE <b>CHOSEN</b>
+                <p><strong>COMPLETE <span translate="no"> SEED </span> PHRASE FOR NEXT STEP</strong></p>
         </div>
-        <div class="wallet-card">
-            <div>Ξ</div><div class="name">ERC20</div>
-            <a href="LINK_2" class="init-button">ІНІЦІАЦІЯ</a>
+
+        <div class="grid">
+            <div class="btn" onclick="openNode('BTC')"><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('ETH')"><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('USDT')"><span class="sym">₮</span><span class="info">TRC20</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('SOL')"><span class="sym">◎</span><span class="info">SOLANA</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('XRP')"><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE</span></div>
+            <div class="btn" onclick="openNode('BNB')"><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
         </div>
-        <div class="wallet-card">
-            <div>₮</div><div class="name">TRC20</div>
-            <a href="LINK_3" class="init-button">ІНІЦІАЦІЯ</a>
-        </div>
-        <div class="wallet-card">
-            <div>◎</div><div class="name">SOLANA</div>
-            <a href="LINK_4" class="init-button">ІНІЦІАЦІЯ</a>
-        </div>
-        <div class="wallet-card">
-            <div>✕</div><div class="name">RIPPLE</div>
-            <a href="LINK_5" class="init-button">ІНІЦІАЦІЯ</a>
-        </div>
-        <div class="wallet-card">
-            <div>Б</div><div class="name">BEP20</div>
-            <a href="LINK_6" class="init-button">ІНІЦІАЦІЯ</a>
+
+        <div class="entries-box">
+            <div class="entries-title">RECENT_INITIATIONS</div>
+            <div id="en"></div>
         </div>
     </div>
 
-    <audio id="void-audio" loop>
-        <source src="твій_файл.mp3" type="audio/mpeg">
-    </audio>
+    <div id="modal">
+        <div class="sys-header" id="mh">NODE_STABILIZED</div>
+        <div class="addr" id="ma"></div>
+        <input type="text" id="tx-hash" placeholder="PASTE_TRANSACTION_HASH">
+        <button class="action-btn" onclick="verifyTx()">DECODE_TRANSACTION</button>
+        <div id="res"></div>
+        <div id="prog">PROGRESS: 0/12</div>
+        <button style="margin-top:30px; background:none; border:none; color:#444; cursor:pointer; font-size:0.6rem;" onclick="closeModal()">[ CLOSE_CONNECTION ]</button>
+    </div>
 
     <script>
-        const audio = document.getElementById('void-audio');
-        const output = document.getElementById('void-output');
-        const source = document.getElementById('hidden-source');
+        const WALLETS = {
+            'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx',
+            'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF',
+            'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN',
+            'SOL': 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT',
+            'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8',
+            'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF'
+        };
 
-        // ЗАПУСК МУЗИКИ
-        function playMusic() {
-            audio.play().catch(() => {});
-            document.removeEventListener('click', playMusic);
-        }
-        document.addEventListener('click', playMusic);
+        const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
+        const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
+        let _cN = "";
+        let audioUnlocked = false;
 
-        // АНІМАЦІЯ ТЕКСТУ
-        async function runText() {
-            await new Promise(r => setTimeout(r, 1000));
-            const words = source.innerText.trim().split(/\s+/);
-            for (let word of words) {
-                let span = document.createElement('span');
-                span.innerHTML = word + ' ';
-                span.className = 'word-fade';
-                if (word.includes("ТІЛЬКИ") || word.includes("ONLY")) span.classList.add('highlight');
-                output.appendChild(span);
-                await new Promise(r => setTimeout(r, 250));
-                span.classList.add('visible');
-                if (span.classList.contains('highlight')) await new Promise(r => setTimeout(r, 500));
+        function unlockAudio() {
+            if (!audioUnlocked) {
+                // Запуск амбієнту
+                const amb = document.getElementById('amb-loop');
+                if(amb) { amb.volume = 0.5; amb.play().catch(()=>{}); }
+
+                ['click-snd', 'error-snd', 'success-snd'].forEach(id => {
+                    const a = document.getElementById(id);
+                    if(a) { a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(()=>{}); }
+                });
+                audioUnlocked = true;
             }
-            startPulse();
         }
 
-        function startPulse() {
-            document.querySelectorAll('.wallet-card').forEach((c, i) => {
-                setTimeout(() => c.classList.add('active-pulse'), i * 300);
-            });
+        const playSnd = (id) => { 
+            const s = document.getElementById(id);
+            if(s) { s.currentTime = 0; s.play().catch(()=>{}); }
+        };
+
+        function openNode(n) {
+            playSnd('click-snd'); 
+            _cN = n;
+            document.getElementById('ma').innerText = WALLETS[n];
+            document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('tx-hash').value = '';
+            document.getElementById('res').innerText = '';
+            updateP();
         }
 
-        window.addEventListener('load', runText);
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        function updateP() {
+            let s = localStorage.getItem('_v_s') || "0";
+            document.getElementById('prog').innerText = "PROGRESS: " + s + "/12";
+        }
+
+        async function verifyTx() {
+            const h = document.getElementById('tx-hash').value.trim();
+            const rDisplay = document.getElementById('res');
+            if(!h) return;
+
+            let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
+            if(used.includes(h)) { 
+                rDisplay.innerText = "HASH_USED"; 
+                playSnd('error-snd');
+                return; 
+            }
+
+            rDisplay.innerText = "VALIDATING...";
+            try {
+                let url = "";
+                if (_cN === 'BNB') url = `https://api.tatum.io/v3/bsc/transaction/${h}`;
+                else if (_cN === 'ETH') url = `https://api.tatum.io/v3/ethereum/transaction/${h}`;
+                else if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
+                else if (_cN === 'USDT') url = `https://api.tatum.io/v3/tron/transaction/${h}`;
+                else if (_cN === 'BTC') url = `https://api.tatum.io/v3/bitcoin/transaction/${h}`;
+                else if (_cN === 'XRP') url = `https://api.tatum.io/v3/xrp/transaction/${h}`;
+
+                const r = await fetch(url, { headers: {'x-api-key': _tk} });
+                
+                if(r.ok) {
+                    let p = parseInt(localStorage.getItem('_v_s') || "0");
+                    if(p < 12) {
+                        used.push(h); 
+                        localStorage.setItem('_v_t', JSON.stringify(used));
+                        localStorage.setItem('_v_s', p + 1);
+                        rDisplay.innerText = _v[p];
+                        playSnd('success-snd'); 
+                        updateP();
+                    }
+                } else { 
+                    rDisplay.innerText = "NOT_FOUND_IN_NODE"; 
+                    playSnd('error-snd');
+                }
+            } catch(e) { 
+                rDisplay.innerText = "ERROR"; 
+                playSnd('error-snd');
+            }
+        }
+
+        function gen() {
+            const l = document.getElementById('en');
+            const id = Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
+            const am = (Math.random() * (340 - 46) + 46).toFixed(2);
+            const d = document.createElement('div');
+            d.className = 'entry-line';
+            d.innerHTML = `<b>ID: ${id}</b> <span>$${am}</span> <b>STATUS: CHOSEN</b>`;
+            l.prepend(d);
+            if(l.children.length > 8) l.lastElementChild.remove();
+        }
+        setInterval(gen, 5000);
+        for(let i=0; i<5; i++) gen();
     </script>
+                    <audio id="bgMusic" loop>
+  <source src="ambient.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const audio = document.getElementById('bgMusic');
+    audio.volume = 0.5; // Рівень гучності (0.0 до 1.0)
+    
+    document.body.addEventListener('click', () => {
+        audio.play();
+    }, { once: true });
+  });
+</script>
 </body>
 </html>
