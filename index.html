@@ -30,8 +30,8 @@
         .btn:hover { border-color: var(--main); }
         .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
-        /* Початковий стан call - білий */
-        .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; transition: color 0.2s; }
+        /* Початковий стан call - білий, шрифт звичайний не похилий */
+        .call { font-size: 0.5rem; font-weight: normal; font-style: normal; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; transition: color 0.2s; }
         .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
         .entries-title { font-size: 0.5rem; color: var(--neon-color); letter-spacing: 3px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 5px; }
         .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
@@ -104,13 +104,16 @@
 
         async function startInitiateSequence() {
             const calls = document.querySelectorAll('.call');
+            const btns = document.querySelectorAll('.btn');
             for(let cycle = 0; cycle < 3; cycle++) {
                 for(let i = 0; i < calls.length; i++) {
                     calls[i].style.color = '#90ee90';
-                    await new Promise(r => setTimeout(r, 333)); // 2 секунди на 6 кнопок ≈ 333мс
+                    await new Promise(r => setTimeout(r, 333));
                     calls[i].style.color = '#fff';
                 }
             }
+            // Вимкнення підсвітки рамок після завершення циклів
+            btns.forEach(btn => btn.classList.remove('active-neon'));
         }
 
         window.addEventListener('DOMContentLoaded', startNeonSequence);
