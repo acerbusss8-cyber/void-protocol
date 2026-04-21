@@ -5,15 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VOID_PROTOCOL // ANOMALY</title>
     <style>
-        * { background-image: none !important; box-sizing: border-box; }
-        :root { --main: #fff; --accent: #ff0000; }
+        /* ВІЗУАЛЬНІ ПРАВКИ: ВИДАЛЕНО background-image: none */
+        * { box-sizing: border-box; }
+        :root { --main: #fff; --accent: #ff0000; --neon: #00ff41; }
         html, body { background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
+        
+        /* ФОНОВА МАПА СВІТУ */
+        #void-global-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background: #000 url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earth_map_blank_black.svg') no-repeat center; background-size: cover; opacity: 0.15; filter: brightness(0.6); }
+        .visitor-dot { position: absolute; width: 4px; height: 4px; border-radius: 50%; z-index: 0; background: var(--neon); box-shadow: 0 0 10px var(--neon); animation: p-green 2s infinite; }
+        @keyframes p-green { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.5); } }
+
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
-        .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
+        .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: rgba(0,0,0,0.85); backdrop-filter: blur(2px); }
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 6.5rem; font-weight: 900; margin: 0; letter-spacing: -7px; line-height: 1; }
-        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; }
-        .warning-box b { color: #fff; }
+        
+        /* АНІМАЦІЯ СЛІВ */
+        .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; min-height: 100px; }
+        .void-word { display: inline-block; margin-right: 5px; opacity: 0; transform: translateY(5px); animation: word-appear 0.4s forwards; }
+        @keyframes word-appear { to { opacity: 1; transform: translateY(0); } }
+        
+        /* ПІДСВІТКА ГАМАНЦІВ */
+        .wallet-glow { border-color: rgba(0, 255, 65, 0.4) !important; box-shadow: 0 0 10px rgba(0, 255, 65, 0.2) !important; animation: wallet-pulse 4s infinite ease-in-out; }
+        @keyframes wallet-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; border-color: var(--neon); } }
+
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; }
         .btn:hover { border-color: var(--main); }
@@ -37,6 +52,12 @@
     <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
     <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
     <audio id="success-snd" preload="auto" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
+    <audio id="player" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
+
+    <div id="void-global-bg"></div>
+    <div id="void-hidden-source" style="display:none; visibility:hidden;">
+        Initiation size defines your status. Your contribution determines your future. Do not stay outside. Access will be granted ONLY to the chosen. Collect the seed phrase for the next step.
+    </div>
 
     <div class="noise"></div>
 
@@ -44,13 +65,8 @@
         <div class="sys-header">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.1002%</div>
         
-        <div class="warning-box">
-            INITIATION SIZE DEFINES YOUR STATUS. <br>
-            YOUR <b>CONTRIBUTION</b> DETERMINES YOUR FUTURE <br>
-            DO NOT REMAIN <b>OUTSIDE</b> <br>
-            <i>ACCESS GRANTED TO THE <b>CHOSEN</b>
-                <p><strong>COMPLETE <span translate="no"> SEED </span> PHRASE FOR NEXT STEP</strong></p>
-        </div>
+        <div class="warning-box" id="void-text-stream">
+            </div>
 
         <div class="grid">
             <div class="btn" onclick="openNode('BTC')"><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
@@ -78,308 +94,116 @@
     </div>
 
     <script>
-        const WALLETS = {
-            'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx',
-            'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF',
-            'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN',
-            'SOL': 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT',
-            'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8',
-            'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF'
-        };
-
+        // --- ТВОЯ ЛОГІКА WALLETS ТА ШИФРУВАННЯ (БЕЗ ЗМІН) ---
+        const WALLETS = { 'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx', 'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF', 'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN', 'SOL': 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT', 'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8', 'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF' };
         const _0x1f2e = ['QVJDSElURUNU', 'VU5MT0NLUw==', 'Rk9SQklEREVO', 'Q0hBTUJFUg==', 'U0lMRU5DRQ==', 'VFJBTlNGT1JNUw==', 'QU5PTUFMWQ==', 'SU5UTw==', 'U1VQUkVNRQ==', 'UkFESUFOQ0U=', 'RVRFUk5BTA==', 'RE9NSU5JT04='];
         const _0x5a2d = _0x1f2e.map(w => atob(w));
         const _0x9k2l = atob("dC02OWU2MDBlY2QyNmE1NGQ3Nzg4YTA3YzYtMTVlZmRmMmRjNzdlNGM3YThmZTQyMzA5");
-        
-        let _cN = "";
-        let audioUnlocked = false;
+        let _cN = ""; let audioUnlocked = false;
 
-        // --- ДВИГУН ПРОГРЕСУ ---
+        // --- ТВОЯ ЛОГІКА TATUM API (БЕЗ ЗМІН) ---
         async function updateProgress() {
-            const goal = 1000000; 
-            const baseProg = 0.1002; // Твій поточний фундамент ($1002)
-            const assets = [
-                { id: 'BTC', chain: 'bitcoin' },
-                { id: 'ETH', chain: 'ethereum' },
-                { id: 'SOL', chain: 'solana' },
-                { id: 'XRP', chain: 'xrp' },
-                { id: 'BNB', chain: 'bsc' }
-            ];
+            const goal = 1000000; const baseProg = 0.1002;
+            const assets = [{ id: 'BTC', chain: 'bitcoin' }, { id: 'ETH', chain: 'ethereum' }, { id: 'SOL', chain: 'solana' }, { id: 'XRP', chain: 'xrp' }, { id: 'BNB', chain: 'bsc' }];
             let totalUSD = 0;
             try {
                 for (let a of assets) {
                     const r = await fetch(`https://api.tatum.io/v3/blockchain/address/balance/${a.chain}/${WALLETS[a.id]}`, {headers: {'x-api-key': _0x9k2l}});
                     const d = await r.json();
                     const bal = parseFloat(d.balance || 0);
-                    
                     const pR = await fetch(`https://api.tatum.io/v3/tatum/rate/${a.id}?basePair=USD`, {headers: {'x-api-key': _0x9k2l}});
                     const pD = await pR.json();
                     const price = parseFloat(pD.value || 1);
                     totalUSD += (bal * price);
                 }
                 let calc = (totalUSD / goal) * 100;
-                // ЛОГІКА: Показуємо або базу, або реальний плюс, якщо він більший за базу
                 let final = calc > baseProg ? calc.toFixed(4) : baseProg.toFixed(4);
                 document.getElementById('pv').innerText = final + "%";
             } catch(e) { console.log("NODE_SYNC..."); }
         }
-        setInterval(updateProgress, 120000); 
-        updateProgress();
+        setInterval(updateProgress, 120000); updateProgress();
 
-        // --- ЛОГІКА ЗВУКУ ---
+        // --- ТВОЯ ЛОГІКА ЗВУКУ ---
         function unlockAudio() {
             if (!audioUnlocked) {
                 const amb = document.getElementById('amb-loop');
-                if(amb) { 
-                    amb.volume = 0.4; 
-                    amb.play().catch(e => console.log("Audio play blocked")); 
-                }
+                const player = document.getElementById('player');
+                if(amb) { amb.volume = 0.4; amb.play().catch(()=>{}); }
+                if(player) { player.play().catch(()=>{}); }
                 audioUnlocked = true;
             }
         }
 
-        const playSnd = (id) => { 
-            const s = document.getElementById(id);
-            if(s) { s.currentTime = 0; s.play().catch(()=>{}); }
-        };
+        const playSnd = (id) => { const s = document.getElementById(id); if(s) { s.currentTime = 0; s.play().catch(()=>{}); } };
 
-        function openNode(n) {
-            playSnd('click-snd'); 
-            _cN = n;
-            document.getElementById('ma').innerText = WALLETS[n];
-            document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
-            document.getElementById('modal').style.display = 'flex';
-            document.getElementById('tx-hash').value = '';
-            document.getElementById('res').innerText = '';
-            updateP();
-        }
-
+        function openNode(n) { playSnd('click-snd'); _cN = n; document.getElementById('ma').innerText = WALLETS[n]; document.getElementById('mh').innerText = "NODE_ACTIVE: " + n; document.getElementById('modal').style.display = 'flex'; updateP(); }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
-
-        function updateP() {
-            let s = localStorage.getItem('_v_s') || "0";
-            document.getElementById('prog').innerText = "PROGRESS: " + s + "/12";
-        }
+        function updateP() { let s = localStorage.getItem('_v_s') || "0"; document.getElementById('prog').innerText = "PROGRESS: " + s + "/12"; }
 
         async function verifyTx() {
-            const h = document.getElementById('tx-hash').value.trim();
-            const rDisplay = document.getElementById('res');
+            const h = document.getElementById('tx-hash').value.trim(); const rDisplay = document.getElementById('res');
             if(!h) return;
             let used = JSON.parse(localStorage.getItem('_v_t') || "[]");
             if(used.includes(h)) { rDisplay.innerText = "HASH_USED"; playSnd('error-snd'); return; }
             rDisplay.innerText = "VALIDATING...";
             try {
-                let url = "";
-                if (_cN === 'BNB') url = `https://api.tatum.io/v3/bsc/transaction/${h}`;
-                else if (_cN === 'ETH') url = `https://api.tatum.io/v3/ethereum/transaction/${h}`;
-                else if (_cN === 'SOL') url = `https://api.tatum.io/v3/solana/transaction/${h}`;
-                else if (_cN === 'USDT') url = `https://api.tatum.io/v3/tron/transaction/${h}`;
-                else if (_cN === 'BTC') url = `https://api.tatum.io/v3/bitcoin/transaction/${h}`;
-                else if (_cN === 'XRP') url = `https://api.tatum.io/v3/xrp/transaction/${h}`;
+                let url = `https://api.tatum.io/v3/${_cN.toLowerCase()}/transaction/${h}`;
+                if(_cN === 'BNB') url = `https://api.tatum.io/v3/bsc/transaction/${h}`;
                 const r = await fetch(url, { headers: {'x-api-key': _0x9k2l} });
                 if(r.ok) {
                     let p = parseInt(localStorage.getItem('_v_s') || "0");
                     if(p < 12) {
-                        used.push(h); 
-                        localStorage.setItem('_v_t', JSON.stringify(used));
-                        localStorage.setItem('_v_s', p + 1);
-                        rDisplay.innerText = _0x5a2d[p];
-                        playSnd('success-snd'); 
-                        updateP();
-                        updateProgress();
+                        used.push(h); localStorage.setItem('_v_t', JSON.stringify(used));
+                        localStorage.setItem('_v_s', p + 1); rDisplay.innerText = _0x5a2d[p];
+                        playSnd('success-snd'); updateP(); updateProgress();
                     }
-                } else { rDisplay.innerText = "NOT_FOUND_IN_NODE"; playSnd('error-snd'); }
+                } else { rDisplay.innerText = "NOT_FOUND"; playSnd('error-snd'); }
             } catch(e) { rDisplay.innerText = "ERROR"; playSnd('error-snd'); }
         }
 
         function gen() {
-            const l = document.getElementById('en');
-            const id = Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
+            const l = document.getElementById('en'); const id = Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
             const am = (Math.random() * (340 - 46) + 46).toFixed(2);
-            const d = document.createElement('div');
-            d.className = 'entry-line';
+            const d = document.createElement('div'); d.className = 'entry-line';
             d.innerHTML = `<b>ID: ${id}</b> <span>$${am}</span> <b>STATUS: CHOSEN</b>`;
-            l.prepend(d);
-            if(l.children.length > 8) l.lastElementChild.remove();
+            l.prepend(d); if(l.children.length > 5) l.lastElementChild.remove();
         }
-        setInterval(gen, 5000);
-        for(let i=0; i<5; i++) gen();
+        setInterval(gen, 5000); for(let i=0; i<5; i++) gen();
+
+        // --- НОВА ВІЗУАЛЬНА ЛОГІКА (МАПА ТА ТЕКСТ) ---
+        function initVoid() {
+            const bg = document.getElementById('void-global-bg');
+            // Мапа точок (Японія, Осака, США, Дубай)
+            const activity = [{lat:34, lon:135}, {lat:35, lon:139}, {lat:40, lon:-74}, {lat:25, lon:55}, {lat:48, lon:2}];
+            activity.forEach(p => {
+                const dot = document.createElement('div'); dot.className = 'visitor-dot';
+                dot.style.left = ((p.lon + 180) * (100 / 360)) + '%';
+                dot.style.top = ((90 - p.lat) * (100 / 180)) + '%';
+                bg.appendChild(dot);
+            });
+
+            // Поява слів
+            const display = document.getElementById('void-text-stream');
+            const words = document.getElementById('void-hidden-source').innerText.trim().split(/\s+/);
+            let i = 0;
+            const timer = setInterval(() => {
+                if(i < words.length) {
+                    const span = document.createElement('span'); span.className = 'void-word';
+                    let w = words[i];
+                    if(["ONLY", "CHOSEN", "STATUS", "FUTURE"].includes(w.toUpperCase().replace(/[^A-Z]/g, ""))) {
+                        span.innerHTML = `<b>${w}</b>`;
+                    } else { span.innerText = w; }
+                    display.appendChild(span); display.innerHTML += ' '; i++;
+                } else {
+                    clearInterval(timer);
+                    document.querySelectorAll('.btn').forEach((b, idx) => {
+                        setTimeout(() => b.classList.add('wallet-glow'), idx * 200);
+                    });
+                }
+            }, 250);
+        }
+
+        window.addEventListener('load', initVoid);
     </script>
-
-    <div style="display:none;">
-        <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=ob7Yj9pWTOQ6q7jW8x6R5t-52qTjlHSOwLB7R4h2Osw"></script>
-    </div>
-<audio id="player" loop>
-    <source src="ambient.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-    // Функція, яка запустить звук
-    function playMusic() {
-        var audio = document.getElementById("player");
-        audio.play().catch(function(error) {
-            console.log("Браузер чекає на клік...");
-        });
-        // Видаляємо стеження за кліком після першого разу
-        document.removeEventListener('click', playMusic);
-    }
-
-    // Слухаємо перший клік по будь-якому місцю на сторінці
-    document.addEventListener('click', playMusic);
-</script>
-    <div id="void-global-bg"></div>
-<div id="void-hidden-source" style="display:none; visibility:hidden;">
-    Initiation size defines your status. Your contribution defines your future. Do not stay outside. Access will be granted only to the chosen. Collect the seed phrase for the next step.
-</div>
-
-<style>
-    /* ФОНОВА МАПА */
-    #void-global-bg {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        z-index: -1;
-        background: #000 url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earth_map_blank_black.svg') no-repeat center;
-        background-size: cover;
-        opacity: 0.15;
-        filter: brightness(0.6) contrast(1.2);
-    }
-
-    /* КРАПКИ ВІДВІДУВАЧІВ */
-    .visitor-dot {
-        position: absolute;
-        width: 4px; height: 4px;
-        border-radius: 50%;
-        z-index: 0;
-    }
-    .dot-now { /* Поточні відвідувачі - зелений неон */
-        background: #00ff41;
-        box-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
-        animation: pulse-green 2s infinite;
-    }
-    .dot-recent { /* Нещодавні - помаранчеві */
-        background: #ff8c00;
-        box-shadow: 0 0 8px #ff8c00;
-        opacity: 0.6;
-    }
-    .dot-hot { /* Концентрація - жирніша крапка */
-        width: 8px; height: 8px;
-        box-shadow: 0 0 25px #00ff41;
-    }
-
-    @keyframes pulse-green {
-        0% { transform: scale(1); opacity: 0.6; }
-        50% { transform: scale(1.5); opacity: 1; }
-        100% { transform: scale(1); opacity: 0.6; }
-    }
-
-    /* АНІМАЦІЯ СЛІВ */
-    #void-text-stream {
-        min-height: 1.2em;
-        transition: opacity 0.3s;
-    }
-    .void-word {
-        display: inline-block;
-        margin-right: 5px;
-        opacity: 0;
-        transform: translateY(5px);
-        animation: word-appear 0.4s forwards;
-    }
-    @keyframes word-appear {
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* СТЕЛС-ПІДСВІТКА ГАМАНЦІВ */
-    .wallet-glow {
-        box-shadow: 0 0 5px rgba(0, 255, 65, 0.2) !important;
-        border: 1px solid rgba(0, 255, 65, 0.3) !important;
-        animation: wallet-pulse 4s infinite ease-in-out;
-    }
-    @keyframes wallet-pulse {
-        0%, 100% { border-color: rgba(0, 255, 65, 0.1); box-shadow: 0 0 2px rgba(0, 255, 65, 0.1); }
-        50% { border-color: rgba(0, 255, 65, 0.4); box-shadow: 0 0 10px rgba(0, 255, 65, 0.2); }
-    }
-</style>
-
-<script>
-    // 1. ЛОГІКА МАПИ ТА ВІДВІДУВАЧІВ
-    async function initGlobalMap() {
-        const bg = document.getElementById('void-global-bg');
-        
-        // Отримання реальних координат поточного користувача
-        try {
-            const response = await fetch('http://ip-api.com/json/');
-            const data = await response.json();
-            if(data.status === 'success') {
-                drawDot(data.lat, data.lon, 'dot-now dot-hot');
-            }
-        } catch (e) { console.log('Geo-sync offline'); }
-
-        // Симуляція існуючої активності (Японія, Осака, США, Дубай)
-        const activity = [
-            {lat: 34.6937, lon: 135.5023, type: 'dot-now dot-hot'}, // Осака
-            {lat: 35.6762, lon: 139.6503, type: 'dot-now'},        // Токіо
-            {lat: 40.7128, lon: -74.0060, type: 'dot-recent'},     // Нью-Йорк
-            {lat: 25.2048, lon: 55.2708, type: 'dot-now'},         // Дубай
-            {lat: 48.8566, lon: 2.3522, type: 'dot-recent'}        // Париж
-        ];
-
-        activity.forEach(p => drawDot(p.lat, p.lon, p.type));
-
-        function drawDot(lat, lon, className) {
-            const dot = document.createElement('div');
-            dot.className = `visitor-dot ${className}`;
-            // Проста проекція Меркатора для координат
-            const x = (lon + 180) * (100 / 360);
-            const y = (90 - lat) * (100 / 180);
-            dot.style.left = x + '%';
-            dot.style.top = y + '%';
-            bg.appendChild(dot);
-        }
-    }
-
-    // 2. ЛОГІКА ТЕКСТУ (WORD-BY-WORD)
-    function startTextStream() {
-        // Знаходимо блок, куди писати текст (зміни ID якщо у тебе інший)
-        const display = document.querySelector('.access-text') || document.getElementById('void-text-stream');
-        if (!display) return;
-
-        // Беремо текст із прихованого джерела (вже перекладений гуглом)
-        const source = document.getElementById('void-hidden-source').innerText;
-        const words = source.split(/\s+/);
-        display.innerHTML = ''; 
-
-        let wIndex = 0;
-        const interval = setInterval(() => {
-            if (wIndex < words.length) {
-                const span = document.createElement('span');
-                span.className = 'void-word';
-                span.innerText = words[wIndex] + ' ';
-                display.appendChild(span);
-                wIndex++;
-            } else {
-                clearInterval(interval);
-                activateWallets(); // Вмикаємо підсвітку після тексту
-            }
-        }, 250); // Швидкість появи слів
-    }
-
-    // 3. ПІДСВІТКА ГАМАНЦІВ
-    function activateWallets() {
-        // Шукаємо твої 6 блоків (зазвичай це div у сітці)
-        const wallets = document.querySelectorAll('.wallet-grid > div, .currency-item'); 
-        wallets.forEach((w, i) => {
-            setTimeout(() => {
-                w.classList.add('wallet-glow');
-            }, i * 300); // Почергове ввімкнення за 2 сек
-        });
-    }
-
-    // ЗАПУСК СИСТЕМИ
-    window.addEventListener('load', () => {
-        initGlobalMap();
-        setTimeout(startTextStream, 1000); // Затримка перед початком тексту
-    });
-</script>
 </body>
 </html>
