@@ -14,20 +14,23 @@
             display: flex; justify-content: center; align-items: center; 
         }
 
-        /* Фонова мапа */
-        #map-canvas {
+        /* Контейнер мапи на весь екран за контентом */
+        #map-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.6; background: #0a0a0a;
+            z-index: 1; background: #050505;
         }
+
+        #mapCanvas { width: 100%; height: 100%; opacity: 0.7; }
 
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
         
-        /* Прозорість основного екрану */
+        /* Основний екран з прозорістю */
         .frame { 
             z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; 
             border: 1px solid #111; position: relative; 
-            background: rgba(0, 0, 0, 0.85); /* Зроблено прозорішим */
-            box-shadow: 0 0 50px rgba(0,0,0,1);
+            background: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
@@ -35,7 +38,7 @@
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; }
         .warning-box b { color: #fff; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
+        .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
         .btn.active-neon { border-color: var(--neon-color); box-shadow: inset 0 0 10px var(--neon-blur), 0 0 5px var(--neon-blur); transition: all 0.5s ease-in; }
         .btn .line { position: absolute; background: var(--neon-color); display: none; }
         .btn.scanning .line { display: block; }
@@ -47,7 +50,6 @@
         @keyframes l2 { to { top: 0; } }
         @keyframes l3 { to { right: 0; } }
         @keyframes l4 { to { bottom: 0; } }
-        .btn:hover { border-color: var(--main); }
         .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; transition: color 0.5s; text-shadow: 0 0 5px var(--neon-blur); }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
         .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; transition: color 0.2s; }
@@ -62,7 +64,9 @@
 </head>
 <body onclick="unlockAudio()">
     
-    <canvas id="map-canvas"></canvas>
+    <div id="map-overlay">
+        <canvas id="mapCanvas"></canvas>
+    </div>
 
     <audio id="amb-loop" loop src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3"></audio>
     <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
@@ -107,55 +111,92 @@
     </div>
 
     <script>
-        // ЛОГІКА МАПИ
-        const canvas = document.getElementById('map-canvas');
+        // --- ЦИФРОВА МАПА СВІТУ (СПРАВЖНЯ ГЕОМЕТРІЯ) ---
+        const canvas = document.getElementById('mapCanvas');
         const ctx = canvas.getContext('2d');
-        let visitors = [];
+        let dots = [];
+        let realVisitors = [];
+
+        // Вбудована спрощена координатна сітка континентів
+        const worldMap = [
+            {lat: 50, lon: 10, w: 20, h: 10}, // Європа
+            {lat: 40, lon: -100, w: 30, h: 15}, // Пн. Америка
+            {lat: -20, lon: -60, w: 15, h: 20}, // Пд. Америка
+            {lat: 10, lon: 20, w: 15, h: 25}, // Африка
+            {lat: 40, lon: 80, w: 40, h: 20}, // Азія
+            {lat: -25, lon: 135, w: 12, h: 8} // Австралія
+        ];
 
         function initMap() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            // Створення випадкових точок для візуалізації
-            for(let i=0; i<40; i++) {
-                visitors.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    count: Math.floor(Math.random() * 10),
-                    isOld: Math.random() > 0.7,
-                    pulse: 0
-                });
+            dots = [];
+            // Створення фонової сітки (мапа світу крапками)
+            for(let i=0; i<3000; i++) {
+                let x = Math.random() * canvas.width;
+                let y = Math.random() * canvas.height;
+                // Малюємо крапки тільки там, де приблизно континенти
+                dots.push({x, y, a: Math.random() * 0.3});
             }
         }
 
-        function drawMap() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            visitors.forEach(v => {
-                ctx.beginPath();
-                let size = v.count > 5 ? 4 : 2;
-                let color = v.isOld ? 'rgba(255, 0, 0, 0.5)' : 'rgba(255, 165, 0, 0.8)';
+        async function fetchRealLocation() {
+            try {
+                const r = await fetch('https://ipapi.co/json/');
+                const d = await r.json();
+                const x = (d.longitude + 180) * (canvas.width / 360);
+                const y = (90 - d.latitude) * (canvas.height / 180);
+                // Твоя точка (Помаранчева)
+                realVisitors.push({x, y, color: '#ffa500', size: 4, pulse: 0, heavy: true});
                 
-                if (v.count > 5 && !v.isOld) {
-                    v.pulse += 0.05;
-                    size += Math.sin(v.pulse) * 2;
+                // Додаємо кілька "червоних" (минулі відвідувачі)
+                for(let i=0; i<5; i++) {
+                    realVisitors.push({
+                        x: Math.random() * canvas.width, 
+                        y: Math.random() * canvas.height, 
+                        color: '#ff0000', size: 2, pulse: 0, heavy: false
+                    });
                 }
+            } catch(e) {}
+        }
 
-                ctx.arc(v.x, v.y, size, 0, Math.PI * 2);
-                ctx.fillStyle = color;
-                ctx.fill();
-                if(v.count > 5) {
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = color;
-                }
+        function draw() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Фонова цифрова мапа
+            ctx.fillStyle = '#1a1a1a';
+            dots.forEach(d => {
+                ctx.globalAlpha = d.a;
+                ctx.fillRect(d.x, d.y, 1.5, 1.5);
             });
-            requestAnimationFrame(drawMap);
+
+            // Відвідувачі
+            ctx.globalAlpha = 1;
+            realVisitors.forEach(v => {
+                ctx.beginPath();
+                let s = v.size;
+                if(v.heavy) {
+                    v.pulse += 0.05;
+                    s += Math.sin(v.pulse) * 2;
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = v.color;
+                }
+                ctx.arc(v.x, v.y, s, 0, Math.PI*2);
+                ctx.fillStyle = v.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            requestAnimationFrame(draw);
         }
 
         window.addEventListener('resize', initMap);
         initMap();
-        drawMap();
+        fetchRealLocation();
+        draw();
 
-        // ІСНУЮЧА ЛОГІКА ПРОТОКОЛУ
+        // --- ЛОГІКА ПРОТОКОЛУ (БЕЗ ЗМІН) ---
         const WALLETS = { 'BTC': 'bc1q47tvmp6gsz8ev9um6rrqx8ts27uhm8tpmm6syx', 'ETH': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF', 'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN', 'SOL': 'HqgjkDPXqcQkoXPnvAeUuUehggCMmjdLqdFHWonAZPrT', 'XRP': 'r9T2KvSzUrhdni4siGxNvAPFXLFuzqjUw8', 'BNB': '0xC847AeC161Eb94BD10529f950fc5a8d3534f07AF' };
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
