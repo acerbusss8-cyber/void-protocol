@@ -4,152 +4,219 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VOID PROTOCOL</title>
+    <meta name="google" content="notranslate">
+    
     <style>
-        body, html {
-            margin: 0; padding: 0;
-            background-color: #000; color: #fff;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh;
+        body {
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* МАПА НА ФОНІ */
-        #void-world-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; opacity: 0.12; filter: invert(0.5) brightness(0.2);
+        /* Фонова мапа світу */
+        #bg-map-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
             background: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earth_map_blank_black.svg') no-repeat center;
             background-size: cover;
+            opacity: 0.12;
+            filter: brightness(0.4) contrast(1.2);
         }
 
-        .container {
-            width: 100%; max-width: 450px; text-align: center;
-            padding: 40px 20px; z-index: 1; box-sizing: border-box;
+        /* Текстова зона */
+        .text-trigger-zone {
+            margin-top: 15vh;
+            max-width: 800px;
+            text-align: center;
+            padding: 20px;
+            z-index: 10;
         }
 
-        .header-red { color: #ff0000; font-size: 11px; letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase; }
-        .anomaly-counter { font-size: 64px; font-weight: bold; margin-bottom: 25px; }
-
-        /* ТЕКСТ З ПЕРЕНОСОМ */
-        #void-text-display {
-            font-size: 14px; color: #aaa; line-height: 1.8;
-            margin-bottom: 40px; min-height: 140px; text-transform: uppercase;
-            white-space: pre-wrap; word-wrap: break-word; text-align: center;
+        .dynamic-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            min-height: 150px;
         }
 
-        /* СІТКА ГАМАНЦІВ - ПОВЕРНУТО КЛІКАБЕЛЬНІСТЬ */
-        .wallet-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 12px; margin-bottom: 40px; width: 100%;
+        /* Анімація появи слів */
+        .word-fade {
+            opacity: 0;
+            display: inline-block;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            margin-right: 8px;
         }
 
-        .wallet-box {
-            border: 1px solid #1a1a1a; padding: 15px 5px;
-            background: rgba(10, 10, 10, 0.7);
-            transition: all 0.6s ease;
-            display: flex; flex-direction: column; align-items: center;
-            text-decoration: none; color: inherit; cursor: pointer;
+        .word-fade.visible {
+            opacity: 1;
         }
 
-        .wallet-icon { font-size: 20px; margin-bottom: 8px; color: #444; }
-        .wallet-name { font-size: 9px; color: #555; margin-bottom: 8px; letter-spacing: 1px; }
-        .initiation-label { font-size: 10px; color: #fff; font-style: italic; }
+        .highlight-word {
+            color: #00ff41;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
 
-        /* ЛОГ */
-        .log-section { width: 100%; text-align: left; border-top: 1px solid #111; padding-top: 20px; }
-        .log-title { color: #ff0000; font-size: 10px; letter-spacing: 2px; margin-bottom: 12px; }
-        .log-row { display: flex; justify-content: space-between; font-size: 9px; color: #222; margin-bottom: 6px; border-bottom: 1px solid #080808; }
+        /* Сітка гаманців */
+        .wallets-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px auto;
+            max-width: 900px;
+            z-index: 5;
+        }
 
-        .void-dot { position: absolute; width: 3px; height: 3px; background: #00ff41; border-radius: 50%; box-shadow: 0 0 8px #00ff41; animation: pulse-dot 3s infinite; }
-        @keyframes pulse-dot { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; } }
+        .wallet-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #111;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.8s ease;
+        }
+
+        /* Слабке неонове підсвічування рамок (-60% яскравості) */
+        .active-pulse {
+            border-color: rgba(0, 255, 65, 0.35) !important;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.15);
+        }
+
+        .icon { font-size: 2rem; margin-bottom: 10px; color: #fff; }
+        .name { font-size: 0.8rem; margin-bottom: 15px; letter-spacing: 1px; }
+
+        .init-button {
+            color: #00ff41;
+            border: 1px solid #00ff41;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 0.7rem;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .init-button:hover {
+            background: #00ff41;
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .wallets-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
-<body onclick="startVoidSystem()">
+<body>
 
-    <div id="void-world-bg"></div>
+    <div id="bg-map-container" class="notranslate" translate="no"></div>
 
-    <div id="void-source-text" style="display:none;" aria-hidden="true" translate="yes">
-        РОЗМІР ІНІЦІАЦІЇ ВИЗНАЧАЄ ВАШ СТАТУС. ВАШ ВНЕСОК ВИЗНАЧАЄ ВАШЕ МАЙБУТНЄ. НЕ ЗАЛИШАЙСЯ ЗОВНІ. ДОСТУП БУДЕ НАДАНО ТІЛЬКИ ОБРАНИМ. ЗБЕРИ СІД ФРАЗУ ДЛЯ НАСТУПНОГО КРОКУ.
-    </div>
-
-    <div class="container">
-        <div class="header-red">СТВОРЕННЯ_АНОМАЛІЇ</div>
-        <div class="anomaly-counter">0,1002%</div>
-
-        <div id="void-text-display"></div>
-
-        <div class="wallet-grid">
-            <a href="ВАШЕ_ПОСИЛАННЯ_BTC" class="wallet-box"><div class="wallet-icon">₿</div><div class="wallet-name">BITCOIN</div><div class="initiation-label">ІНІЦІАЦІЯ</div></a>
-            <a href="ВАШЕ_ПОСИЛАННЯ_ETH" class="wallet-box"><div class="wallet-icon">Ξ</div><div class="wallet-name">ERC20</div><div class="initiation-label">ІНІЦІАЦІЯ</div></a>
-            <a href="ВАШЕ_ПОСИЛАННЯ_USDT" class="wallet-box"><div class="wallet-icon">₮</div><div class="wallet-name">TRC20</div><div class="initiation-label">ІНІЦІАЦІЯ</div></a>
-            <a href="ВАШЕ_ПОСИЛАННЯ_SOL" class="wallet-box"><div class="wallet-icon">◎</div><div class="wallet-name">SOLANA</div><div class="initiation-label">ІНІЦІАЦІЯ</div></a>
-            <a href="ВАШЕ_ПОСИЛАННЯ_XRP" class="wallet-box"><div class="wallet-icon">✕</div><div class="wallet-name">RIPPLE</div><div class="initiation-label">ІНІЦІАЦІЯ</div></a>
-            <a href="ВАШЕ_ПОСИЛАННЯ_BNB" class="wallet-box"><div class="wallet-icon">Б</div><div class="wallet-name">BEP20</div><div class="initiation-label">ІНІЦІАЦІЯ</div></a>
-        </div>
-
-        <div class="log-section">
-            <div class="log-title">ОСТАННІ ІНІЦІАЦІЇ</div>
-            <div class="log-row"><span>ID: 591...6EC</span> <span>150.75 USD</span> <span style="color:#444">ОБРАНИЙ</span></div>
-            <div class="log-row"><span>ID: 664...FE0</span> <span>188.26 USD</span> <span style="color:#444">ОБРАНИЙ</span></div>
+    <div class="text-trigger-zone">
+        <div id="void-output" class="dynamic-text"></div>
+        <div id="hidden-source" style="display:none;">
+            РОЗМІР&nbsp;ІНІЦІАЦІЇ&nbsp;ВИЗНАЧАЄ&nbsp;ВАШ&nbsp;СТАТУС.&nbsp;ВАШ&nbsp;ВНЕСОК&nbsp;ВИЗНАЧАЄ&nbsp;ВАШЕ&nbsp;МАЙБУТНЄ.&nbsp;НЕ&nbsp;ЗАЛИШАЙСЯ&nbsp;ЗОВНІ.&nbsp;ДОСТУП&nbsp;БУДЕ&nbsp;НАДАНО&nbsp;ТІЛЬКИ&nbsp;ОБРАНИМ.&nbsp;ЗБЕРИ&nbsp;СВІД&nbsp;ФРАЗУ&nbsp;ДЛЯ&nbsp;НАСТУПНОГО&nbsp;КРОКУ.
         </div>
     </div>
 
-    <audio id="bg-sound" loop>
-        <source src="music.mp3" type="audio/mpeg">
+    <div class="wallets-grid notranslate" translate="no">
+        <div class="wallet-card" id="w1">
+            <div class="icon">₿</div><div class="name">BITCOIN</div>
+            <a href="LINK_1" class="init-button">ІНІЦІАЦІЯ</a>
+        </div>
+        <div class="wallet-card" id="w2">
+            <div class="icon">Ξ</div><div class="name">ERC20</div>
+            <a href="LINK_2" class="init-button">ІНІЦІАЦІЯ</a>
+        </div>
+        <div class="wallet-card" id="w3">
+            <div class="icon">₮</div><div class="name">TRC20</div>
+            <a href="LINK_3" class="init-button">ІНІЦІАЦІЯ</a>
+        </div>
+        <div class="wallet-card" id="w4">
+            <div class="icon">◎</div><div class="name">SOLANA</div>
+            <a href="LINK_4" class="init-button">ІНІЦІАЦІЯ</a>
+        </div>
+        <div class="wallet-card" id="w5">
+            <div class="icon">✕</div><div class="name">RIPPLE</div>
+            <a href="LINK_5" class="init-button">ІНІЦІАЦІЯ</a>
+        </div>
+        <div class="wallet-card" id="w6">
+            <div class="icon">Б</div><div class="name">BEP20</div>
+            <a href="LINK_6" class="init-button">ІНІЦІАЦІЯ</a>
+        </div>
+    </div>
+
+    <audio id="void-ambient" loop>
+        <source src="твій_файл_музики.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        let systemStarted = false;
+        const audio = document.getElementById('void-ambient');
+        const source = document.getElementById('hidden-source');
+        const output = document.getElementById('void-output');
 
-        // ПОВЕРНЕННЯ ЗВУКУ ТА ЗАПУСК ПРИ ПЕРШОМУ КЛІКУ
-        function startVoidSystem() {
-            if (systemStarted) return;
-            systemStarted = true;
-
-            const audio = document.getElementById('bg-sound');
-            audio.play().catch(e => console.log("Sound error:", e));
-
-            spawnDots();
-            setTimeout(typeWords, 500);
+        // 1. АВТОЗАПУСК МУЗИКИ ПРИ ВЗАЄМОДІЇ
+        function enableAudio() {
+            audio.play().catch(() => {});
+            document.removeEventListener('mousedown', enableAudio);
+            document.removeEventListener('touchstart', enableAudio);
+            document.removeEventListener('keydown', enableAudio);
         }
+        document.addEventListener('mousedown', enableAudio);
+        document.addEventListener('touchstart', enableAudio);
+        document.addEventListener('keydown', enableAudio);
 
-        function typeWords() {
-            const src = document.getElementById('void-source-text');
-            const dest = document.getElementById('void-text-display');
-            const words = (src.innerText || src.textContent).trim().split(/\s+/);
-            let idx = 0;
+        // 2. АНІМАЦІЯ СЛІВ
+        async function runSequence() {
+            // Пауза 1.2с для того, щоб перекладач встиг обробити прихований текст
+            await new Promise(r => setTimeout(r, 1200));
+            
+            const text = source.innerText.trim();
+            const words = text.split(/\s+/);
+            output.innerHTML = '';
 
-            function printNext() {
-                if (idx < words.length) {
-                    dest.innerHTML += words[idx] + ' ';
-                    idx++;
-                    setTimeout(printNext, 250);
-                } else {
-                    setTimeout(activateGlow, 500);
+            for (let word of words) {
+                let span = document.createElement('span');
+                span.innerHTML = word;
+                span.className = 'word-fade';
+                
+                // Якщо слово "ТІЛЬКИ" (або "ONLY" при перекладі) - виділяємо його
+                if (word.toUpperCase().includes("ТІЛЬКИ") || word.toUpperCase().includes("ONLY")) {
+                    span.classList.add('highlight-word');
+                }
+                
+                output.appendChild(span);
+                
+                // Ефект появи слова
+                await new Promise(r => setTimeout(r, 280)); 
+                span.classList.add('visible');
+
+                // Додаткова затримка на важливих словах
+                if (span.classList.contains('highlight-word')) {
+                    await new Promise(r => setTimeout(r, 600));
                 }
             }
-            printNext();
+
+            // 3. ПІДСВІТКА ГАМАНЦІВ ПІСЛЯ ТЕКСТУ
+            startWalletPulse();
         }
 
-        function activateGlow() {
-            const boxes = document.querySelectorAll('.wallet-box');
-            boxes.forEach((box, i) => {
+        function startWalletPulse() {
+            const cards = document.querySelectorAll('.wallet-card');
+            cards.forEach((card, index) => {
                 setTimeout(() => {
-                    box.style.borderColor = "rgba(0, 255, 65, 0.25)";
-                    box.style.boxShadow = "0 0 10px rgba(0, 255, 65, 0.15)";
-                }, i * 300);
+                    card.classList.add('active-pulse');
+                }, index * 350); // Почерговий запуск
             });
         }
 
-        function spawnDots() {
-            const bg = document.getElementById('void-world-bg');
-            const points = [{t:'42%',l:'81%'}, {t:'38%',l:'22%'}, {t:'48%',l:'55%'}];
-            points.forEach(p => {
-                const d = document.createElement('div');
-                d.className = 'void-dot';
-                d.style.top = p.t; d.style.left = p.l;
-                bg.appendChild(d);
-            });
-        }
+        window.addEventListener('load', runSequence);
     </script>
 </body>
 </html>
