@@ -11,13 +11,13 @@
             background-color: #000;
             color: #fff;
             font-family: 'Courier New', Courier, monospace;
-            overflow-x: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
-        /* ФОНОВА МАПА СВІТУ */
+        /* ФОНОВА МАПА */
         #void-world-bg {
             position: fixed;
             top: 0;
@@ -27,41 +27,39 @@
             z-index: -1;
             background: url('https://upload.wikimedia.org/wikipedia/commons/c/c4/Earth_map_blank_black.svg') no-repeat center;
             background-size: cover;
-            opacity: 0.1;
-            filter: invert(0.6) brightness(0.2);
+            opacity: 0.15;
+            filter: invert(0.5) brightness(0.3);
         }
 
-        /* ГОЛОВНИЙ КОНТЕЙНЕР */
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 450px;
             text-align: center;
-            padding-top: 50px;
+            padding: 40px 20px;
             z-index: 1;
         }
 
         .header-red {
             color: #ff0000;
             font-size: 12px;
-            letter-spacing: 5px;
-            margin-bottom: 20px;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
         }
 
         .anomaly-counter {
-            font-size: 80px;
+            font-size: 72px;
             font-weight: bold;
-            margin-bottom: 40px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
         }
 
-        /* БЛОК ТЕКСТУ (Виправлені пробіли та переклад) */
+        /* ТЕКСТОВИЙ БЛОК */
         #void-text-display {
-            font-size: 14px;
-            color: #888;
-            line-height: 1.8;
-            margin-bottom: 50px;
-            min-height: 120px;
-            padding: 0 20px;
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            min-height: 100px;
             text-transform: uppercase;
         }
 
@@ -69,43 +67,181 @@
         .wallet-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 50px;
-            padding: 0 10px;
+            gap: 12px;
+            margin-bottom: 40px;
         }
 
         .wallet-box {
-            border: 1px solid #333;
-            padding: 20px 10px;
-            cursor: pointer;
-            transition: all 0.5s ease;
-            background: rgba(0,0,0,0.5);
+            border: 1px solid #222;
+            padding: 15px 5px;
+            background: rgba(10, 10, 10, 0.8);
+            transition: all 0.6s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
         }
 
-        .wallet-box img {
-            width: 30px;
-            filter: grayscale(1) invert(1);
-            margin-bottom: 10px;
+        .wallet-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #555;
         }
 
         .wallet-name {
-            font-size: 10px;
-            color: #555;
-            margin-bottom: 10px;
+            font-size: 9px;
+            color: #444;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
         }
 
-        .initiation-btn {
-            font-size: 12px;
+        .initiation-label {
+            font-size: 10px;
             color: #fff;
-            letter-spacing: 2px;
             font-style: italic;
+            letter-spacing: 1px;
         }
 
         /* ЛОГ ТРАНЗАКЦІЙ */
-        .transactions-log {
-            width: 90%;
-            border-top: 1px solid #222;
-            padding-top: 20px;
+        .log-section {
+            width: 100%;
             text-align: left;
+            border-top: 1px solid #111;
+            padding-top: 20px;
+        }
+
+        .log-title {
+            color: #ff0000;
             font-size: 11px;
-            color:
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .log-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #333;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #080808;
+            padding-bottom: 3px;
+        }
+
+        .status-chosen { color: #555; }
+
+        /* КРАПКИ */
+        .void-dot {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #00ff41;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00ff41;
+            animation: pulse-dot 3s infinite;
+        }
+        @keyframes pulse-dot { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; } }
+    </style>
+</head>
+<body>
+
+    <div id="void-world-bg"></div>
+
+    <div id="void-source-text" style="display:none;" aria-hidden="true" translate="yes">
+        РОЗМІР ІНІЦІАЦІЇ ВИЗНАЧАЄ ВАШ СТАТУС. ВАШ ВНЕСОК ВИЗНАЧАЄ ВАШЕ МАЙБУТНЄ. НЕ ЗАЛИШАЙСЯ ЗОВНІ. ДОСТУП БУДЕ НАДАНО ТІЛЬКИ ОБРАНИМ. ЗБЕРИ СІД ФРАЗУ ДЛЯ НАСТУПНОГО КРОКУ.
+    </div>
+
+    <div class="container">
+        <div class="header-red">СТВОРЕННЯ_АНОМАЛІЇ</div>
+        <div class="anomaly-counter">0,1002%</div>
+
+        <div id="void-text-display"></div>
+
+        <div class="wallet-grid">
+            <div class="wallet-box">
+                <div class="wallet-icon">₿</div>
+                <div class="wallet-name">BITCOIN</div>
+                <div class="initiation-label">ІНІЦІАЦІЯ</div>
+            </div>
+            <div class="wallet-box">
+                <div class="wallet-icon">Ξ</div>
+                <div class="wallet-name">ERC20</div>
+                <div class="initiation-label">ІНІЦІАЦІЯ</div>
+            </div>
+            <div class="wallet-box">
+                <div class="wallet-icon">₮</div>
+                <div class="wallet-name">TRC20</div>
+                <div class="initiation-label">ІНІЦІАЦІЯ</div>
+            </div>
+            <div class="wallet-box">
+                <div class="wallet-icon">◎</div>
+                <div class="wallet-name">SOLANA</div>
+                <div class="initiation-label">ІНІЦІАЦІЯ</div>
+            </div>
+            <div class="wallet-box">
+                <div class="wallet-icon">✕</div>
+                <div class="wallet-name">RIPPLE</div>
+                <div class="initiation-label">ІНІЦІАЦІЯ</div>
+            </div>
+            <div class="wallet-box">
+                <div class="wallet-icon">Б</div>
+                <div class="wallet-name">BEP20</div>
+                <div class="initiation-label">ІНІЦІАЦІЯ</div>
+            </div>
+        </div>
+
+        <div class="log-section">
+            <div class="log-title">ОСТАННІ ІНІЦІАЦІЇ</div>
+            <div class="log-row"><span>ID: 591...6EC</span> <span>150.75 USD</span> <span class="status-chosen">ОБРАНИЙ</span></div>
+            <div class="log-row"><span>ID: 664...FE0</span> <span>188.26 USD</span> <span class="status-chosen">ОБРАНИЙ</span></div>
+            <div class="log-row"><span>ID: 808...AA4</span> <span>65.24 USD</span> <span class="status-chosen">ОБРАНИЙ</span></div>
+            <div class="log-row"><span>ID: E26...64E</span> <span>281.76 USD</span> <span class="status-chosen">ОБРАНИЙ</span></div>
+        </div>
+    </div>
+
+    <script>
+        function typeWords() {
+            const src = document.getElementById('void-source-text');
+            const dest = document.getElementById('void-text-display');
+            const words = (src.innerText || src.textContent).trim().split(/\s+/);
+            let idx = 0;
+
+            function printNext() {
+                if (idx < words.length) {
+                    dest.innerHTML += words[idx] + '&nbsp;';
+                    idx++;
+                    setTimeout(printNext, 220);
+                } else {
+                    setTimeout(activateGlow, 500);
+                }
+            }
+            printNext();
+        }
+
+        function activateGlow() {
+            const boxes = document.querySelectorAll('.wallet-box');
+            boxes.forEach((box, i) => {
+                setTimeout(() => {
+                    box.style.borderColor = "rgba(0, 255, 65, 0.3)";
+                    box.style.boxShadow = "0 0 12px rgba(0, 255, 65, 0.2)";
+                }, i * 300);
+            });
+        }
+
+        function spawnDots() {
+            const bg = document.getElementById('void-world-bg');
+            const points = [{t:'42%',l:'81%'}, {t:'38%',l:'22%'}, {t:'48%',l:'55%'}];
+            points.forEach(p => {
+                const d = document.createElement('div');
+                d.className = 'void-dot';
+                d.style.top = p.t; d.style.left = p.l;
+                bg.appendChild(d);
+            });
+        }
+
+        window.onload = () => {
+            spawnDots();
+            setTimeout(typeWords, 1200);
+        };
+    </script>
+</body>
+</html>
