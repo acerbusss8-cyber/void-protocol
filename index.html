@@ -97,6 +97,7 @@
         // --- ДВИГУН ПРОГРЕСУ ---
         async function updateProgress() {
             const goal = 1000000; 
+            const baseProg = 0.1002; // Твій поточний фундамент ($1002)
             const assets = [
                 { id: 'BTC', chain: 'bitcoin' },
                 { id: 'ETH', chain: 'ethereum' },
@@ -110,13 +111,15 @@
                     const r = await fetch(`https://api.tatum.io/v3/blockchain/address/balance/${a.chain}/${WALLETS[a.id]}`, {headers: {'x-api-key': _0x9k2l}});
                     const d = await r.json();
                     const bal = parseFloat(d.balance || 0);
+                    
                     const pR = await fetch(`https://api.tatum.io/v3/tatum/rate/${a.id}?basePair=USD`, {headers: {'x-api-key': _0x9k2l}});
                     const pD = await pR.json();
                     const price = parseFloat(pD.value || 1);
                     totalUSD += (bal * price);
                 }
                 let calc = (totalUSD / goal) * 100;
-                let final = calc > 0.1002 ? calc.toFixed(4) : "0.1002";
+                // ЛОГІКА: Показуємо або базу, або реальний плюс, якщо він більший за базу
+                let final = calc > baseProg ? calc.toFixed(4) : baseProg.toFixed(4);
                 document.getElementById('pv').innerText = final + "%";
             } catch(e) { console.log("NODE_SYNC..."); }
         }
