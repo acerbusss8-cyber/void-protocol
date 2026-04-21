@@ -206,6 +206,23 @@
     <div style="display:none;">
         <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=ob7Yj9pWTOQ6q7jW8x6R5t-52qTjlHSOwLB7R4h2Osw"></script>
     </div>
+<audio id="player" loop>
+    <source src="ambient.mp3" type="audio/mpeg">
+</audio>
 
+<script>
+    // Функція, яка запустить звук
+    function playMusic() {
+        var audio = document.getElementById("player");
+        audio.play().catch(function(error) {
+            console.log("Браузер чекає на клік...");
+        });
+        // Видаляємо стеження за кліком після першого разу
+        document.removeEventListener('click', playMusic);
+    }
+
+    // Слухаємо перший клік по будь-якому місцю на сторінці
+    document.addEventListener('click', playMusic);
+</script>
 </body>
 </html>
