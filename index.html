@@ -44,7 +44,8 @@
         .action-btn { background: var(--accent); color: #000; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
         #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
         #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
-        .disclaimer { font-size: 0.5rem; color: var(--accent); margin-top: 5px; width: 90%; line-height: 1.2; text-transform: uppercase; }
+        /* Розмір застереження змінено на 10.5px як у підказки */
+        .disclaimer { font-size: 10.5px; color: var(--accent); margin-top: 5px; width: 90%; line-height: 1.2; text-transform: uppercase; }
     </style>
 </head>
 <body onclick="unlockAudio()">
@@ -57,8 +58,7 @@
     <div class="frame">
         <div class="sys-header">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.1088%</div>
-        <div class="warning-box" id="typewriter-box">
-            </div>
+        <div class="warning-box" id="typewriter-box"></div>
         <div class="grid" id="wallet-grid">
             <div class="btn" onclick="openNode('BTC')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="openNode('ETH')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
@@ -88,7 +88,6 @@
         const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
         const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
 
-        // Очищені речення без тегів нахилу та жирності для чіткого перекладу
         const sentences = [
             "INITIATION SIZE DEFINES YOUR STATUS",
             "YOUR CONTRIBUTION DETERMINES YOUR FUTURE",
@@ -99,21 +98,16 @@
 
         async function startProtocolSequence() {
             const box = document.getElementById('typewriter-box');
-            
-            // 1. Поява речень по черзі
             for (let i = 0; i < sentences.length; i++) {
                 const line = document.createElement('div');
                 line.style.opacity = "0";
                 line.style.transition = "opacity 0.5s";
                 line.innerText = sentences[i];
                 box.appendChild(line);
-                
                 await new Promise(r => setTimeout(r, 100)); 
                 line.style.opacity = "1";
-                await new Promise(r => setTimeout(r, 666)); // пауза між реченнями
+                await new Promise(r => setTimeout(r, 666));
             }
-
-            // 2. Анімація рамок гаманців
             const btns = document.querySelectorAll('.btn');
             for (let i = 0; i < btns.length; i++) {
                 btns[i].classList.add('scanning');
@@ -121,13 +115,12 @@
                 btns[i].classList.remove('scanning');
                 btns[i].classList.add('active-neon');
             }
-
-            // 3. Анімація підсвітки кнопок INITIATE та світіння символів
             startInitiateAndSymbols();
         }
 
         async function startInitiateAndSymbols() {
             const calls = document.querySelectorAll('.call');
+            const btns = document.querySelectorAll('.btn');
             const symbols = document.querySelectorAll('.sym');
             
             symbols.forEach(sym => { 
@@ -135,6 +128,7 @@
                 sym.style.textShadow = '0 0 8px var(--neon-color)';
             });
 
+            let cycleCount = 0;
             while(true) {
                 for(let i = 0; i < calls.length; i++) {
                     calls[i].style.color = 'var(--neon-color)';
@@ -142,6 +136,15 @@
                     await new Promise(r => setTimeout(r, 333));
                     calls[i].style.color = '#fff';
                     calls[i].style.textShadow = 'none';
+                    
+                    // Рахуємо цикли для останнього елемента
+                    if (i === calls.length - 1) {
+                        cycleCount++;
+                        // Після того, як останній проблимнув 3 рази, вимикаємо рамки
+                        if (cycleCount === 3) {
+                            btns.forEach(btn => btn.classList.remove('active-neon'));
+                        }
+                    }
                 }
             }
         }
