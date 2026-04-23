@@ -9,7 +9,23 @@
         :root { --main: #fff; --accent: #ff0000; --neon-color: #7cfc00; --neon-blur: rgba(124, 252, 0, 0.4); }
         html, body { background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
-        .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
+        .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; transition: opacity 0.5s ease; }
+        
+        /* Elements that will glitch and disappear */
+        .glitch-out { animation: glitch-disappear 0.8s ease forwards; animation-delay: 22s; }
+
+        @keyframes glitch-disappear {
+            0% { opacity: 1; transform: translate(0,0); filter: hue-rotate(0deg); }
+            10% { opacity: 0.8; transform: translate(-5px, 2px); filter: hue-rotate(90deg); }
+            20% { opacity: 1; transform: translate(5px, -2px); filter: hue-rotate(180deg); }
+            30% { opacity: 0.5; transform: translate(-10px, 0); filter: hue-rotate(270deg); }
+            40% { opacity: 1; transform: translate(10px, 2px); filter: hue-rotate(360deg); }
+            50% { opacity: 0.2; transform: translate(-2px, -5px); }
+            60% { opacity: 1; transform: translate(2px, 5px); }
+            70% { opacity: 0; transform: translate(0,0); }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; display: none; }
+        }
+
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 5.5rem; font-weight: 900; margin: 0; letter-spacing: -5px; line-height: 1; white-space: nowrap; }
         
@@ -23,6 +39,8 @@
 
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; min-height: 120px; text-transform: uppercase; }
         .warning-box div { margin-bottom: 4px; }
+        
+        /* Grid container will NOT glitch, only buttons inside */
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
         .btn.active-neon { border-color: var(--neon-color); box-shadow: inset 0 0 10px var(--neon-blur), 0 0 5px var(--neon-blur); transition: all 0.5s ease-in; }
@@ -40,9 +58,13 @@
         .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; transition: color 0.5s; color: #111; }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
         .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; transition: color 0.2s; }
+        
+        /* Entries box WILL glitch */
         .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
         .entries-title { font-size: 0.5rem; color: var(--neon-color); letter-spacing: 3px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 5px; }
         .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        
+        /* Modal WILL NOT glitch */
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
         .input-hint { font-size: 10.5px; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.5px; width: 90%; text-transform: uppercase; }
@@ -60,17 +82,21 @@
     <audio id="success-snd" preload="auto" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
     <audio id="bgMusic" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
     <div class="noise"></div>
+    
     <div class="frame">
-        <div class="sys-header">ANOMALY_CREATING</div>
-        <div class="pct" id="pv">0.1786%</div>
-
-        <div class="timer-container">
-            <div class="timer-label">TIME REMAINING</div>
-            <div id="countdown">00:00:00:00:000</div>
-            <div class="criteria-label">CRITERIA: 100% OR TIME_OUT. WHICHEVER IS FIRST</div>
+        <div class="glitch-out">
+            <div class="sys-header">ANOMALY_CREATING</div>
+            <div class="pct" id="pv">0.1786%</div>
         </div>
 
-        <div class="warning-box" id="typewriter-box"></div>
+        <div class="timer-container">
+            <div class="timer-label glitch-out">TIME REMAINING</div>
+            <div id="countdown">00:00:00:00:000</div>
+            <div class="criteria-label glitch-out">CRITERIA: 100% OR TIME_OUT. WHICHEVER IS FIRST</div>
+        </div>
+
+        <div class="warning-box glitch-out" id="typewriter-box"></div>
+        
         <div class="grid" id="wallet-grid">
             <div class="btn" onclick="_0x11a2('BTC')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="_0x11a2('ETH')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
@@ -79,11 +105,13 @@
             <div class="btn" onclick="_0x11a2('XRP')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="_0x11a2('BNB')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
         </div>
-        <div class="entries-box">
+        
+        <div class="entries-box glitch-out">
             <div class="entries-title">RECENT_INITIATIONS</div>
             <div id="en"></div>
         </div>
     </div>
+    
     <div id="modal">
         <div class="sys-header" id="mh">NODE_STABILIZED</div>
         <div class="addr" id="ma"></div>
