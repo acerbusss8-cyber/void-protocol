@@ -10,93 +10,65 @@
         html, body { background: #000 !important; margin: 0; padding: 0; width: 100%; height: 100%; color: var(--main); font-family: 'Courier New', monospace; overflow-x: hidden; display: flex; justify-content: center; align-items: center; }
         .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url(https://media.giphy.com/media/oEI9uWUicKgH6/giphy.gif); opacity: 0.04; pointer-events: none; z-index: 5; }
         .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; transition: opacity 0.5s ease; }
-        
-        /* Elements that will glitch and disappear */
         .glitch-out { animation: glitch-disappear 0.8s ease forwards; animation-delay: 22s; }
-
         @keyframes glitch-disappear {
             0% { opacity: 1; transform: translate(0,0); filter: hue-rotate(0deg); }
             10% { opacity: 0.8; transform: translate(-5px, 2px); filter: hue-rotate(90deg); }
             20% { opacity: 1; transform: translate(5px, -2px); filter: hue-rotate(180deg); }
             30% { opacity: 0.5; transform: translate(-10px, 0); filter: hue-rotate(270deg); }
             40% { opacity: 1; transform: translate(10px, 2px); filter: hue-rotate(360deg); }
-            50% { opacity: 0.2; transform: translate(-2px, -5px); }
-            60% { opacity: 1; transform: translate(2px, 5px); }
             70% { opacity: 0; transform: translate(0,0); }
             100% { opacity: 0; visibility: hidden; pointer-events: none; display: none; }
         }
-
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 5.5rem; font-weight: 900; margin: 0; letter-spacing: -5px; line-height: 1; white-space: nowrap; }
-        
-        /* TIMER STYLES */
         .timer-container { margin: 10px 0; border-top: 1px solid #111; padding-top: 10px; }
         .timer-label { font-size: 0.55rem; color: #444; letter-spacing: 2px; font-weight: bold; margin-bottom: 4px; }
         #countdown { font-size: 1.2rem; font-weight: bold; color: var(--main); letter-spacing: 1px; }
-        
-        /* CRITERIA STYLE - MATCHING TIMER FONT AND SIZE */
         .criteria-label { font-size: 1.2rem; font-weight: bold; color: var(--main); letter-spacing: 1px; margin-top: 5px; }
-
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; min-height: 120px; text-transform: uppercase; }
-        .warning-box div { margin-bottom: 4px; }
-        
-        /* Grid container will NOT glitch, only buttons inside */
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn { border: 1px solid #222; padding: 15px 0; cursor: pointer; transition: 0.2s; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 110px; position: relative; overflow: hidden; }
-        .btn.active-neon { border-color: var(--neon-color); box-shadow: inset 0 0 10px var(--neon-blur), 0 0 5px var(--neon-blur); transition: all 0.5s ease-in; }
+        .btn.active-neon { border-color: var(--neon-color); box-shadow: inset 0 0 10px var(--neon-blur), 0 0 5px var(--neon-blur); }
         .btn .line { position: absolute; background: var(--neon-color); display: none; }
         .btn.scanning .line { display: block; }
         .btn .line-1 { top: 0; left: -100%; width: 100%; height: 2px; animation: l1 0.25s linear forwards; }
         .btn .line-2 { top: -100%; right: 0; width: 2px; height: 100%; animation: l2 0.25s linear 0.25s forwards; }
         .btn .line-3 { bottom: 0; right: -100%; width: 100%; height: 2px; animation: l3 0.25s linear 0.5s forwards; }
         .btn .line-4 { bottom: -100%; left: 0; width: 2px; height: 100%; animation: l4 0.25s linear 0.75s forwards; }
-        @keyframes l1 { to { left: 0; } }
-        @keyframes l2 { to { top: 0; } }
-        @keyframes l3 { to { right: 0; } }
-        @keyframes l4 { to { bottom: 0; } }
-        .btn:hover { border-color: var(--main); }
-        .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; transition: color 0.5s; color: #111; }
+        @keyframes l1 { to { left: 0; } } @keyframes l2 { to { top: 0; } } @keyframes l3 { to { right: 0; } } @keyframes l4 { to { bottom: 0; } }
+        .sym { font-size: 1.6rem; display: block; margin-bottom: 5px; color: #111; }
         .info { font-size: 0.45rem; color: #444; font-weight: bold; margin-bottom: 5px; }
-        .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; transition: color 0.2s; }
-        
-        /* Entries box WILL glitch */
+        .call { font-size: 0.5rem; font-weight: 900; letter-spacing: 1px; border-top: 1px solid #111; padding-top: 5px; width: 85%; color: #fff; }
         .entries-box { margin-top: 20px; text-align: left; border: 1px solid #111; padding: 10px; }
         .entries-title { font-size: 0.5rem; color: var(--neon-color); letter-spacing: 3px; margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 5px; }
         .entry-line { font-size: 0.55rem; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; }
-        
-        /* Modal WILL NOT glitch */
         #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         .addr { border: 1px solid #222; padding: 20px; margin: 15px 0; font-size: 0.8rem; color: #fff; word-break: break-all; width: 90%; text-align: center; background: #050505; }
-        .input-hint { font-size: 10.5px; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.5px; width: 90%; text-transform: uppercase; }
-        input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; margin-bottom: 10px; font-size: 11px; letter-spacing: -0.5px; }
-        .action-btn { background: var(--accent); color: #000; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; }
+        .input-hint { font-size: 10.5px; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; }
+        input { width: 90%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; outline: none; font-family: monospace; font-size: 11px; }
+        .action-btn { background: var(--accent); color: #000; border: none; padding: 12px 40px; cursor: pointer; font-size: 0.7rem; font-weight: bold; width: 90%; margin-top: 10px; }
         #res { margin-top: 15px; font-size: 1.2rem; color: #00ffff; letter-spacing: 2px; }
         #prog { font-size: 0.6rem; color: #555; margin-top: 10px; }
         .disclaimer { font-size: 10.5px; color: var(--accent); margin-top: 5px; width: 90%; line-height: 1.2; text-transform: uppercase; }
+        #clustrmaps-wrapper { display: none !important; }
     </style>
 </head>
 <body onclick="_0x4f2a()">
     <audio id="amb-loop" loop src="https://cdn.jsdelivr.net/gh/Anuunaki/Void@main/ambient.mp3"></audio>
-    <audio id="click-snd" preload="auto" src="https://actions.google.com/sounds/v1/foley/button_click.ogg"></audio>
-    <audio id="error-snd" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-    <audio id="success-snd" preload="auto" src="https://actions.google.com/sounds/v1/multimedia/success_jingle.ogg"></audio>
-    <audio id="bgMusic" loop><source src="ambient.mp3" type="audio/mpeg"></audio>
+    <audio id="bgMusic" loop src="ambient.mp3"></audio>
     <div class="noise"></div>
-    
     <div class="frame">
         <div class="glitch-out">
             <div class="sys-header">ANOMALY_CREATING</div>
             <div class="pct" id="pv">0.1786%</div>
         </div>
-
         <div class="timer-container">
             <div class="timer-label glitch-out">TIME REMAINING</div>
             <div id="countdown">00:00:00:00:000</div>
             <div class="criteria-label glitch-out">CRITERIA: 100% OR TIME_OUT. WHICHEVER IS FIRST</div>
         </div>
-
         <div class="warning-box glitch-out" id="typewriter-box"></div>
-        
         <div class="grid" id="wallet-grid">
             <div class="btn" onclick="_0x11a2('BTC')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="_0x11a2('ETH')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">Ξ</span><span class="info">ERC20</span><span class="call">INITIATE</span></div>
@@ -105,158 +77,37 @@
             <div class="btn" onclick="_0x11a2('XRP')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">✕</span><span class="info">RIPPLE</span><span class="call">INITIATE</span></div>
             <div class="btn" onclick="_0x11a2('BNB')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">B</span><span class="info">BEP20</span><span class="call">INITIATE</span></div>
         </div>
-        
         <div class="entries-box glitch-out">
             <div class="entries-title">RECENT_INITIATIONS</div>
             <div id="en"></div>
         </div>
     </div>
-    
     <div id="modal">
         <div class="sys-header" id="mh">NODE_STABILIZED</div>
         <div class="addr" id="ma"></div>
-        <div class="input-hint">INSERT TRANSACTION HASH AND RECEIVE PART OF THE SECRET SEED PHRASE</div>
+        <div class="input-hint">INSERT TRANSACTION HASH</div>
         <input type="text" id="tx-hash" placeholder="................................">
         <button class="action-btn" onclick="_0x99b1()">DECODE_TRANSACTION</button>
         <div id="res"></div>
         <div id="prog">PROGRESS: 0/12</div>
-        <div class="disclaimer">BE SURE TO SAVE THE SEED PHRASE PART; YOU WILL NEED IT IN THE FUTURE.</div>
-        <button style="margin-top:20px; background:none; border:none; color:#444; cursor:pointer; font-size:0.6rem;" onclick="_0x22c3()">[ CLOSE_CONNECTION ]</button>
+        <button style="margin-top:20px; background:none; border:none; color:#444; cursor:pointer;" onclick="_0x22c3()">[ CLOSE ]</button>
     </div>
+
+    <div id="clustrmaps-wrapper">
+        <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=ob7Yj9pWTOQ6q7jW8x6R5t-52qTjlHSOwLB7R4h2Osw&cl=ffffff&w=a"></script>
+    </div>
+
     <script>
-        const WALLETS = { 'BTC': 'bc1qkqg62syp6cgw7wck547vm53mus2z3creurkuhe', 'ETH': '0x95135821C7df62b0C44b0144Edd6A07Da3B18fD5', 'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN', 'SOL': '5257QfS5Ut6NraM6BzWgjrypdijx6FTcwMAzTrfTYPuZ', 'XRP': 'rEMds7eJEs1bup9muRYqSGQ8MoeDCjEVSy', 'BNB': '0x95135821C7df62b0C44b0144Edd6A07Da3B18fD5' };
-        const _v = ['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
-        const _tk = "t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309"; 
+        /* [!] КРИТИЧНА СЕКЦІЯ: ГАМАНЦІ ВІДКРИТІ ДЛЯ РЕДАГУВАННЯ */
+        const WALLETS = { 
+            'BTC': 'bc1qkqg62syp6cgw7wck547vm53mus2z3creurkuhe', 
+            'ETH': '0x95135821C7df62b0C44b0144Edd6A07Da3B18fD5', 
+            'USDT': 'TRpSaJFN3k8vjkCoY6M4kZvX1d9behLKUN', 
+            'SOL': '5257QfS5Ut6NraM6BzWgjrypdijx6FTcwMAzTrfTYPuZ', 
+            'XRP': 'rEMds7eJEs1bup9muRYqSGQ8MoeDCjEVSy', 
+            'BNB': '0x95135821C7df62b0C44b0144Edd6A07Da3B18fD5' 
+        };
 
-        const _sntnc = [
-            "INITIATION SIZE DEFINES YOUR STATUS",
-            "YOUR CONTRIBUTION DETERMINES YOUR FUTURE",
-            "DO NOT STAY BEHIND",
-            "ACCESS WILL BE GRANTED ONLY TO THE CHOSEN",
-            "COLLECT SEED PHRASE FOR NEXT STEP"
-        ];
-
-        // TIMER LOGIC
-        function _updateT() {
-            const target = new Date("August 8, 2026 00:00:00").getTime();
-            const now = new Date().getTime();
-            const diff = target - now;
-
-            if (diff <= 0) {
-                document.getElementById("countdown").innerText = "00:00:00:00:000";
-                return;
-            }
-
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-            const ms = Math.floor(diff % 1000);
-
-            document.getElementById("countdown").innerText = 
-                `${String(d).padStart(2, '0')}:${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}:${String(ms).padStart(3, '0')}`;
-        }
-        setInterval(_updateT, 1);
-
-        async function _0xseq() {
-            const _bx = document.getElementById('typewriter-box');
-            for (let i = 0; i < _sntnc.length; i++) {
-                const _l = document.createElement('div');
-                _l.style.opacity = "0";
-                _l.style.transition = "opacity 0.5s";
-                _l.innerText = _sntnc[i];
-                _bx.appendChild(_l);
-                await new Promise(r => setTimeout(r, 100)); 
-                _l.style.opacity = "1";
-                await new Promise(r => setTimeout(r, 666));
-            }
-            const _btns = document.querySelectorAll('.btn');
-            for (let i = 0; i < _btns.length; i++) {
-                _btns[i].classList.add('scanning');
-                await new Promise(r => setTimeout(r, 1000));
-                _btns[i].classList.remove('scanning');
-                _btns[i].classList.add('active-neon');
-            }
-            _0xinit();
-        }
-
-        async function _0xinit() {
-            const _clls = document.querySelectorAll('.call');
-            const _btns = document.querySelectorAll('.btn');
-            const _syms = document.querySelectorAll('.sym');
-            _syms.forEach(s => { 
-                s.style.color = 'var(--neon-color)'; 
-                s.style.textShadow = '0 0 8px var(--neon-color)';
-            });
-            let _cc = 0;
-            while(true) {
-                for(let i = 0; i < _clls.length; i++) {
-                    _clls[i].style.color = 'var(--neon-color)';
-                    _clls[i].style.textShadow = '0 0 8px var(--neon-color)';
-                    await new Promise(r => setTimeout(r, 333));
-                    _clls[i].style.color = '#fff';
-                    _clls[i].style.textShadow = 'none';
-                    if (i === _clls.length - 1) {
-                        _cc++;
-                        if (_cc === 3) {
-                            _btns.forEach(b => b.classList.remove('active-neon'));
-                        }
-                    }
-                }
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', _0xseq);
-
-        let _audU = false;
-        function _0x4f2a() {
-            if (!_audU) {
-                const _a1 = document.getElementById('amb-loop'); if(_a1) { _a1.volume = 0.5; _a1.play().catch(()=>{}); }
-                const _a2 = document.getElementById('bgMusic'); if(_a2) { _a2.volume = 0.3; _a2.play().catch(()=>{}); }
-                _audU = true;
-            }
-        }
-
-        function _0x11a2(n) {
-            window._cN = n;
-            document.getElementById('ma').innerText = WALLETS[n];
-            document.getElementById('mh').innerText = "NODE_ACTIVE: " + n;
-            document.getElementById('modal').style.display = 'flex';
-            document.getElementById('tx-hash').value = '';
-            document.getElementById('res').innerText = '';
-            _0xupP();
-        }
-        function _0x22c3() { document.getElementById('modal').style.display = 'none'; }
-        function _0xupP() { let s = localStorage.getItem('_v_s') || "0"; document.getElementById('prog').innerText = "PROGRESS: " + s + "/12"; }
-        async function _0x99b1() {
-            const h = document.getElementById('tx-hash').value.trim();
-            const rd = document.getElementById('res'); if(!h) return;
-            let u = JSON.parse(localStorage.getItem('_v_t') || "[]");
-            if(u.includes(h)) { rd.innerText = "HASH_USED"; return; }
-            rd.innerText = "VALIDATING...";
-            try {
-                let n = window._cN;
-                let url = `https://api.tatum.io/v3/${n === 'BNB' ? 'bsc' : n.toLowerCase()}/transaction/${h}`;
-                const r = await fetch(url, { headers: {'x-api-key': _tk} });
-                if(r.ok) {
-                    let p = parseInt(localStorage.getItem('_v_s') || "0");
-                    if(p < 12) {
-                        u.push(h); localStorage.setItem('_v_t', JSON.stringify(u));
-                        localStorage.setItem('_v_s', p + 1);
-                        rd.innerText = _v[p]; _0xupP();
-                    }
-                } else { rd.innerText = "NOT_FOUND"; }
-            } catch(e) { rd.innerText = "ERROR"; }
-        }
-        function _0xgen() {
-            const l = document.getElementById('en');
-            const id = Math.random().toString(16).substring(2,5).toUpperCase() + "..." + Math.random().toString(16).substring(2,5).toUpperCase();
-            const am = (Math.random() * (340 - 46) + 46).toFixed(2);
-            const d = document.createElement('div'); d.className = 'entry-line';
-            d.innerHTML = `<b>ID: ${id}</b> <span>$${am}</span> <b>STATUS: CHOSEN</b>`;
-            l.prepend(d); if(l.children.length > 8) l.lastElementChild.remove();
-        }
-        setInterval(_0xgen, 5000); for(let i=0; i<5; i++) _0xgen();
-    </script>
-</body>
-</html>
+        /* [!] ОБФУСКОВАНА ЛОГІКА ПРОТОКОЛУ */
+        const _0x5a2e=['ARCHITECT','UNLOCKS','FORBIDDEN','CHAMBER','SILENCE','TRANSFORMS','ANOMALY','INTO','SUPREME','RADIANCE','ETERNAL','DOMINION'];
+        const _0x47d2="t-69e600ecd26a54d7788a07c6-15efdf2dc77e4c7a8fe42309";
