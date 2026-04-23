@@ -17,6 +17,9 @@
         .timer-container { margin: 10px 0; border-top: 1px solid #111; padding-top: 10px; }
         .timer-label { font-size: 0.55rem; color: #444; letter-spacing: 2px; font-weight: bold; margin-bottom: 4px; }
         #countdown { font-size: 1.2rem; font-weight: bold; color: var(--main); letter-spacing: 1px; }
+        
+        /* CRITERIA STYLE - MATCHING TIMER FONT AND SIZE */
+        .criteria-label { font-size: 1.2rem; font-weight: bold; color: var(--main); letter-spacing: 1px; margin-top: 5px; }
 
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; min-height: 120px; text-transform: uppercase; }
         .warning-box div { margin-bottom: 4px; }
@@ -64,6 +67,7 @@
         <div class="timer-container">
             <div class="timer-label">TIME REMAINING</div>
             <div id="countdown">00:00:00:00:000</div>
+            <div class="criteria-label">CRITERIA: 100% OR TIME_OUT. WHICHEVER IS FIRST</div>
         </div>
 
         <div class="warning-box" id="typewriter-box"></div>
