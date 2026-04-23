@@ -12,6 +12,12 @@
         .frame { z-index: 10; text-align: center; width: 95%; max-width: 500px; padding: 20px; border: 1px solid #111; position: relative; background: #000; }
         .sys-header { font-size: 0.6rem; color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-weight: bold; }
         .pct { font-size: 5.5rem; font-weight: 900; margin: 0; letter-spacing: -5px; line-height: 1; white-space: nowrap; }
+        
+        /* TIMER STYLES */
+        .timer-container { margin: 10px 0; border-top: 1px solid #111; padding-top: 10px; }
+        .timer-label { font-size: 0.55rem; color: #444; letter-spacing: 2px; font-weight: bold; margin-bottom: 4px; }
+        #countdown { font-size: 1.2rem; font-weight: bold; color: var(--main); letter-spacing: 1px; }
+
         .warning-box { font-size: 0.7rem; color: #555; margin: 15px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 18px 0; line-height: 1.6; min-height: 120px; text-transform: uppercase; }
         .warning-box div { margin-bottom: 4px; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -54,6 +60,12 @@
     <div class="frame">
         <div class="sys-header">ANOMALY_CREATING</div>
         <div class="pct" id="pv">0.1786%</div>
+
+        <div class="timer-container">
+            <div class="timer-label">TIME REMAINING</div>
+            <div id="countdown">00:00:00:00:000</div>
+        </div>
+
         <div class="warning-box" id="typewriter-box"></div>
         <div class="grid" id="wallet-grid">
             <div class="btn" onclick="_0x11a2('BTC')"><span class="line line-1"></span><span class="line line-2"></span><span class="line line-3"></span><span class="line line-4"></span><span class="sym">ᚦ</span><span class="info">BTC</span><span class="call">INITIATE</span></div>
@@ -91,6 +103,28 @@
             "ACCESS WILL BE GRANTED ONLY TO THE CHOSEN",
             "COLLECT SEED PHRASE FOR NEXT STEP"
         ];
+
+        // TIMER LOGIC
+        function _updateT() {
+            const target = new Date("August 8, 2026 00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            if (diff <= 0) {
+                document.getElementById("countdown").innerText = "00:00:00:00:000";
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            const ms = Math.floor(diff % 1000);
+
+            document.getElementById("countdown").innerText = 
+                `${String(d).padStart(2, '0')}:${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}:${String(ms).padStart(3, '0')}`;
+        }
+        setInterval(_updateT, 1);
 
         async function _0xseq() {
             const _bx = document.getElementById('typewriter-box');
